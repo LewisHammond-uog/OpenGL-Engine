@@ -430,4 +430,4 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudio
 
 #Build State files
-.idb
+*.idb
