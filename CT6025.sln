@@ -1,14 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "framework\framework.vcxproj", "{473F1220-17D6-4B43-BF91-9F839980F0A3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0B158001-F749-302C-972A-5DF61C89D6B2} = {0B158001-F749-302C-972A-5DF61C89D6B2}
+		{EB9D8959-331B-4B97-921D-82727E627FCF} = {EB9D8959-331B-4B97-921D-82727E627FCF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example", "example\example.vcxproj", "{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "deps\glfw\proj\vs2015\glfw.vcxproj", "{0B158001-F749-302C-972A-5DF61C89D6B2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "deps\imgui\Imgui.vcxproj", "{EB9D8959-331B-4B97-921D-82727E627FCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +38,20 @@ Global
 		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x64.ActiveCfg = Release|x64
 		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x64.Build.0 = Release|x64
 		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x86.ActiveCfg = Release|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Debug|x64.ActiveCfg = Debug|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Debug|x64.Build.0 = Debug|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Debug|x86.ActiveCfg = Debug|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Release|x64.ActiveCfg = Release|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Release|x64.Build.0 = Release|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Release|x86.ActiveCfg = Release|x64
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Debug|x64.ActiveCfg = Debug|x64
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Debug|x64.Build.0 = Debug|x64
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Debug|x86.ActiveCfg = Debug|Win32
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Debug|x86.Build.0 = Debug|Win32
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x64.ActiveCfg = Release|x64
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x64.Build.0 = Release|x64
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x86.ActiveCfg = Release|Win32
+		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
