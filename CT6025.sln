@@ -18,6 +18,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "deps\glfw\proj\vs20
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "deps\imgui\Imgui.vcxproj", "{EB9D8959-331B-4B97-921D-82727E627FCF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deps", "deps", "{BCC59292-AF72-43C5-85E2-599D6EB6A991}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Week 1 - VAOs", "Week 1 - VAOs\Week 1 - VAOs.vcxproj", "{797299BC-2F75-4279-92AB-FC57998843E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -52,9 +59,19 @@ Global
 		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x64.Build.0 = Release|x64
 		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x86.ActiveCfg = Release|Win32
 		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x86.Build.0 = Release|Win32
+		{797299BC-2F75-4279-92AB-FC57998843E8}.Debug|x64.ActiveCfg = Debug|x64
+		{797299BC-2F75-4279-92AB-FC57998843E8}.Debug|x64.Build.0 = Debug|x64
+		{797299BC-2F75-4279-92AB-FC57998843E8}.Debug|x86.ActiveCfg = Debug|x64
+		{797299BC-2F75-4279-92AB-FC57998843E8}.Release|x64.ActiveCfg = Release|x64
+		{797299BC-2F75-4279-92AB-FC57998843E8}.Release|x64.Build.0 = Release|x64
+		{797299BC-2F75-4279-92AB-FC57998843E8}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B158001-F749-302C-972A-5DF61C89D6B2} = {BCC59292-AF72-43C5-85E2-599D6EB6A991}
+		{EB9D8959-331B-4B97-921D-82727E627FCF} = {BCC59292-AF72-43C5-85E2-599D6EB6A991}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {806AF882-8B2E-45CB-B2BA-7DC8124EF87A}
