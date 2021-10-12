@@ -177,12 +177,18 @@ void Week02_EdgeDetection::Draw()
 	glUseProgram(m_shaderProgramID);
 	glBindVertexArray(m_vao);
 
-	//Get the unifom mem location
-	//int timeUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Time");
-	//glUniform1f(timeUniformLocation, Utility::getTotalTime());
+	//Get thee texture uniform location
+	int texUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Texture");
+	glUniform1i(texUniformLocation, 0);
 
-	//int resUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Resolution");
-	//glUniform2fv(resUniformLocation, 1, glm::value_ptr(glm::vec2(m_windowWidth, m_windowHeight)));
+	float widthUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Width");
+	glUniform1f(widthUniformLocation, m_windowWidth);
+
+	float heightUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Height");
+	glUniform1f(heightUniformLocation, m_windowHeight);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
 
 	glDrawElements(GL_TRIANGLES, 6 /*6 verts*/, GL_UNSIGNED_INT, 0 /*start at 0 in the indicies buffer*/);
 
