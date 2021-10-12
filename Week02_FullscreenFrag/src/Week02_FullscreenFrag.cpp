@@ -116,8 +116,11 @@ void Week02_FullscreenFrag::Draw()
 	glBindVertexArray(m_vao);
 
 	//Get the unifom mem location
-	int timeUniformLocation = glGetUniformLocation(m_shaderProgramID, "Time");
+	int timeUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Time");
 	glUniform1f(timeUniformLocation, Utility::getTotalTime());
+
+	int resUniformLocation = glGetUniformLocation(m_shaderProgramID, "u_Resolution");
+	glUniform2fv(resUniformLocation, 1, glm::value_ptr(glm::vec2(m_windowWidth, m_windowHeight)));
 
 	glDrawElements(GL_TRIANGLES, 6 /*6 verts*/, GL_UNSIGNED_INT, 0 /*start at 0 in the indicies buffer*/);
 
