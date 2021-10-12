@@ -17,6 +17,14 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Week02_FullscreenFrag.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\fragment.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\vertex.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{e5594a46-852c-4ec5-9ab0-6cede9897ecc}</ProjectGuid>
     <RootNamespace>Week02_FullscreenFrag</RootNamespace>

@@ -21,14 +21,64 @@ Week02_FullscreenFrag::~Week02_FullscreenFrag()
 
 bool Week02_FullscreenFrag::onCreate()
 {
-	// initialise the Gizmos helper class
-	Gizmos::create();
-	
-	// create a world-space matrix for a camera
-	m_cameraMatrix = glm::inverse( glm::lookAt(glm::vec3(10,10,10),glm::vec3(0,0,0), glm::vec3(0,1,0)) );
-	
-	// create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, m_windowWidth/(float)m_windowHeight, 0.1f, 1000.0f);
+	//Load in shaders
+	m_vertexShaderID = Utility::loadShader("../shaders/vertex.glsl", GL_VERTEX_SHADER);
+	m_fragmentShaderID = Utility::loadShader("../shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+
+	//Define shader pipeline inputs
+	const char* szInputs[] = { "Position", "Colour" };
+	//Define shader pipeline outputs
+	const char* szOutputs[] = { "fragColour" };
+	//link shaders together
+	m_shaderProgramID = Utility::createProgram(m_vertexShaderID, 0, 0, 0, m_fragmentShaderID, 2, szInputs, 1, szOutputs);
+
+	//Create some vertex data, one vert in each corner of the screen
+	Vertex* verts = new Vertex[4];
+	verts[0].position = glm::vec4(-1.f,-1.f, 0.f, 1.f);
+	verts[1].position = glm::vec4(-1.f,1.f, 0.f, 1.f);
+	verts[2].position = glm::vec4(1.f,-1.f, 0.f, 1.f);
+	verts[3].position = glm::vec4(1.f,1.f, 0.f, 1.f);
+
+	verts[0].colour = glm::vec4(1.f, 0.f, 0.f, 1.f);
+	verts[1].colour = glm::vec4(0.f, 1.f, 0.f, 1.f);
+	verts[2].colour = glm::vec4(0.f, 0.f, 1.f, 1.f);
+	verts[3].colour = glm::vec4(1.f, 1.f, 1.f, 1.f);
+
+	unsigned int indicies[] = 
+	{
+		0,2,1, //Triangle 1
+		3,1,2 //Triangle 2
+	};
+
+	//generate and bind vertex array object
+	glGenVertexArrays(1, &m_vao);
+	glBindVertexArray(m_vao);
+
+	glGenBuffers(1, &m_vbo); //Generate VBO array
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo); //bind it to the VAO
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(Vertex), verts, GL_STATIC_DRAW); //Tell the buffer that its the size of 4 verts and won't change (GL_STATIC_DRAW)
+
+	glEnableVertexAttribArray(0); //Enable Vertex attrib 0 (position)
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizeof(glm::vec4));
+
+
+	//generate a fill index buffer
+	glGenBuffers(1, &m_ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicies, GL_STATIC_DRAW);
+
+	//Unbind
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	//Verts are bound of the GPU - delete them on the CPU side
+	delete[] verts;
+	//same for indicies
+	//delete[] indicies;
 
 	// set the clear colour and enable depth testing and backface culling
 	glClearColor(0.25f,0.25f,0.25f,1.f);
@@ -40,25 +90,7 @@ bool Week02_FullscreenFrag::onCreate()
 
 void Week02_FullscreenFrag::Update(float a_deltaTime)
 {
-	// update our camera matrix using the keyboard/mouse
-	Utility::freeMovement( m_cameraMatrix, a_deltaTime, 10 );
 
-	// clear all gizmos from last frame
-	Gizmos::clear();
-	
-	// add an identity matrix gizmo
-	Gizmos::addTransform( glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1) );
-	// add a 20x20 grid on the XZ-plane
-	for ( int i = 0 ; i < 21 ; ++i )
-	{
-		Gizmos::addLine( glm::vec3(-10 + i, 0, 10), glm::vec3(-10 + i, 0, -10), 
-						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
-		
-		Gizmos::addLine( glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i), 
-						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
-	}
-
-	
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
 	Application_Log* log = Application_Log::Get();
@@ -79,19 +111,31 @@ void Week02_FullscreenFrag::Draw()
 {
 	// clear the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	// get the view matrix from the world-space camera matrix
-	glm::mat4 viewMatrix = glm::inverse( m_cameraMatrix );
-	
-	// draw the gizmos from this frame
-	Gizmos::draw(viewMatrix, m_projectionMatrix);
-	
 
+	glUseProgram(m_shaderProgramID);
+	glBindVertexArray(m_vao);
+
+	//Get the unifom mem location
+	int timeUniformLocation = glGetUniformLocation(m_shaderProgramID, "Time");
+	glUniform1f(timeUniformLocation, Utility::getTotalTime());
+
+	glDrawElements(GL_TRIANGLES, 6 /*6 verts*/, GL_UNSIGNED_INT, 0 /*start at 0 in the indicies buffer*/);
+
+	glBindVertexArray(0);
+	glUseProgram(0);
 }
 
 void Week02_FullscreenFrag::Destroy()
 {
+	//Delete shaders
+	glDeleteShader(m_vertexShaderID);
+	glDeleteShader(m_fragmentShaderID);
 
-	Gizmos::destroy();
+	//Delete program
+	glDeleteProgram(m_shaderProgramID);
+
+	glDeleteBuffers(1, &m_vbo);
+	glDeleteBuffers(1, &m_ibo);
+	glDeleteVertexArrays(1, &m_vao);
 }
 

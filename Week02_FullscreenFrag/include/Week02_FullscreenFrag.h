@@ -22,6 +22,20 @@ protected:
 	
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;
+
+	unsigned int m_shaderProgramID;
+	unsigned int m_vertexShaderID;
+	unsigned int m_fragmentShaderID;
+
+	unsigned int m_vao;
+	unsigned int m_vbo;
+	unsigned int m_ibo;
+
+	typedef struct Vertex
+	{
+		glm::vec4 position;
+		glm::vec4 colour;
+	}Vertex;
 };
 
 #endif // __Week02_FullscreenFrag_H_
