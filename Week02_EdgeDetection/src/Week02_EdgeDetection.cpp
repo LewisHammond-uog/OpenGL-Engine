@@ -123,6 +123,7 @@ bool Week02_EdgeDetection::onCreate()
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + 32 + 16);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + 32);
 
 
 	//generate a fill index buffer
