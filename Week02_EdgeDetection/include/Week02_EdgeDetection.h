@@ -1,6 +1,8 @@
 #ifndef __Week02_EdgeDetection_H_
 #define __Week02_EdgeDetection_H_
 
+#include <string>
+
 #include "Application.h"
 #include <glm/glm.hpp>
 
@@ -14,14 +16,16 @@ public:
 
 protected:
 
+	bool LoadImageFromFile(std::string a_filePath, unsigned int& a_textureID, int& a_width, int& a_height);
+
 	virtual bool onCreate();
 	virtual void Update(float a_deltaTime);
 	virtual void Draw();
 	virtual void Destroy();
 
-	
-	glm::mat4	m_cameraMatrix;
-	glm::mat4	m_projectionMatrix;
+	unsigned int m_textureID; //handle to our texture
+	int m_imageWidth;
+	int m_imageHeight;
 
 	unsigned int m_shaderProgramID;
 	unsigned int m_vertexShaderID;
@@ -35,6 +39,7 @@ protected:
 	{
 		glm::vec4 position;
 		glm::vec4 colour;
+		glm::vec2 uvs; //texture coordinate
 	}Vertex;
 };
 
