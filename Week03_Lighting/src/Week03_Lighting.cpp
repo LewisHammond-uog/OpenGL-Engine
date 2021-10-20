@@ -93,8 +93,8 @@ void Week03_Lighting::Update(float a_deltaTime)
 	Gizmos::clear();
 	
 	//Move light around the scene in a clockwise rotation
-	float sine = sinf(a_deltaTime);
-	float cos = cosf(a_deltaTime);
+	float sine = sinf(a_deltaTime * 0.2f);
+	float cos = cosf(a_deltaTime * 0.2f);
 	glm::vec4 newLightPos = m_lightPos;
 	m_lightPos.x = newLightPos.x * cos - newLightPos.z * sine;
 	m_lightPos.z = newLightPos.x * sine + newLightPos.z * cos;
@@ -164,18 +164,18 @@ void Week03_Lighting::Draw()
 		glUniformMatrix4fv(modelMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(mesh->m_globalTransform));
 
 		//Send the normals matrix
-		//int normalMatrixUniformLocation = glGetUniformLocation(m_programID, "NormalMatrix");
-		//glUniformMatrix4fv(normalMatrixUniformLocation, 1, false, glm::value_ptr(glm::transpose(glm::inverse(mesh->m_globalTransform))));
+		int normalMatrixUniformLocation = glGetUniformLocation(m_programID, "NormalMatrix");
+		glUniformMatrix4fv(normalMatrixUniformLocation, 1, false, glm::value_ptr(glm::transpose(glm::inverse(mesh->m_globalTransform))));
 
 		//Send the ambient, diffuse and specular materials
-		//int materialAmbientUniformLocation = glGetUniformLocation(m_programID, "matAmbient");
-		//glUniform4fv(materialAmbientUniformLocation, 1, glm::value_ptr(mesh->m_material->ambient));
+		int materialAmbientUniformLocation = glGetUniformLocation(m_programID, "matAmbient");
+		glUniform4fv(materialAmbientUniformLocation, 1, glm::value_ptr(mesh->m_material->ambient));
 
-		//int materialDiffuseUniformLocation = glGetUniformLocation(m_programID, "matDiffuse");
-		//glUniform4fv(materialDiffuseUniformLocation, 1, glm::value_ptr(mesh->m_material->diffuse));
+		int materialDiffuseUniformLocation = glGetUniformLocation(m_programID, "matDiffuse");
+		glUniform4fv(materialDiffuseUniformLocation, 1, glm::value_ptr(mesh->m_material->diffuse));
 
-		//int materialSpecularUniformLocation = glGetUniformLocation(m_programID, "matSpecular");
-		//glUniform4fv(materialSpecularUniformLocation, 1, glm::value_ptr(mesh->m_material->specular));
+		int materialSpecularUniformLocation = glGetUniformLocation(m_programID, "matSpecular");
+		glUniform4fv(materialSpecularUniformLocation, 1, glm::value_ptr(mesh->m_material->specular));
 
 
 		//textures on the model to send though

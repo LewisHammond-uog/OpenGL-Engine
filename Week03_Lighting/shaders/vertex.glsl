@@ -17,7 +17,7 @@ uniform mat4 NormalMatrix;
 void main(){
 
 	vColour = Colour;
-	vNormal = NormalMatrix * Normal;
+	vNormal = normalize(NormalMatrix * Normal);
 	vPosition = ModelMatrix * Position;
 	vTexCoord = TexCoord;
 	gl_Position = ProjectionView * ModelMatrix * Position;
