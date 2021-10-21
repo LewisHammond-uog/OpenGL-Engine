@@ -20,6 +20,8 @@ protected:
 	virtual void Draw();
 	virtual void Destroy();
 
+	bool LoadImageFromFile(std::string a_filePath, unsigned int& a_textureID);
+
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;
 	glm::mat4	m_modelMatrix;
@@ -38,7 +40,9 @@ protected:
 
 	//FBX Model File
 	FBXFile* m_fbxModel;
-	
+
+	//Normal Map texture handles
+	unsigned int m_normalTextures[2];
 
 	glm::vec4	m_lightPos;
 	

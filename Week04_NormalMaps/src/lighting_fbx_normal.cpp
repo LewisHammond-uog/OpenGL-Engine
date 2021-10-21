@@ -8,6 +8,12 @@
 #include "Application_Log.h"
 
 
+#include <stb_image.h>
+#ifndef STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#endif //!STB_IMAGE_IMPLEMENTATION
+
+
 #define DEFAULT_SCREENWIDTH 1280
 #define DEFAULT_SCREENHEIGHT 720
 
@@ -29,10 +35,10 @@ bool Lighting_FBX_Normal::onCreate()
 	
 	//Load the shaders for this program
 	m_vertexShader = Utility::loadShader("./shaders/vertex.glsl", GL_VERTEX_SHADER);
-	m_fragmentShader = Utility::loadShader("./shaders/CookTorrance.glsl", GL_FRAGMENT_SHADER);
+	m_fragmentShader = Utility::loadShader("./shaders/fragment.glsl", GL_FRAGMENT_SHADER);
 	//Define the input and output varialbes in the shaders
 	//Note: these names are taken from the glsl files -- added in inputs for UV coordinates
-	const char* szInputs[] = { "Position", "Colour", "Normal","Tex1" };
+	const char* szInputs[] = { "Position", "Colour", "Normal", "Tangent", "BiTangent", "Tex1" };
 	const char* szOutputs[] = { "fragColor" };
 	//bind the shaders to create our shader program
 	m_programID = Utility::createProgram(
@@ -41,11 +47,15 @@ bool Lighting_FBX_Normal::onCreate()
 		0,
 		0,
 		m_fragmentShader,
-		4, szInputs, 1, szOutputs);
+		6, szInputs, 1, szOutputs);
 
 
 	m_fbxModel = new FBXFile();
 	m_fbxModel->load("./models/ruinedtank/tank.fbx", FBXFile::UNITS_CENTIMETER);
+
+	//Load normal maps - only needed because they are not bound to the tank properly
+	LoadImageFromFile("./models/ruinedtank/left_engine_norm.png", m_normalTextures[0]);
+	LoadImageFromFile("./models/ruinedtank/turret_norm.png", m_normalTextures[1]);
 
 	//Generate our OpenGL Vertex and Index Buffers for rendering our FBX Model Data
 	// OPENGL: genorate the VBO, IBO and VAO
@@ -65,14 +75,18 @@ bool Lighting_FBX_Normal::onCreate()
 	glEnableVertexAttribArray(0); //Pos
 	glEnableVertexAttribArray(1); //Col
 	glEnableVertexAttribArray(2); //Norm
-	glEnableVertexAttribArray(3); //Tex1
+	glEnableVertexAttribArray(3); //Tangent
+	glEnableVertexAttribArray(4); //BiTangent
+	glEnableVertexAttribArray(5); //Tex1
 	
 
 	// tell our shaders where the information within our buffers lie
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(FBXVertex), ((char *)0) + FBXVertex::PositionOffset);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(FBXVertex), ((char *)0) + FBXVertex::ColourOffset);
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, sizeof(FBXVertex), ((char *)0) + FBXVertex::NormalOffset);
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_TRUE, sizeof(FBXVertex), ((char *)0) + FBXVertex::TexCoord1Offset);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_TRUE, sizeof(FBXVertex), ((char *)0) + FBXVertex::TangentOffset);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_TRUE, sizeof(FBXVertex), ((char *)0) + FBXVertex::BiNormalOffset);
+	glVertexAttribPointer(5, 2, GL_FLOAT, GL_TRUE, sizeof(FBXVertex), ((char *)0) + FBXVertex::TexCoord1Offset);
 	
 	// finally, where done describing our mesh to the shader
 	// we can describe the next mesh
@@ -169,6 +183,9 @@ void Lighting_FBX_Normal::Draw()
 	int projectionViewUniform = glGetUniformLocation(m_programID, "ProjectionView");
 	glUniformMatrix4fv(projectionViewUniform, 1, false, glm::value_ptr(m_projectionMatrix * viewMatrix));
 
+	int viewMatrixUniform = glGetUniformLocation(m_programID, "ViewMatrix");
+	glUniformMatrix4fv(viewMatrixUniform, 1, false, glm::value_ptr(viewMatrix));
+
 	//pass our camera position to our fragment shader uniform
 	int cameraPosUniform = glGetUniformLocation(m_programID, "cameraPosition");
 	glUniform4fv(cameraPosUniform, 1, glm::value_ptr(m_cameraMatrix[3]));
@@ -178,6 +195,9 @@ void Lighting_FBX_Normal::Draw()
 	glm::vec4 lightDir = glm::normalize(glm::vec4(0.f, 0.f, 0.f, 1.f) - m_lightPos);
 	int lightDirUniform = glGetUniformLocation(m_programID, "lightDirection");
 	glUniform4fv(lightDirUniform, 1, glm::value_ptr(lightDir));
+
+	int lightPosUniform = glGetUniformLocation(m_programID, "lightPos");
+	glUniform4fv(lightPosUniform, 1, glm::value_ptr(m_lightPos));
 
 	int lightcolourUniform = glGetUniformLocation(m_programID, "lightColour");
 	glUniform4fv(lightcolourUniform, 1, glm::value_ptr(glm::vec4(1.0f, 0.85f, 0.05f, 1.f)));
@@ -221,7 +241,7 @@ void Lighting_FBX_Normal::Draw()
 		//this is only beneficial if a model has a non-uniform scale or non-orthoganal model matrix
 		glm::mat4 m4Normal = glm::transpose(m4Model);// *m_modelMatrix;
 		unsigned int normalMatrixUniform = glGetUniformLocation(m_programID, "NormalMatrix");
-		glUniformMatrix4fv(normalMatrixUniform, 1, false, glm::value_ptr(m4Normal));
+		glUniformMatrix4fv(normalMatrixUniform, 1, false, glm::value_ptr(glm::transpose(glm::inverse(viewMatrix * m4Normal))));
 		
 		// Bind the texture to one of the ActiveTextures
 		// if your shader supported multiple textures, you would bind each texture to a new Active Texture ID here
@@ -232,9 +252,42 @@ void Lighting_FBX_Normal::Draw()
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, pMesh->m_material->textureIDs[FBXMaterial::DiffuseTexture]);
 
+		//----------------------------------------------------------//
+		//--Bind Normal Maps, if we have them for this model piece--//
+		//Set the uniform to use TEXTURE ID 1 for the nronal texture
+		int normalTexUniformLocation = glGetUniformLocation(m_programID, "NormalTexture");
+		glUniform1i(normalTexUniformLocation, 1);
+
+		//Choose the normal map to use or none if we don't have one for the mesh that we are rendering
+		int useNormalTextureUniform = glGetUniformLocation(m_programID, "useNormalMap");
+		bool useLeftEngineNormalMap = strcmp(pMesh->m_material->textureFilenames[FBXMaterial::DiffuseTexture], "left_engine_diff.png") == 0; //If we are currently drawing the mesh that uses the left engine texture
+		bool useTurretMap = strcmp(pMesh->m_material->textureFilenames[FBXMaterial::DiffuseTexture], "turret_diff.png") == 0; //If we are currently drawing the mesh that uses the turret texture
+
+		if(useLeftEngineNormalMap)
+		{
+			//Set texture in texture 1 - that is set as the normal texture
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, m_normalTextures[0]);
+
+			//Set that we are using the normal texture
+			glUniform1i(useNormalTextureUniform, 1);
+		}else if(useTurretMap)
+		{
+			//Set texture in texture 1 - that is set as the normal texture
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, m_normalTextures[1]);
+
+			glUniform1i(useNormalTextureUniform, 1);
+		}else
+		{
+			//We don't have a normal map for this section of the module - tell the shader not to use normals
+			glUniform1i(useNormalTextureUniform, 0);
+		}
+		
+
 		// Send the vertex data to the VBO
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, pMesh->m_vertices.size() * sizeof(FBXVertex), pMesh->m_vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, pMesh->m_vertices.size() * sizeof(FBXVertex), pMesh->m_vertices.data(), GL_STATIC_DRAW);   
 
 		// send the index data to the IBO
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
@@ -263,5 +316,74 @@ void Lighting_FBX_Normal::Destroy()
 	glDeleteShader(m_vertexShader);
 
 	Gizmos::destroy();
+}
+
+//Load an image in to OpenGL with from a given file path
+bool Lighting_FBX_Normal::LoadImageFromFile(std::string a_filePath, unsigned& a_textureID)
+{
+	//Define image properties
+	int width = 0, height = 0, channels = 0;
+
+	//Set image to flip vertically on load because OpenGL reads the texture bottom to top
+	stbi_set_flip_vertically_on_load(true);
+
+	//Load Image data
+	unsigned char* imageData = stbi_load(a_filePath.c_str(), &width, &height, &channels, 0);
+
+	//Abort if image data is invalid
+	if(imageData == nullptr)
+	{
+		Application_Log* log = Application_Log::Get();
+		if(log)
+		{
+			log->addLog(LOG_ERROR, "Failed to load texture %s", a_filePath.c_str());
+		}
+		return false;
+	}
+
+	//Get a texture ID from OpenGL
+	a_textureID = 0;
+	glGenTextures(1, &a_textureID);
+
+	//Set this texture to be a texture 2D and set as the active binding target - everything after this point will apply to this texture
+	glBindTexture(GL_TEXTURE_2D, a_textureID);
+
+	//Use linear mipmapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	//Repeat the texture if we exceed the texture coords
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//Set the texture type (R, RBG or RGBA) based on the number of channels that the image has
+	GLint internalFormat;
+	switch(channels)
+	{
+		case 1: //R
+			internalFormat = GL_R;
+			break;
+		case 3: //RGB
+			internalFormat = GL_RGB;
+			break;
+		case 4: //RBGA
+			internalFormat = GL_RGBA;
+			break;
+		default:
+			//error invalid number of channels in image
+			return false;
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, internalFormat, GL_UNSIGNED_BYTE, imageData);
+
+	//Generate MipMap
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	//Unbind the texture
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Free the image from CPU memory - it's in the GPUs hands now
+	stbi_image_free(imageData);
+	return true;
+
 }
 
