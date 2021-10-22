@@ -33,6 +33,11 @@ protected:
 	unsigned int m_vbo;
 	unsigned int m_ibo;
 
+	//Frame Buffer objects
+	unsigned int m_FBO;
+	unsigned int m_FBO_texture; //The texture to output from the previous render
+	unsigned int m_FBO_depth_texture; //The depth texture output from the previous pipline stage
+
 
 	//FBX Model File
 	FBXFile* m_fbxModel;

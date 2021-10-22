@@ -88,8 +88,55 @@ bool Reflection::onCreate()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	m_lightPos = glm::vec4(50.f, 25.f, 0.f, 1.f);
+	//-----Frame Buffer Object-------//
+	//Generate a frame buffer
+	glGenFramebuffers(1, &m_FBO);
 
+	//Bind the frame buffer for editing
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+
+	//Create a texture to be attached to the frame buffer
+	glGenTextures(1, &m_FBO_texture);
+
+	//Bind Texture for editing
+	glBindTexture(GL_TEXTURE_2D, m_FBO_texture);
+
+	//Create the texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_windowWidth, m_windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	//Set filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//---- Generate the depth texture ----//
+	glGenTextures(1, &m_FBO_depth_texture);
+	glBindTexture(GL_TEXTURE_2D, m_FBO_depth_texture);//set as active texture 2d
+
+	//Generate texture for the depth texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, m_windowWidth, m_windowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+	///Attach the texture as the 0th colour attachment of the frame buffer
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_FBO_texture, 0);
+	//Attach the depth texturE
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_FBO_depth_texture, 0);
+
+	//Set which frame buffers to draw to
+	constexpr GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
+
+	//Check for error in creation
+	GLenum frameBufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if(frameBufferStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		Application_Log* log = Application_Log::Get();
+		if(log != nullptr)
+		{
+			log->addLog(LOG_ERROR, "Error in creating framebuffer");
+		}
+	}
+
+
+	m_lightPos = glm::vec4(50.f, 25.f, 0.f, 1.f);
 	return true;
 }
 
