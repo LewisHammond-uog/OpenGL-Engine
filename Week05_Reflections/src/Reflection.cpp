@@ -230,6 +230,33 @@ void Reflection::Update(float a_deltaTime)
 		mesh->updateGlobalTransform();
 	}
 
+	//ImGui render what is in the FBO texture
+	ImGui::SetNextWindowPos(ImVec2(m_windowWidth - m_windowWidth * 0.3, m_windowHeight - m_windowHeight * 0.4));
+	ImGui::SetNextWindowSize(ImVec2(m_windowWidth * 0.3, m_windowHeight * 0.4));
+	ImGui::Begin("Frame Buffer");
+	ImGui::BeginTabBar("FrameBuffer Textures");
+
+	ImTextureID textureID = nullptr;
+	if(ImGui::BeginTabItem("Colour Buffer"))
+	{
+		textureID = (void*)(intptr_t)m_FBO_texture;
+		ImGui::EndTabItem();
+	}
+
+	if(ImGui::BeginTabItem("Depth Buffer"))
+	{
+		textureID = (void*)(intptr_t)m_FBO_depth_texture;
+		ImGui::EndTabItem();
+	}
+
+	if (textureID) {
+		ImGui::Image(textureID, ImVec2(m_windowWidth * 0.25, m_windowHeight * 0.25), ImVec2(0, 1), ImVec2(1, 0));
+	}
+	ImGui::EndTabBar();
+	ImGui::End();
+
+
+
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
 	Application_Log* log = Application_Log::Get();
