@@ -34,8 +34,8 @@ bool Lighting_FBX_Normal::onCreate()
 	Gizmos::create();
 	
 	//Load the shaders for this program
-	m_vertexShader = Utility::loadShader("./shaders/vertex.glsl", GL_VERTEX_SHADER);
-	m_fragmentShader = Utility::loadShader("./shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+	m_vertexShader = Utility::loadShader("../shaders/vertex.glsl", GL_VERTEX_SHADER);
+	m_fragmentShader = Utility::loadShader("../shaders/fragment.glsl", GL_FRAGMENT_SHADER);
 	//Define the input and output varialbes in the shaders
 	//Note: these names are taken from the glsl files -- added in inputs for UV coordinates
 	const char* szInputs[] = { "Position", "Colour", "Normal", "Tangent", "BiTangent", "Tex1" };
@@ -51,11 +51,11 @@ bool Lighting_FBX_Normal::onCreate()
 
 
 	m_fbxModel = new FBXFile();
-	m_fbxModel->load("./models/ruinedtank/tank.fbx", FBXFile::UNITS_CENTIMETER);
+	m_fbxModel->load("../models/ruinedtank/tank.fbx", FBXFile::UNITS_CENTIMETER);
 
 	//Load normal maps - only needed because they are not bound to the tank properly
-	LoadImageFromFile("./models/ruinedtank/left_engine_norm.png", m_normalTextures[0]);
-	LoadImageFromFile("./models/ruinedtank/turret_norm.png", m_normalTextures[1]);
+	LoadImageFromFile("../models/ruinedtank/left_engine_norm.png", m_normalTextures[0]);
+	LoadImageFromFile("../models/ruinedtank/turret_norm.png", m_normalTextures[1]);
 
 	//Generate our OpenGL Vertex and Index Buffers for rendering our FBX Model Data
 	// OPENGL: genorate the VBO, IBO and VAO
