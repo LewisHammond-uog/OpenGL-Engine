@@ -25,18 +25,20 @@ protected:
 	glm::mat4	m_projectionMatrix;
 	glm::mat4	m_modelMatrix;
 
-	unsigned int	m_programID;
-	unsigned int	m_vertexShader;
-	unsigned int	m_fragmentShader;
+	unsigned int	m_fboprogramID;
+	unsigned int	m_fsprogramID;
 
-	unsigned int m_vao;
-	unsigned int m_vbo;
-	unsigned int m_ibo;
+
+
+	unsigned int m_vao[2];
+	unsigned int m_vbo[2];
+	unsigned int m_ibo[2];
 
 	//Frame Buffer objects
 	unsigned int m_FBO;
 	unsigned int m_FBO_texture; //The texture to output from the previous render
 	unsigned int m_FBO_depth_texture; //The depth texture output from the previous pipline stage
+	unsigned int m_FBO_linear_depth;
 
 
 	//FBX Model File
