@@ -101,12 +101,12 @@ bool Reflection::onCreate()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	//------------------------------------------
 	//---------Setup for 2nd pass render ------------
-	//Create fullscreen quad for drawing to
+	//Create a plane to put the reflection on
 	SVertex vertexData[4];
-	vertexData[0] = SVertex(glm::vec4(-1.f, -1.f, 0.f, 1.f), glm::vec2(0, 0));
-	vertexData[1] = SVertex(glm::vec4(1.f, -1.f, 0.f, 1.f), glm::vec2(1, 0));
-	vertexData[2] = SVertex(glm::vec4(-1.f, 1.f, 0.f, 1.f), glm::vec2(0, 1));
-	vertexData[3] = SVertex(glm::vec4(1.f, 1.f, 0.f, 1.f), glm::vec2(1, 1));
+	vertexData[0] = SVertex(glm::vec4(-10.f, 0.f, -10.f, 1.f), glm::vec2(0,1));
+	vertexData[1] = SVertex(glm::vec4(-10.f, 0.f, 10.f, 1.f), glm::vec2(0, 0));
+	vertexData[2] = SVertex(glm::vec4(10.f, 0.f, -10.f, 1.f), glm::vec2(1, 1));
+	vertexData[3] = SVertex(glm::vec4(10.f, 0.f, 10.f, 1.f), glm::vec2(1, 0));
 
 	//Set triangle draw order
 	unsigned int elements[6] = { 0,1,2,1,3,2 };
@@ -180,6 +180,7 @@ bool Reflection::onCreate()
 			log->addLog(LOG_ERROR, "Error in creating framebuffer");
 		}
 	}
+
 
 	// create a world-space matrix for a camera
 	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
@@ -323,7 +324,11 @@ void Reflection::Draw()
 		// send the Model
 		glm::mat4 m4Model = pMesh->m_globalTransform;// *m_modelMatrix;
 		unsigned int modelUniform = glGetUniformLocation(m_fboprogramID, "Model");
-		glUniformMatrix4fv(modelUniform, 1, false, glm::value_ptr(m4Model));
+		//glUniformMatrix4fv(modelUniform, 1, false, glm::value_ptr(m4Model));
+		glm::mat4 reflectionMatrix = glm::mat4(1.0);
+		reflectionMatrix = glm::reflect3D(reflectionMatrix, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelUniform, 1, GL_FALSE, glm::value_ptr(reflectionMatrix * m4Model));
+
 		//send the normal matrix
 		//this is only beneficial if a model has a non-uniform scale or non-orthoganal model matrix
 		glm::mat4 m4Normal = glm::transpose(glm::inverse(pMesh->m_globalTransform));// *m_modelMatrix;
@@ -338,7 +343,10 @@ void Reflection::Draw()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo[0]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, pMesh->m_indices.size() * sizeof(unsigned int), pMesh->m_indices.data(), GL_STATIC_DRAW);
 
+		//Because we have reflected geometry we need to flip the draw order of triangles
+		glFrontFace(GL_CW);
 		glDrawElements(GL_TRIANGLES, pMesh->m_indices.size(), GL_UNSIGNED_INT, 0);
+		glFrontFace(GL_CCW);
 	}
 #pragma endregion
 #pragma region 2nd Pass Rendering  whats in the frame buffer
@@ -346,7 +354,7 @@ void Reflection::Draw()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Clear
-	glClearColor(0.25f, 0.25f, 0.25f, 1.f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//use the fullscreen program 
@@ -355,22 +363,31 @@ void Reflection::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo[1]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo[1]);
 
+	//Send the screenszie
+	unsigned int screenSizeUniform = glGetUniformLocation(m_fsprogramID, "ScreenSize");
+	glm::vec2 screenSize = glm::vec2(m_windowWidth, m_windowHeight);
+	glUniform2fv(screenSizeUniform, 1, glm::value_ptr(screenSize));
+
+	//Send out projection view matrix
+	projectionViewUniform = glGetUniformLocation(m_fsprogramID, "ProjectionView");
+	glUniformMatrix4fv(projectionViewUniform, 1, GL_FALSE, glm::value_ptr(m_projectionMatrix * viewMatrix));
+
+	//Send model matrix
+	glm::mat4 m4Model = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	unsigned int modelUniform = glGetUniformLocation(m_fsprogramID, "Model");
+	glUniformMatrix4fv(modelUniform, 1, false, glm::value_ptr(m4Model));
+
+
 	//Set diffuse texture to be texture 0
-	unsigned int texUniformLocation = glGetUniformLocation(m_fsprogramID, "DiffuseTexture");
-	glUniform1i(texUniformLocation, 0);
+	//unsigned int texUniformLocation = glGetUniformLocation(m_fsprogramID, "DiffuseTexture");
+	//glUniform1i(texUniformLocation, 0);
 
 	//Set our active texture and give it the texture that the frame buffer output to
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_FBO_texture);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 #pragma endregion
-
-	//Reset
-	glBindVertexArray(0);
-	glUseProgram(0);
-
 }
 
 void Reflection::Destroy()
