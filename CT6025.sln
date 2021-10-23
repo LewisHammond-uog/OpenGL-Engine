@@ -18,6 +18,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "deps\glfw\proj\vs20
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "deps\imgui\Imgui.vcxproj", "{EB9D8959-331B-4B97-921D-82727E627FCF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Week_05_Shadow_mapping", "Week05_ShaddowMapping\Week_05_Shadow_mapping.vcxproj", "{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -52,6 +57,12 @@ Global
 		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x64.Build.0 = Release|x64
 		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x86.ActiveCfg = Release|Win32
 		{EB9D8959-331B-4B97-921D-82727E627FCF}.Release|x86.Build.0 = Release|Win32
+		{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}.Debug|x64.ActiveCfg = Debug|x64
+		{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}.Debug|x64.Build.0 = Debug|x64
+		{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}.Debug|x86.ActiveCfg = Debug|x64
+		{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}.Release|x64.ActiveCfg = Release|x64
+		{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}.Release|x64.Build.0 = Release|x64
+		{AA2B0570-A206-4DC9-A572-8A6AA8A546C3}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
