@@ -30,11 +30,8 @@ public:
 		unsigned int a_inputAttributeCount = 0, const char** a_inputAttributes = nullptr,
 		unsigned int a_outputAttributeCount = 0, const char** a_outputAttributes = nullptr);
 
-
-private:
 	// helper function for loading shader code into memory
-	static unsigned char*	fileToBuffer(const char* a_szPath);
-
+	static unsigned char* fileToBuffer(const char* a_szPath);
 
 };
 
