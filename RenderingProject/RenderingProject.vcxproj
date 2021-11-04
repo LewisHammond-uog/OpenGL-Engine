@@ -25,6 +25,17 @@
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\vertex.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\fragment.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8aebf200-ff9c-4942-8c6e-37c415200697}</ProjectGuid>
     <RootNamespace>RenderingProject</RootNamespace>

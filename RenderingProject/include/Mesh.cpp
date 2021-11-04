@@ -112,10 +112,7 @@ bool Mesh::InitFromScene(const aiScene* a_pScene, const std::string& a_filePath)
 
 	InitAllMeshes(a_pScene);
 
-	if(!InitMaterials(a_pScene, a_filePath))
-	{
-		return false;
-	}
+	InitMaterials(a_pScene, a_filePath);
 
 	PopulateOpenGLBuffers();
 	return true;

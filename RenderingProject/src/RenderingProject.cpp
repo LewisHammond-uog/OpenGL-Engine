@@ -32,9 +32,19 @@ bool RenderingProject::onCreate()
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, m_windowWidth/(float)m_windowHeight, 0.1f, 1000.0f);
 
 	// set the clear colour and enable depth testing and backface culling
-	glClearColor(0.0f,0.0f,0.0f,1.f);
+	glClearColor(0.25f,0.25f,0.25f,1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	//Load in and link shaders
+	unsigned int m_vertexShaderID = Utility::loadShader("../shaders/vertex.glsl", GL_VERTEX_SHADER);
+	unsigned int m_fragmentShaderID = Utility::loadShader("../shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+	//Vertex Inputs/Outputs
+	const char* szInputs[] = { "Position", "Colour", "Normal", "TexCoord" };
+	const char* szOutputs[] = { "fragColour" };
+
+	//Link shaders
+	m_programID = Utility::createProgram(m_vertexShaderID, 0, 0, 0, m_fragmentShaderID, 4, szInputs, 1, szOutputs);
 
 	//Load mesh
 	pMesh = new Mesh();
@@ -90,6 +100,17 @@ void RenderingProject::Draw()
 	
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
+
+	glUseProgram(m_programID);
+
+	int projectionViewUniformLocation = glGetUniformLocation(m_programID, "ProjectionView");
+	glUniformMatrix4fv(projectionViewUniformLocation, 1, false, glm::value_ptr(m_projectionMatrix * viewMatrix));
+
+	int modelMatrixUniformLocation = glGetUniformLocation(m_programID, "ModelMatrix");
+	glUniformMatrix4fv(modelMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4()));
+	
+
+	pMesh->Render();
 }
 
 void RenderingProject::Destroy()

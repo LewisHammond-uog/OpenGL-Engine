@@ -26,6 +26,8 @@ protected:
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;
 
+	unsigned int m_programID;
+
 	Mesh* pMesh;
 };
 
