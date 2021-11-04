@@ -276,7 +276,7 @@ void Mesh::PopulateOpenGLBuffers()
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffers[TEXCOORD_VB]); //Bind Buffer
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_texCoords[0]) * m_texCoords.size(), &m_texCoords[0], GL_STATIC_DRAW); //Send Data
 	glEnableVertexAttribArray(SHADER_TEX_COORD_LOC); //Enable vertex attrib
-	glVertexAttribPointer(SHADER_TEX_COORD_LOC, 3, GL_FLOAT, GL_FALSE, 0, 0); //Set pointer to data but because the positions are packed we don't need to give a stride
+	glVertexAttribPointer(SHADER_TEX_COORD_LOC, 2, GL_FLOAT, GL_FALSE, 0, 0); //Set pointer to data but because the positions are packed we don't need to give a stride
 
 	//Normal Buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffers[NORMAL_VB]); //Bind Buffer

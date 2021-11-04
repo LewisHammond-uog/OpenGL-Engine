@@ -40,7 +40,7 @@ bool RenderingProject::onCreate()
 	unsigned int m_vertexShaderID = Utility::loadShader("../shaders/vertex.glsl", GL_VERTEX_SHADER);
 	unsigned int m_fragmentShaderID = Utility::loadShader("../shaders/fragment.glsl", GL_FRAGMENT_SHADER);
 	//Vertex Inputs/Outputs
-	const char* szInputs[] = { "Position", "Colour", "Normal", "TexCoord" };
+	const char* szInputs[] = { "Position", "TexCoord", "Colour", "Normal"  };
 	const char* szOutputs[] = { "fragColour" };
 
 	//Link shaders
