@@ -71,6 +71,7 @@ void Mesh::Render()
 		if(m_textures[matIndex])
 		{
 			m_textures[matIndex]->Bind(GL_TEXTURE0); //todo remove magic number
+			
 		}
 
 		//Do the draw!

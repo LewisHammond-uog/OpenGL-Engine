@@ -1,7 +1,7 @@
 #version 330
 
-in vec4 Position;
-in vec2 TexCoord;
+layout (location = 0)  in vec4 Position;
+layout (location = 1) in vec2 TexCoord;
 in vec4 Colour;
 in vec4 Normal;
 

@@ -85,7 +85,7 @@ bool Texture::Load()
 
 	//Free STB Data
 	stbi_image_free(data);
-	
+	return true;
 }
 
 /// <summary>
