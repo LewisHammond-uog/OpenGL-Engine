@@ -2,6 +2,9 @@
 
 #define DEFAULT_SCREENWIDTH 1920
 #define DEFAULT_SCREENHEIGHT 1080
+
+#include <assimp/scene.h>
+
 // main that controls the creation/destruction of an application
 int WinMain(int argc, char* argv[])
 {
