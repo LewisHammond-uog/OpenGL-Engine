@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BaseLight.h" />
+    <ClInclude Include="include\DirectionalLight.h" />
     <ClInclude Include="include\LightingProgram.h" />
     <ClInclude Include="include\Macros.h" />
     <ClInclude Include="include\Material.h" />
@@ -22,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Mesh.cpp" />
+    <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\LightingProgram.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderingProject.cpp" />

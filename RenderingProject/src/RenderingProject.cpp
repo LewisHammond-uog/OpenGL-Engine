@@ -10,6 +10,7 @@
 #include "Application_Log.h"
 #include "Mesh.h"
 #include "LightingProgram.h"
+#include "DirectionalLight.h"
 
 RenderingProject::RenderingProject()
 {
@@ -56,9 +57,10 @@ bool RenderingProject::onCreate()
 	pLightingProgram->UseProgram();
 	pLightingProgram->SetTextureUnit(0);
 
-	baseLight = new BaseLight();
-	baseLight->m_lightIntensity = 2.f;
-	baseLight->m_lightColour = glm::vec3(1.0f, 0.f, 0.f);
+	directionalLight = new DirectionalLight();
+	directionalLight->m_ambientIntensity = 0.1f;
+	directionalLight->m_diffuseIntensity = 1.f;
+	directionalLight->m_worldDirection = glm::vec3(1.0f, 0.f, 0.f);
 
 	return true;
 }
@@ -111,18 +113,16 @@ void RenderingProject::Draw()
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
+
+	glm::mat4 modelWorldTransform = glm::mat4();
+
 	pLightingProgram->UseProgram();
 
-	//int projectionViewUniformLocation = glGetUniformLocation(m_programID, "ProjectionView");
-	//glUniformMatrix4fv(projectionViewUniformLocation, 1, false, glm::value_ptr(m_projectionMatrix * viewMatrix));
+	directionalLight->CalculateLocalDirection(modelWorldTransform);
 
-	//int modelMatrixUniformLocation = glGetUniformLocation(m_programID, "ModelMatrix");
-	//glUniformMatrix4fv(modelMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4()));
-	
-
-	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * glm::mat4();
+	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * modelWorldTransform;
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
-	pLightingProgram->SetLight(*baseLight);
+	pLightingProgram->SetDirectionalLight(*directionalLight);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
 
 

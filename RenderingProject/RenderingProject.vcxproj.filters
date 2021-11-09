@@ -16,8 +16,14 @@
     <Filter Include="Header Files\Shader Programs">
       <UniqueIdentifier>{e2ec58b6-95b5-4451-b92f-5c17f78fddd4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Lighting Programs">
+    <Filter Include="Header Files\Lights">
+      <UniqueIdentifier>{7643863c-1364-4293-96ca-fa469ec8b2f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Shader Programs">
       <UniqueIdentifier>{5a5c9d8f-fe6c-4c77-8c23-34100b239844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lights">
+      <UniqueIdentifier>{ba82260e-aa2a-4964-aff7-30258543cc0e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +51,12 @@
     <ClInclude Include="include\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BaseLight.h">
+      <Filter>Header Files\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectionalLight.h">
+      <Filter>Header Files\Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -63,7 +75,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\LightingProgram.cpp">
-      <Filter>Source Files\Lighting Programs</Filter>
+      <Filter>Source Files\Shader Programs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DirectionalLight.cpp">
+      <Filter>Source Files\Lights</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

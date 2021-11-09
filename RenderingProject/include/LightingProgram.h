@@ -5,17 +5,8 @@
 #include "Material.h"
 
 //Forward Declerations
-struct BaseLight
-{
-	glm::vec3 m_lightColour;
-	float m_lightIntensity;
-
-	BaseLight()
-	{
-		m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
-		m_lightIntensity = 0.f;
-	}
-};
+class BaseLight;
+class DirectionalLight;
 
 class LightingProgram : public ShaderProgram
 {
@@ -26,7 +17,7 @@ public:
 
 	void SetWorldViewPoint(const glm::mat4 a_worldViewPoint);
 	void SetTextureUnit(const unsigned int a_textureUnit);
-	void SetLight(const BaseLight& a_light);
+	void SetDirectionalLight(const DirectionalLight& a_light);
 	void SetMaterial(const Material& a_material);
 
 private:
@@ -37,6 +28,20 @@ private:
 	GLint m_lightAmbitentIntensityLocation;
 	GLint m_materialAmbientColourLocation;
 
+	//-- Structs for use in Shader --//
+	struct ShaderMaterialUnifomLocations
+	{
+		GLuint ambientColour;
+		GLuint diffuseColour;
+	} materialLocation;
+
+	struct ShaderLightUniformLocations
+	{
+		GLuint colour;
+		GLuint ambientIntensity;
+		GLuint direction;
+		GLuint diffuseIntensity;
+	} dirLightLocation;
 };
 
 #endif // __LIGHTINGPROGRAM_H__

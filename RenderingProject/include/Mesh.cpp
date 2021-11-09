@@ -245,6 +245,15 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 			m_materials[i].m_ambientColour.b = ambientColour.b;
 		}
 
+		//Get if the Material has a diffuse colour attribute
+		aiColor3D diffuseColour = aiColor3D(0.0f, 0.0f, 0.0f);
+		if (pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColour) == AI_SUCCESS)
+		{
+			m_materials[i].m_diffuseColour.r = diffuseColour.r;
+			m_materials[i].m_diffuseColour.g = diffuseColour.g;
+			m_materials[i].m_diffuseColour.b = diffuseColour.b;
+		}
+
 	}
 
 	return success;

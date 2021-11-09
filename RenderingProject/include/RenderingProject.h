@@ -8,7 +8,7 @@
 //Forward declare mesh
 class Mesh;
 class LightingProgram;
-struct BaseLight;
+class DirectionalLight;
 
 // Derived application class that wraps up all globals neatly
 class RenderingProject : public Application
@@ -33,7 +33,7 @@ protected:
 
 	Mesh* pMesh;
 	LightingProgram* pLightingProgram;
-	BaseLight* baseLight;
+	DirectionalLight* directionalLight;
 };
 
 #endif // __RenderingProject_H_
