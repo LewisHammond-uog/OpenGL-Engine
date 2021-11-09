@@ -13,6 +13,7 @@
 
 //Project Includes
 #include "MeshEntry.h"
+#include "Material.h"
 
 //Forward Declare
 struct aiScene; //AssImp Scene
@@ -28,6 +29,8 @@ public:
 	bool LoadMesh(const std::string& a_filePath);
 
 	void Render();
+
+	Material& GetMaterial();
 
 private:
 
@@ -60,6 +63,7 @@ private:
 	//Array of vertecies and textures
 	std::vector<MeshEntry> m_meshes;
 	std::vector<Texture*> m_textures;
+	std::vector<Material> m_materials;
 
 	//Temp Sotrage Space for vertex infomation before being sent to the GPU
 	std::vector<glm::vec3> m_positions;

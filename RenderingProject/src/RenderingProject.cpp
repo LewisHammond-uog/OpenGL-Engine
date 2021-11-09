@@ -9,6 +9,7 @@
 
 #include "Application_Log.h"
 #include "Mesh.h"
+#include "LightingProgram.h"
 
 RenderingProject::RenderingProject()
 {
@@ -49,6 +50,15 @@ bool RenderingProject::onCreate()
 	//Load mesh
 	pMesh = new Mesh();
 	pMesh->LoadMesh("G:/Uni/Github/CT6025 - Graphics Programming/RenderingProject/models/ruinedtank/tank.fbx");
+
+	pLightingProgram = new LightingProgram();
+	pLightingProgram->Initialise();
+	pLightingProgram->UseProgram();
+	pLightingProgram->SetTextureUnit(0);
+
+	baseLight = new BaseLight();
+	baseLight->m_lightIntensity = 2.f;
+	baseLight->m_lightColour = glm::vec3(1.0f, 0.f, 0.f);
 
 	return true;
 }
@@ -101,21 +111,26 @@ void RenderingProject::Draw()
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
-	glUseProgram(m_programID);
+	pLightingProgram->UseProgram();
 
-	int projectionViewUniformLocation = glGetUniformLocation(m_programID, "ProjectionView");
-	glUniformMatrix4fv(projectionViewUniformLocation, 1, false, glm::value_ptr(m_projectionMatrix * viewMatrix));
+	//int projectionViewUniformLocation = glGetUniformLocation(m_programID, "ProjectionView");
+	//glUniformMatrix4fv(projectionViewUniformLocation, 1, false, glm::value_ptr(m_projectionMatrix * viewMatrix));
 
-	int modelMatrixUniformLocation = glGetUniformLocation(m_programID, "ModelMatrix");
-	glUniformMatrix4fv(modelMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4()));
+	//int modelMatrixUniformLocation = glGetUniformLocation(m_programID, "ModelMatrix");
+	//glUniformMatrix4fv(modelMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4()));
 	
+
+	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * glm::mat4();
+	pLightingProgram->SetWorldViewPoint(worldViewProjection);
+	pLightingProgram->SetLight(*baseLight);
+	pLightingProgram->SetMaterial(pMesh->GetMaterial());
+
 
 	pMesh->Render();
 }
 
 void RenderingProject::Destroy()
 {
-
 	Gizmos::destroy();
 }
 

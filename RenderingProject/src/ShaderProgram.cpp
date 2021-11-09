@@ -8,9 +8,7 @@
 ShaderProgram::ShaderProgram() 
 {
 	//Set shader program to be invalid
-	m_glShaderProgramID = -1;
-
-
+	m_glShaderProgramID = static_cast<GLuint>(0);
 }
 
 ShaderProgram::~ShaderProgram() 
@@ -22,7 +20,7 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(m_glShaderProgramID);
 }
 
-bool ShaderProgram::Initalise() 
+bool ShaderProgram::Initialise() 
 {
 	//Create an Open GL Program
 	m_glShaderProgramID = glCreateProgram();
@@ -32,6 +30,8 @@ bool ShaderProgram::Initalise()
 		return false;
 	}
 
+	return true;
+
 	/* General workflow
 	 * - Create Shader Program (done here)
 	 * - Add Shaders
@@ -40,8 +40,13 @@ bool ShaderProgram::Initalise()
 	 */
 }
 
-bool ShaderProgram::CompileProgram(unsigned int a_inputAttributeCount, const char** a_inputAttributes,
-	unsigned int a_outputAttributeCount, const char** a_outputAttributes) {
+void ShaderProgram::UseProgram() const
+{
+	glUseProgram(m_glShaderProgramID);
+}
+
+bool ShaderProgram::CompileProgram() const
+{
 	
 	GLint success = GL_FALSE;
 
@@ -141,7 +146,12 @@ void ShaderProgram::DeleteCachedShaders()
 	}
 
 	//Empty the cached shader list - they are all deleted now
-	m_vLoadedShaders.empty();
+	m_vLoadedShaders.clear();
+}
+
+GLint ShaderProgram::GetUniformLocation(const char* a_uniformName) const
+{
+	return glGetUniformLocation(m_glShaderProgramID, a_uniformName);
 }
 
 void ShaderProgram::LogCompileError(const char* a_errorText) const

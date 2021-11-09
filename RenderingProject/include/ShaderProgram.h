@@ -12,22 +12,23 @@ class ShaderProgram {
 
 public:
 
+	virtual bool Initialise(); //Function to Initialise the shader program
+
+	void UseProgram() const; //Set this to be the active OpenGL Program
+
+protected:
 	//Constructor/Destructor
 	ShaderProgram();
 	virtual ~ShaderProgram(); //Virtual desctructor can be overriden
-
-	virtual bool Initalise(); //Function to initalise the shader program
-
-protected:
 
 	bool AddShader(GLenum a_shaderType, const char* a_filePath);
 	bool CompileProgram() const;
 	void DeleteCachedShaders();
 
 	//Get the location of a given uniform
-	GLint GetUniformLocation(const char* a_UniformName);
+	GLint GetUniformLocation(const char* a_uniformName) const;
 	
-	//Program ID as known by OpenGL
+	//Program ID as known by OpenGL, handle to OpenGL Program
 	GLuint m_glShaderProgramID;
 
 private:

@@ -18,6 +18,7 @@
 #include "Application_Log.h"
 
 //Application Includes
+#include "Material.h"
 #include "Texture.h"
 
 //Macros for defintions of locations of attributes within the shader code
@@ -88,6 +89,21 @@ void Mesh::Render()
 }
 
 /// <summary>
+/// Get the material for the mesh
+/// </summary>
+/// <returns></returns>
+Material& Mesh::GetMaterial()
+{
+	for(unsigned int i = 0; i < m_materials.size(); i++)
+	{
+		if(m_materials[i].m_ambientColour != glm::vec3(0,0,0))
+		{
+			return m_materials[i];
+		}
+	}
+}
+
+/// <summary>
 /// Load a scene from AssImp in to a mesh
 /// </summary>
 /// <param name="a_pScene">Loaded AssImp Scene</param>
@@ -104,6 +120,7 @@ bool Mesh::InitFromScene(const aiScene* a_pScene, const std::string& a_filePath)
 	//Set the size of our arrays to load the scene
 	m_meshes.resize(a_pScene->mNumMeshes);
 	m_textures.resize(a_pScene->mNumMaterials);
+	m_materials.resize(a_pScene->mNumMaterials);
 
 	unsigned int numVerts = 0;
 	unsigned int numIndices = 0;
@@ -218,6 +235,16 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 				}
 			}
 		}
+
+		//Get if the Material has a ambient lighting attribute
+		aiColor3D ambientColour = aiColor3D(0.0f, 0.0f, 0.0f);
+		if(pMaterial->Get(AI_MATKEY_COLOR_AMBIENT, ambientColour) == AI_SUCCESS)
+		{
+			m_materials[i].m_ambientColour.r = ambientColour.r;
+			m_materials[i].m_ambientColour.g = ambientColour.g;
+			m_materials[i].m_ambientColour.b = ambientColour.b;
+		}
+
 	}
 
 	return success;

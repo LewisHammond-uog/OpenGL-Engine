@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Shader Programs">
+      <UniqueIdentifier>{e2ec58b6-95b5-4451-b92f-5c17f78fddd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lighting Programs">
+      <UniqueIdentifier>{5a5c9d8f-fe6c-4c77-8c23-34100b239844}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\RenderingProject.h">
@@ -33,6 +39,12 @@
     <ClInclude Include="include\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\LightingProgram.h">
+      <Filter>Header Files\Shader Programs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -50,12 +62,21 @@
     <ClCompile Include="src\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\LightingProgram.cpp">
+      <Filter>Source Files\Lighting Programs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="shaders\vertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\lighting_fragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\lighting_vertex.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

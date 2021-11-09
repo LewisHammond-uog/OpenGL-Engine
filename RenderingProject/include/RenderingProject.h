@@ -4,8 +4,11 @@
 #include "Application.h"
 #include <glm/glm.hpp>
 
+
 //Forward declare mesh
 class Mesh;
+class LightingProgram;
+struct BaseLight;
 
 // Derived application class that wraps up all globals neatly
 class RenderingProject : public Application
@@ -29,6 +32,8 @@ protected:
 	unsigned int m_programID;
 
 	Mesh* pMesh;
+	LightingProgram* pLightingProgram;
+	BaseLight* baseLight;
 };
 
 #endif // __RenderingProject_H_

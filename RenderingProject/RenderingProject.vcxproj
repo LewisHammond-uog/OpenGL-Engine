@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\LightingProgram.h" />
     <ClInclude Include="include\Macros.h" />
+    <ClInclude Include="include\Material.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshEntry.h" />
@@ -20,12 +22,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Mesh.cpp" />
+    <ClCompile Include="src\LightingProgram.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderingProject.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\lighting_fragment.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\lighting_vertex.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="shaders\vertex.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
@@ -87,7 +96,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>framework.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>NotSet</SubSystem>
     </Link>
     <PreBuildEvent>
       <Command>
