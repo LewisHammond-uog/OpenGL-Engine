@@ -21,8 +21,7 @@ public:
 protected:
 
 	bool AddShader(GLenum a_shaderType, const char* a_filePath);
-	bool CompileProgram(unsigned int a_inputAttributeCount, const char** a_inputAttributes,
-						unsigned int a_outputAttributeCount, const char** a_outputAttributes);
+	bool CompileProgram() const;
 	void DeleteCachedShaders();
 
 	//Get the location of a given uniform
