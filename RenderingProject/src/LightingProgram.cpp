@@ -48,7 +48,6 @@ bool LightingProgram::Initialise()
 	//Camera Uniform Locations
 	m_cameraPositionLocation = GetUniformLocation("uCameraLocalPos");
 
-
 	return true;
 }
 
@@ -72,7 +71,7 @@ void LightingProgram::SetDiffuseTextureUnit(const unsigned int a_textureUnit) co
 /// <param name="a_textureUnit"></param>
 void LightingProgram::SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const
 {
-	glUniform1i(m_diffuseSamplerLocation, a_textureUnit);
+	glUniform1i(m_specularSamplerLocation, a_textureUnit);
 }
 
 void LightingProgram::SetDirectionalLight(const DirectionalLight& a_light)

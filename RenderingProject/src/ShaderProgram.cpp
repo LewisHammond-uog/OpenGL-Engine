@@ -47,16 +47,7 @@ void ShaderProgram::UseProgram() const
 
 bool ShaderProgram::CompileProgram() const
 {
-	
 	GLint success = GL_FALSE;
-
-	// specify vertex input attributes
-	//for (unsigned int i = 0; i < a_inputAttributeCount; ++i)
-	//	glBindAttribLocation(m_glShaderProgramID, i, a_inputAttributes[i]);
-
-	// specify fragment shader outputs
-	//for (unsigned int i = 0; i < a_outputAttributeCount; ++i)
-	//	glBindFragDataLocation(m_glShaderProgramID, i, a_outputAttributes[i]);
 
 	//Link program together
 	glLinkProgram(m_glShaderProgramID);
