@@ -173,11 +173,10 @@ unsigned char* Utility::fileToBuffer(const char* a_sPath)
 	FILE* pFile = fopen(a_sPath,"rb");
 	if (pFile == nullptr)
 	{
-		Application_Log* log = Application_Log::Create();
+		Application_Log* log = Application_Log::Get();
 		if (log != nullptr)
 		{
-
-			log->addLog(LOG_LEVEL::LOG_ERROR, "Error: Unable to open file '%s' for reading : %s", a_sPath);
+			log->addLog(LOG_LEVEL::LOG_ERROR, "Error: Unable to open file for reading : %s", a_sPath);
 		}
 		//printf("Error: Unable to open file '%s' for reading!\n",a_sPath);
 		return nullptr;

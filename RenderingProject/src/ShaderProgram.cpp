@@ -87,6 +87,12 @@ bool ShaderProgram::AddShader(const GLenum a_shaderType, const char* a_filePath)
 
 	//Load shader from file and create a shader
 	unsigned char* shaderSource = Utility::fileToBuffer(a_filePath);
+	if(shaderSource == nullptr)
+	{
+		LogCompileError("Unable to Read Shader Source from File");
+		return false;
+	}
+
 	unsigned int shaderHandle = glCreateShader(a_shaderType);
 
 	//Compile Shader
