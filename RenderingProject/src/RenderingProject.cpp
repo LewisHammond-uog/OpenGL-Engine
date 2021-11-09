@@ -46,8 +46,8 @@ bool RenderingProject::onCreate()
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
 	pLightingProgram->UseProgram();
-	pLightingProgram->SetDiffuseTextureUnit(0);
-	pLightingProgram->SetSpecularPowerTextureUnit(1);
+	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
+	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 
 
 	directionalLight = new DirectionalLight();

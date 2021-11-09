@@ -71,13 +71,13 @@ void Mesh::Render()
 		//Bind texture if we have one
 		if (m_materials[matIndex].m_pDiffuseTexture)
 		{
-			m_materials[matIndex].m_pDiffuseTexture->Bind(COLOUR_TEXTURE_UNIT); //todo remove magic number
+			m_materials[matIndex].m_pDiffuseTexture->Bind(COLOUR_TEXTURE_UNIT);
 		}
 
 		//Bind a specular texture if we have one
 		if (m_materials[matIndex].m_pSpecularTexture)
 		{
-			m_materials[matIndex].m_pSpecularTexture->Bind(SPECULAR_POWER_TEXTURE_UNIT); //todo remove magic number
+			m_materials[matIndex].m_pSpecularTexture->Bind(SPECULAR_POWER_TEXTURE_UNIT);
 		}
 
 		//Do the draw!
