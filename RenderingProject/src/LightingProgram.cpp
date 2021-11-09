@@ -34,28 +34,45 @@ bool LightingProgram::Initialise()
 
 	//Get Uniform Locations
 	m_worldViewPointLocation = GetUniformLocation("uWorldViewPoint");
-	m_samplerLocation = GetUniformLocation("uSampler");
+	m_diffuseSamplerLocation = GetUniformLocation("uDiffuseSampler");
+	m_specularSamplerLocation = GetUniformLocation("uSpecularSampler");
 	//Shader Material Uniform Locations
 	materialLocation.ambientColour = GetUniformLocation("uMaterial.AmbientColour");
 	materialLocation.diffuseColour = GetUniformLocation("uMaterial.DiffuseColour");
+	materialLocation.specularColour = GetUniformLocation("uMaterial.SpecularColour");
 	//Shader Light Uniform Locations
 	dirLightLocation.colour = GetUniformLocation("uDirectionalLight.Colour");
 	dirLightLocation.ambientIntensity = GetUniformLocation("uDirectionalLight.AmbientIntensity");
 	dirLightLocation.direction = GetUniformLocation("uDirectionalLight.Direction");
 	dirLightLocation.diffuseIntensity = GetUniformLocation("uDirectionalLight.DiffuseIntensity");
+	//Camera Uniform Locations
+	m_cameraPositionLocation = GetUniformLocation("uCameraLocalPos");
 
 
 	return true;
 }
 
-void LightingProgram::SetWorldViewPoint(const glm::mat4 a_worldViewPoint)
+void LightingProgram::SetWorldViewPoint(const glm::mat4 a_worldViewPoint) const
 {
 	glUniformMatrix4fv(m_worldViewPointLocation, 1, GL_FALSE, glm::value_ptr(a_worldViewPoint));
 }
 
-void LightingProgram::SetTextureUnit(const unsigned int a_textureUnit)
+/// <summary>
+/// Set the texture unit to use for diffuse colour
+/// </summary>
+/// <param name="a_textureUnit"></param>
+void LightingProgram::SetDiffuseTextureUnit(const unsigned int a_textureUnit) const
 {
-	glUniform1i(m_samplerLocation, a_textureUnit);
+	glUniform1i(m_diffuseSamplerLocation, a_textureUnit);
+}
+
+/// <summary>
+/// Set the texture unit to use for the specular power
+/// </summary>
+/// <param name="a_textureUnit"></param>
+void LightingProgram::SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const
+{
+	glUniform1i(m_diffuseSamplerLocation, a_textureUnit);
 }
 
 void LightingProgram::SetDirectionalLight(const DirectionalLight& a_light)
@@ -67,6 +84,15 @@ void LightingProgram::SetDirectionalLight(const DirectionalLight& a_light)
 	glUniform1f(dirLightLocation.diffuseIntensity, a_light.m_diffuseIntensity);
 }
 
+/// <summary>
+/// Set the local position of the camera in the lighting shader
+/// </summary>
+/// <param name="a_cameraLocalPosition"></param>
+void LightingProgram::SetCameraLocalPos(const glm::vec3& a_cameraLocalPosition) const
+{
+	glUniform3fv(m_cameraPositionLocation, 1, glm::value_ptr(a_cameraLocalPosition));
+}
+
 /*
 void LightingProgram::SetLight(const BaseLight& a_light)
 {
@@ -75,8 +101,9 @@ void LightingProgram::SetLight(const BaseLight& a_light)
 }
 */
 
-void LightingProgram::SetMaterial(const Material& a_material)
+void LightingProgram::SetMaterial(const Material& a_material) const
 {
 	glUniform3f(materialLocation.ambientColour, a_material.m_ambientColour.r, a_material.m_ambientColour.g, a_material.m_ambientColour.b);
 	glUniform3f(materialLocation.diffuseColour, a_material.m_diffuseColour.r, a_material.m_diffuseColour.g, a_material.m_diffuseColour.b);
+	glUniform3f(materialLocation.specularColour, a_material.m_specularColour.r, a_material.m_specularColour.g, a_material.m_specularColour.b);
 }

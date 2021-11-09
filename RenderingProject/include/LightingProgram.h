@@ -15,24 +15,26 @@ public:
 	LightingProgram() = default;
 	bool Initialise() override;
 
-	void SetWorldViewPoint(const glm::mat4 a_worldViewPoint);
-	void SetTextureUnit(const unsigned int a_textureUnit);
+	void SetWorldViewPoint(const glm::mat4 a_worldViewPoint) const;
+	void SetDiffuseTextureUnit(const unsigned int a_textureUnit) const;
+	void SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const;
 	void SetDirectionalLight(const DirectionalLight& a_light);
-	void SetMaterial(const Material& a_material);
+	void SetCameraLocalPos(const glm::vec3& a_cameraLocalPosition) const;
+	void SetMaterial(const Material& a_material) const;
 
 private:
 
-	GLint m_worldViewPointLocation;
-	GLint m_samplerLocation;
-	GLint m_lightColourLocation;
-	GLint m_lightAmbitentIntensityLocation;
-	GLint m_materialAmbientColourLocation;
+	GLint m_worldViewPointLocation; //Uniform Location for WVP Matrix
+	GLint m_diffuseSamplerLocation; //Uniform Location for the diffuse texture sampler
+	GLint m_specularSamplerLocation; //Uniform location for the specular power texture sampler
+	GLint m_cameraPositionLocation; //Uniform location for the camera location
 
 	//-- Structs for use in Shader --//
 	struct ShaderMaterialUnifomLocations
 	{
 		GLuint ambientColour;
 		GLuint diffuseColour;
+		GLuint specularColour;
 	} materialLocation;
 
 	struct ShaderLightUniformLocations

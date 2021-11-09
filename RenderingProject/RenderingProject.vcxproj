@@ -27,6 +27,7 @@
     <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\LightingProgram.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\RenderingProject.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Texture.cpp" />
