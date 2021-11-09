@@ -11,7 +11,6 @@
 #include "Mesh.h"
 #include "LightingProgram.h"
 #include "DirectionalLight.h"
-#include "Macros.h"
 
 RenderingProject::RenderingProject()
 {
@@ -56,8 +55,7 @@ bool RenderingProject::onCreate()
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
 	pLightingProgram->UseProgram();
-	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
-	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
+	pLightingProgram->SetTextureUnit(0);
 
 	directionalLight = new DirectionalLight();
 	directionalLight->m_ambientIntensity = 0.1f;
@@ -126,11 +124,6 @@ void RenderingProject::Draw()
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
 	pLightingProgram->SetDirectionalLight(*directionalLight);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
-
-	glm::mat4 cameraToLocalTransformation = -modelWorldTransform;
-	glm::vec4 cameraWorldPos = m_cameraMatrix[3];
-	glm::vec3 cameraLocalPos = cameraToLocalTransformation * cameraWorldPos;
-	pLightingProgram->SetCameraLocalPos(cameraLocalPos);
 
 
 	pMesh->Render();

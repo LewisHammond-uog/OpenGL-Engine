@@ -18,10 +18,7 @@
 //Forward Declare
 struct aiScene; //AssImp Scene
 struct aiMesh; //AssImp Mesh
-class aiMaterial; //AssImp Material
-enum aiTextureType; //AssImp Texture Type
 class Texture; //Project Texture (Texture.h)
-
 
 class Mesh
 {
@@ -42,18 +39,11 @@ private:
 	void InitSingleMesh(const aiMesh* a_pMesh);
 	bool InitMaterials(const aiScene* a_pScene, const std::string& a_filePath);
 
-	bool LoadDiffuseTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, int a_index);
-	bool LoadSpecularTexture(std::string a_directory, const aiMaterial* a_assimpMaterial, int a_index);
-	void LoadColours(const aiMaterial* a_pMaterial, int a_index);
-	Texture* LoadTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, const aiTextureType a_textureType);
-
 	void PopulateOpenGLBuffers();
 
 	void CountVertsAndIndices(const aiScene* pScene, unsigned int& a_numVerts, unsigned int& a_numIndices);
 
 	void ReserveSpaceInCPUBuffers(const unsigned int a_numVerts, const unsigned int a_numIndices);
-
-	std::string GetDirectoryFromPath(const std::string& a_filePath);
 
 	unsigned int m_VAO; //Vertex Array Object
 
@@ -72,6 +62,7 @@ private:
 
 	//Array of vertecies and textures
 	std::vector<MeshEntry> m_meshes;
+	std::vector<Texture*> m_textures;
 	std::vector<Material> m_materials;
 
 	//Temp Sotrage Space for vertex infomation before being sent to the GPU
