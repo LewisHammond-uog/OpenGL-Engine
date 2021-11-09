@@ -9,4 +9,11 @@
 //                      Make Everything Triangles| Smooth Normals             | Join Identical Verts - save memory
 #define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices)
 
+
+//Defines for texture units used for rendering
+#define COLOUR_TEXTURE_UNIT GL_TEXTURE0
+#define COLOUR_TEXTURE_INDEX 0
+#define SPECULAR_POWER_TEXTURE_UNIT GL_TEXTURE1
+#define SPECULAR_POWER_TEXTURE_INDEX 1
+
 #endif

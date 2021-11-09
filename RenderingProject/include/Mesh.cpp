@@ -69,10 +69,15 @@ void Mesh::Render()
 		const unsigned int matIndex = m_meshes[i].MaterialIndex;
 
 		//Bind texture if we have one
-		if(m_textures[matIndex])
+		if (m_materials[matIndex].m_pDiffuseTexture)
 		{
-			m_textures[matIndex]->Bind(GL_TEXTURE0); //todo remove magic number
-			
+			m_materials[matIndex].m_pDiffuseTexture->Bind(COLOUR_TEXTURE_UNIT);
+		}
+
+		//Bind a specular texture if we have one
+		if (m_materials[matIndex].m_pSpecularTexture)
+		{
+			m_materials[matIndex].m_pSpecularTexture->Bind(SPECULAR_POWER_TEXTURE_UNIT);
 		}
 
 		//Do the draw!
@@ -119,7 +124,6 @@ bool Mesh::InitFromScene(const aiScene* a_pScene, const std::string& a_filePath)
 
 	//Set the size of our arrays to load the scene
 	m_meshes.resize(a_pScene->mNumMeshes);
-	m_textures.resize(a_pScene->mNumMaterials);
 	m_materials.resize(a_pScene->mNumMaterials);
 
 	unsigned int numVerts = 0;
@@ -185,56 +189,21 @@ void Mesh::InitSingleMesh(const aiMesh* a_pMesh)
 /// <returns></returns>
 bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 {
-	//Textures are stored in the same direcory - extract the directory from the file path
-	std::string::size_type slashIndex = a_filePath.find_last_of("/");
-	std::string directory;
-
-	if(slashIndex == std::string::npos)
-	{
-		directory = ".";
-	}else if(slashIndex == 0)
-	{
-		directory = "/";
-	}else
-	{
-		directory = a_filePath.substr(0, slashIndex);
-	}
-
 	bool success = true;
+	const std::string directory = GetDirectoryFromPath(a_filePath);
 
 	//Init the materials
 	for(unsigned int i = 0; i < a_pScene->mNumMaterials; i++)
 	{
 		const aiMaterial* pMaterial = a_pScene->mMaterials[i];
-		m_textures[i] = nullptr;
 
-		//Check if we have a diffuse texture
-		if(pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+		if(!LoadDiffuseTexture(directory, pMaterial, static_cast<int>(i)))
 		{
-			
-			//Load the texture in to path
-			aiString path;
-			if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-			{
-				//construct the full path of the texutre file
-				std::string p = path.data;
-				if(p.substr(0,2) == ".\\")
-				{
-					p = p.substr(2, p.size() - 2);
-				}
-				std::string fullFilePath = directory + "/" + p;
-
-				//Load textures
-				m_textures[i] = new Texture(GL_TEXTURE_2D, fullFilePath.c_str());
-				if(!m_textures[i]->Load())
-				{
-					//If failed to load then delete and exit out
-					delete m_textures[i];
-					m_textures[i] = nullptr;
-					success = false;
-				}
-			}
+			return false;
 		}
+
+		LoadSpecularTexture(directory, pMaterial, static_cast<int>(i));
+
 
 		//Get if the Material has a ambient lighting attribute
 		aiColor3D ambientColour = aiColor3D(0.0f, 0.0f, 0.0f);
@@ -257,6 +226,60 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 	}
 
 	return success;
+
+}
+
+/// <summary>
+/// Load a diffuse texture from the diretory and save it in to material
+/// </summary>
+/// <param name="a_directory">Directory of the Textures</param>
+/// <param name="a_assimpMaterial">Assimp Material to read textures from</param>
+/// <param name="a_index">Index of Material to Load</param>
+bool Mesh::LoadDiffuseTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, const int a_index)
+{
+	m_materials[a_index].m_pDiffuseTexture = LoadTexture(a_directory, a_assimpMaterial, aiTextureType_DIFFUSE);
+	return m_materials[a_index].m_pDiffuseTexture != nullptr ? true : false;
+}
+
+bool Mesh::LoadSpecularTexture(std::string a_directory, const aiMaterial* a_assimpMaterial, int a_index)
+{
+	m_materials[a_index].m_pSpecularTexture = LoadTexture(a_directory, a_assimpMaterial, aiTextureType_SHININESS);
+	return m_materials[a_index].m_pSpecularTexture != nullptr ? true : false;
+}
+
+/// <summary>
+/// Load colours (for lighting) from the AssImp Material 
+/// </summary>
+/// <param name="a_pMaterial"></param>
+/// <param name="a_index"></param>
+void Mesh::LoadColours(const aiMaterial* a_pMaterial, const int a_index)
+{
+	//Get if the Material has a ambient lighting attribute
+	aiColor3D ambientColour = aiColor3D(0.0f, 0.0f, 0.0f);
+	if (a_pMaterial->Get(AI_MATKEY_COLOR_AMBIENT, ambientColour) == AI_SUCCESS)
+	{
+		m_materials[a_index].m_ambientColour.r = ambientColour.r;
+		m_materials[a_index].m_ambientColour.g = ambientColour.g;
+		m_materials[a_index].m_ambientColour.b = ambientColour.b;
+	}
+
+	//Get if the Material has a diffuse colour attribute
+	aiColor3D diffuseColour = aiColor3D(0.0f, 0.0f, 0.0f);
+	if (a_pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColour) == AI_SUCCESS)
+	{
+		m_materials[a_index].m_diffuseColour.r = diffuseColour.r;
+		m_materials[a_index].m_diffuseColour.g = diffuseColour.g;
+		m_materials[a_index].m_diffuseColour.b = diffuseColour.b;
+	}
+
+	//Get if the Material has a specular colour attribute
+	aiColor3D specularColour = aiColor3D(0.0f, 0.0f, 0.0f);
+	if (a_pMaterial->Get(AI_MATKEY_COLOR_SPECULAR, specularColour) == AI_SUCCESS)
+	{
+		m_materials[a_index].m_specularColour.r = specularColour.r;
+		m_materials[a_index].m_specularColour.g = specularColour.g;
+		m_materials[a_index].m_specularColour.b = specularColour.b;
+	}
 
 }
 
@@ -295,6 +318,77 @@ void Mesh::ReserveSpaceInCPUBuffers(const unsigned a_numVerts, const unsigned a_
 	m_normals.reserve(a_numVerts);
 	m_texCoords.reserve(a_numVerts);
 	m_indicies.reserve(a_numIndices);
+}
+
+/// <summary>
+/// Get the directory from a given file path
+/// </summary>
+/// <param name="a_filePath">File path</param>
+/// <returns></returns>
+std::string Mesh::GetDirectoryFromPath(const std::string& a_filePath)
+{
+	//Textures are stored in the same direcory - extract the directory from the file path
+	std::string::size_type slashIndex = a_filePath.find_last_of("/");
+	std::string directory;
+
+	if (slashIndex == std::string::npos)
+	{
+		directory = ".";
+	}
+	else if (slashIndex == 0)
+	{
+		directory = "/";
+	}
+	else
+	{
+		directory = a_filePath.substr(0, slashIndex);
+	}
+
+	return directory;
+}
+
+/// <summary>
+/// Load a texture a given texture type from a directory and material
+/// </summary>
+/// <param name="a_directory">Directory of the Texture</param>
+/// <param name="a_assimpMaterial">Assimp Material to load texture from</param>
+/// <param name="a_textureType">Type of Texture to load</param>
+/// <returns></returns>
+Texture* Mesh::LoadTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial,
+	const aiTextureType a_textureType)
+{
+	//Texture to return, default to nullptr if we cannot load one
+	Texture* retTexture = nullptr;
+
+	//Check if we have a diffuse texture
+	if (a_assimpMaterial->GetTextureCount(a_textureType) > 0)
+	{
+
+		//Load the texture in to path
+		aiString path;
+		if (a_assimpMaterial->GetTexture(a_textureType, 0, &path) == AI_SUCCESS)
+		{
+			//construct the full path of the texutre file
+			std::string p = path.data;
+			if (p.substr(0, 2) == ".\\")
+			{
+				p = p.substr(2, p.size() - 2);
+			}
+
+			const std::string fullFilePath = a_directory + "/" + p;
+
+			//Load textures
+			retTexture = new Texture(GL_TEXTURE_2D, fullFilePath);
+			if (!retTexture->Load())
+			{
+				//If failed to load then delete and exit out
+				delete retTexture;
+				retTexture = nullptr;
+			}
+		}
+	}
+
+	return retTexture;
 }
 
 /// <summary>

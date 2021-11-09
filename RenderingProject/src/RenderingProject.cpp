@@ -11,6 +11,7 @@
 #include "Mesh.h"
 #include "LightingProgram.h"
 #include "DirectionalLight.h"
+#include "Macros.h"
 
 RenderingProject::RenderingProject()
 {
@@ -38,16 +39,6 @@ bool RenderingProject::onCreate()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	//Load in and link shaders
-	unsigned int m_vertexShaderID = Utility::loadShader("../shaders/vertex.glsl", GL_VERTEX_SHADER);
-	unsigned int m_fragmentShaderID = Utility::loadShader("../shaders/fragment.glsl", GL_FRAGMENT_SHADER);
-	//Vertex Inputs/Outputs
-	//const char* szInputs[] = { "Position", "TexCoord", "Colour", "Normal"  };
-	//const char* szOutputs[] = { "fragColour" };
-
-	//Link shaders
-	m_programID = Utility::createProgram(m_vertexShaderID, 0, 0, 0, m_fragmentShaderID, 0, nullptr, 0, nullptr);
-
 	//Load mesh
 	pMesh = new Mesh();
 	pMesh->LoadMesh("G:/Uni/Github/CT6025 - Graphics Programming/RenderingProject/models/ruinedtank/tank.fbx");
@@ -55,7 +46,9 @@ bool RenderingProject::onCreate()
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
 	pLightingProgram->UseProgram();
-	pLightingProgram->SetTextureUnit(0);
+	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
+	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
+
 
 	directionalLight = new DirectionalLight();
 	directionalLight->m_ambientIntensity = 0.1f;
@@ -124,6 +117,11 @@ void RenderingProject::Draw()
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
 	pLightingProgram->SetDirectionalLight(*directionalLight);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
+
+	glm::mat4 cameraToLocalTransformation = -modelWorldTransform;
+	glm::vec4 cameraWorldPos = m_cameraMatrix[3];
+	glm::vec3 cameraLocalPos = cameraToLocalTransformation * cameraWorldPos;
+	pLightingProgram->SetCameraLocalPos(cameraLocalPos);
 
 
 	pMesh->Render();
