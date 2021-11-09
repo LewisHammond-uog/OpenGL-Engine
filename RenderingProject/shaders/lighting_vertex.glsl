@@ -6,6 +6,7 @@ layout (location = 2) in vec3 Normal;
 
 out vec2 vTexCoord;
 out vec3 vNormal;
+out vec3 vLocalPos; //Position in Local Space
 
 uniform mat4 uWorldViewPoint;
 
@@ -13,5 +14,6 @@ uniform mat4 uWorldViewPoint;
 void main(){
 	vTexCoord = TexCoord;
 	vNormal = Normal;
+	vLocalPos = Position.xyz;
 	gl_Position = uWorldViewPoint * vec4(Position.xyz, 1.0);
 }
