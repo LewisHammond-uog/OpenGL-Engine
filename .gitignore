@@ -407,6 +407,4 @@ FodyWeavers.xsd
 
 #Build State files
 *.idb
-
-#GLFW
-!glfw3.lib
+lib/framework.lib
