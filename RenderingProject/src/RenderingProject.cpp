@@ -53,7 +53,9 @@ bool RenderingProject::onCreate()
 	directionalLight = new DirectionalLight();
 	directionalLight->m_ambientIntensity = 0.1f;
 	directionalLight->m_diffuseIntensity = 1.f;
-	directionalLight->m_worldDirection = glm::vec3(1.0f, 0.f, 0.f);
+	directionalLight->m_worldDirection = glm::vec3(0.0f, 0.f, 1.f);
+
+	glUseProgram(0);
 
 	return true;
 }
@@ -106,7 +108,6 @@ void RenderingProject::Draw()
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
-
 	glm::mat4 modelWorldTransform = glm::mat4();
 
 	pLightingProgram->UseProgram();
@@ -125,6 +126,7 @@ void RenderingProject::Draw()
 
 
 	pMesh->Render();
+	glUseProgram(0);
 }
 
 void RenderingProject::Destroy()
