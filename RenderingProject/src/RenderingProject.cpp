@@ -41,7 +41,7 @@ bool RenderingProject::onCreate()
 
 	//Load mesh
 	pMesh = new Mesh();
-	pMesh->LoadMesh("G:/Uni/Github/CT6025 - Graphics Programming/RenderingProject/models/ruinedtank/tank.fbx");
+	pMesh->LoadMesh("../models/ruinedtank/tank.fbx");
 
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
