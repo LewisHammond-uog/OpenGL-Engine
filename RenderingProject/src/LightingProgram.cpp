@@ -1,11 +1,15 @@
 #include "LightingProgram.h"
+#include "Macros.h"
 
-#include "Material.h"
-#include "BaseLight.h"
-
+//GLM Includes
 #include <glm/gtc/type_ptr.hpp>
 
+//Project Includes
+#include "Material.h"
+#include "BaseLight.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
+
 
 bool LightingProgram::Initialise()
 {
@@ -41,14 +45,59 @@ bool LightingProgram::Initialise()
 	materialLocation.diffuseColour = GetUniformLocation("uMaterial.DiffuseColour");
 	materialLocation.specularColour = GetUniformLocation("uMaterial.SpecularColour");
 	//Shader Light Uniform Locations
-	dirLightLocation.colour = GetUniformLocation("uDirectionalLight.Colour");
-	dirLightLocation.ambientIntensity = GetUniformLocation("uDirectionalLight.AmbientIntensity");
+	dirLightLocation.colour = GetUniformLocation("uDirectionalLight.base.Colour");
+	dirLightLocation.ambientIntensity = GetUniformLocation("uDirectionalLight.base.AmbientIntensity");
 	dirLightLocation.direction = GetUniformLocation("uDirectionalLight.Direction");
-	dirLightLocation.diffuseIntensity = GetUniformLocation("uDirectionalLight.DiffuseIntensity");
+	dirLightLocation.diffuseIntensity = GetUniformLocation("uDirectionalLight.base.DiffuseIntensity");
+	//Point Light Numbers
+	m_numPointLightsLocation = GetUniformLocation("uPointLightCount");
 	//Camera Uniform Locations
 	m_cameraPositionLocation = GetUniformLocation("uCameraLocalPos");
 
+	InitalizePointLightUniformLocations();
+
 	return true;
+}
+
+/// <summary>
+/// Initalize the locations of point light uniforms
+/// </summary>
+void LightingProgram::InitalizePointLightUniformLocations()
+{
+	//Loop all of the point lights
+	//Generate the name of the uniform using the index of the current point light
+	for(int i =0; i < ARRAY_SIZE_IN_ELEMENTS(pointLightsLocation); i++)
+	{
+		char name[128] = {};
+
+		//Position
+		_snprintf(name, sizeof(name), "uPointLights[%d].localPos", i);
+		pointLightsLocation[i].position = GetUniformLocation(name);
+
+		//Colour
+		_snprintf(name, sizeof(name), "uPointLights[%d].base.Colour", i);
+		pointLightsLocation[i].colour = GetUniformLocation(name);
+
+		//Ambient Intenstity
+		_snprintf(name, sizeof(name), "uPointLights[%d].base.AmbientIntensity", i);
+		pointLightsLocation[i].ambientIntensity = GetUniformLocation(name);
+
+		//Diffuse Intensity
+		_snprintf(name, sizeof(name), "uPointLights[%d].base.DiffuseIntensity", i);
+		pointLightsLocation[i].diffuseIntensity = GetUniformLocation(name);
+
+		//Constant attenuation
+		_snprintf(name, sizeof(name), "uPointLights[%d].atten.constant", i);
+		pointLightsLocation[i].attenuation.constant = GetUniformLocation(name);
+
+		//Linear attenuation
+		_snprintf(name, sizeof(name), "uPointLights[%d].atten.linear", i);
+		pointLightsLocation[i].attenuation.linear = GetUniformLocation(name);
+
+		//Exponential attenuation
+		_snprintf(name, sizeof(name), "uPointLights[%d].atten.exponential", i);
+		pointLightsLocation[i].attenuation.exponential = GetUniformLocation(name);
+	}
 }
 
 void LightingProgram::SetWorldViewPoint(const glm::mat4 a_worldViewPoint) const
@@ -83,6 +132,26 @@ void LightingProgram::SetDirectionalLight(const DirectionalLight& a_light)
 	glUniform1f(dirLightLocation.diffuseIntensity, a_light.m_diffuseIntensity);
 }
 
+void LightingProgram::SetPointLights(unsigned a_numLights, const PointLight* a_pLights)
+{
+	//Set number of lights
+	glUniform1i(m_numPointLightsLocation, a_numLights);
+
+	//Loop all of the lights and set their properties
+	for(unsigned int i = 0; i < a_numLights; i++)
+	{
+		glUniform3f(pointLightsLocation[i].colour, a_pLights->m_lightColour.r, a_pLights->m_lightColour.g, a_pLights->m_lightColour.b); //Colour
+		glUniform1f(pointLightsLocation[i].ambientIntensity, a_pLights->m_ambientIntensity); //Ambient Intensity
+		glUniform1f(pointLightsLocation[i].diffuseIntensity, a_pLights->m_diffuseIntensity); //Diffuse Intensity
+		//const glm::vec3 localPos = a_pLights[i].GetLocalPosition();
+		const glm::vec3 localPos = a_pLights[i].m_worldPosition;
+		glUniform3fv(pointLightsLocation[i].position, 1, glm::value_ptr(localPos)); //Light Local Position
+		glUniform1f(pointLightsLocation[i].attenuation.constant, a_pLights->m_attenuation.m_constant); //Constant Attenuation
+		glUniform1f(pointLightsLocation[i].attenuation.linear, a_pLights->m_attenuation.m_linear); //Linear Attenuation
+		glUniform1f(pointLightsLocation[i].attenuation.exponential, a_pLights->m_attenuation.m_exponential); //Exponential Attenuation
+	}
+}
+
 /// <summary>
 /// Set the local position of the camera in the lighting shader
 /// </summary>
@@ -106,3 +175,5 @@ void LightingProgram::SetMaterial(const Material& a_material) const
 	glUniform3f(materialLocation.diffuseColour, a_material.m_diffuseColour.r, a_material.m_diffuseColour.g, a_material.m_diffuseColour.b);
 	glUniform3f(materialLocation.specularColour, a_material.m_specularColour.r, a_material.m_specularColour.g, a_material.m_specularColour.b);
 }
+
+

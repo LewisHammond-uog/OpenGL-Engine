@@ -8,7 +8,6 @@ class DirectionalLight : public BaseLight
 public:
 	//Direction of the light in world space
 	glm::vec3 m_worldDirection = glm::vec3(0.f, 0.f, 0.f);
-	float m_diffuseIntensity = 0.f;
 
 	void CalculateLocalDirection(const glm::mat4& a_world);
 

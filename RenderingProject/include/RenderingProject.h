@@ -9,6 +9,7 @@
 class Mesh;
 class LightingProgram;
 class DirectionalLight;
+class PointLight;
 
 // Derived application class that wraps up all globals neatly
 class RenderingProject : public Application
@@ -33,7 +34,8 @@ protected:
 
 	Mesh* pMesh;
 	LightingProgram* pLightingProgram;
-	DirectionalLight* directionalLight;
+	//DirectionalLight* directionalLight;
+	PointLight* pointLights[2];
 };
 
 #endif // __RenderingProject_H_

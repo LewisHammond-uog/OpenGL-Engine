@@ -12,6 +12,8 @@
 #include "LightingProgram.h"
 #include "DirectionalLight.h"
 #include "Macros.h"
+#include "PointLight.h"
+#include "WorldTransform.h"
 
 RenderingProject::RenderingProject()
 {
@@ -50,10 +52,18 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 
 
-	directionalLight = new DirectionalLight();
-	directionalLight->m_ambientIntensity = 0.1f;
-	directionalLight->m_diffuseIntensity = 1.f;
-	directionalLight->m_worldDirection = glm::vec3(1.0f, 0.f, 0.f);
+	pointLights[0] = new PointLight();
+	pointLights[0]->m_worldPosition = glm::vec3(0, 10, 0);
+	pointLights[0]->m_diffuseIntensity = 0.0f;
+	pointLights[0]->m_ambientIntensity = 1.0f;
+	pointLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
+	pointLights[0]->m_attenuation.m_linear = 0.2f;
+	pointLights[0]->m_attenuation.m_exponential = 0.0f;
+
+	//directionalLight = new DirectionalLight();
+	//directionalLight->m_ambientIntensity = 0.1f;
+	//directionalLight->m_diffuseIntensity = 1.f;
+	//directionalLight->m_worldDirection = glm::vec3(1.0f, 0.f, 0.f);
 
 	return true;
 }
@@ -65,6 +75,8 @@ void RenderingProject::Update(float a_deltaTime)
 
 	// clear all gizmos from last frame
 	Gizmos::clear();
+	
+	Gizmos::addBox(pointLights[0]->m_worldPosition, glm::vec3(1.f), true);
 	
 	// add an identity matrix gizmo
 	Gizmos::addTransform( glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1) );
@@ -78,6 +90,13 @@ void RenderingProject::Update(float a_deltaTime)
 						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
 	}
 
+	if(glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	{
+		pointLights[0]->m_worldPosition = pointLights[0]->m_worldPosition + glm::vec3(0.0, 0.1, 0);
+	}else if(glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT))
+	{
+		pointLights[0]->m_worldPosition = pointLights[0]->m_worldPosition + glm::vec3(0.0, -0.1, 0);
+	}
 	
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
@@ -107,22 +126,23 @@ void RenderingProject::Draw()
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
 
-	glm::mat4 modelWorldTransform = glm::mat4();
+	WorldTransform* transform = new WorldTransform();
+	transform->SetPosition(glm::vec3(0, 0, 0));
 
 	pLightingProgram->UseProgram();
 
-	directionalLight->CalculateLocalDirection(modelWorldTransform);
+	//directionalLight->CalculateLocalDirection(modelWorldTransform);
 
-	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * modelWorldTransform;
+	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
-	pLightingProgram->SetDirectionalLight(*directionalLight);
+	//pLightingProgram->SetDirectionalLight(*directionalLight);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
 
-	glm::mat4 cameraToLocalTransformation = -modelWorldTransform;
-	glm::vec4 cameraWorldPos = m_cameraMatrix[3];
-	glm::vec3 cameraLocalPos = cameraToLocalTransformation * cameraWorldPos;
-	pLightingProgram->SetCameraLocalPos(cameraLocalPos);
+	pointLights[0]->CalculateLocalPosition(*transform);
+	//pointLights[1]->CalculateLocalPosition(*transform);
+	pLightingProgram->SetPointLights(1, *pointLights);
 
+	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
 
 	pMesh->Render();
 }

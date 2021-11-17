@@ -3,6 +3,15 @@
 
 #include <glm/glm.hpp>
 
+//Structure to describe the attenuation properties of a light
+struct LightAttenuation
+{
+public:
+	float m_constant = 1.0f;
+	float m_linear = 0.0f;
+	float m_exponential = 0.0f;
+};
+
 class BaseLight
 {
 
@@ -15,6 +24,7 @@ public:
 
 	glm::vec3 m_lightColour;
 	float m_ambientIntensity;
+	float m_diffuseIntensity = 0.0f;
 };
 
 #endif // __BASELIGHT_H__
