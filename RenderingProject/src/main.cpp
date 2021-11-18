@@ -12,6 +12,9 @@
 // main that controls the creation/destruction of an application
 int WinMain(int argc, char* argv[])
 {
+
+
+
 	// explicitly control the creation of our application
 	RenderingProject* app = new RenderingProject();
 	app->run("RenderingProject Project", DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, false);

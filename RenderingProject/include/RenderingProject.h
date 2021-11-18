@@ -26,6 +26,8 @@ protected:
 	virtual void Draw();
 	virtual void Destroy();
 
+	void RenderImguiWindow();
+
 	
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;

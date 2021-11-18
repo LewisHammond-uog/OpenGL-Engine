@@ -14,6 +14,8 @@
 #include "Macros.h"
 #include "PointLight.h"
 #include "WorldTransform.h"
+#include "../../deps/imgui/impl/imgui_impl_glfw.h"
+#include "../../deps/imgui/impl/imgui_impl_opengl3.h"
 
 RenderingProject::RenderingProject()
 {
@@ -57,8 +59,10 @@ bool RenderingProject::onCreate()
 	pointLights[0]->m_diffuseIntensity = 0.0f;
 	pointLights[0]->m_ambientIntensity = 1.0f;
 	pointLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
-	pointLights[0]->m_attenuation.m_linear = 0.2f;
-	pointLights[0]->m_attenuation.m_exponential = 0.0f;
+	pointLights[0]->m_attenuation.m_linear = 0.0f;
+	pointLights[0]->m_attenuation.m_exponential = 0.1f;
+
+	glUseProgram(0);
 
 	//directionalLight = new DirectionalLight();
 	//directionalLight->m_ambientIntensity = 0.1f;
@@ -76,7 +80,7 @@ void RenderingProject::Update(float a_deltaTime)
 	// clear all gizmos from last frame
 	Gizmos::clear();
 	
-	Gizmos::addBox(pointLights[0]->m_worldPosition, glm::vec3(1.f), true);
+	Gizmos::addBox(pointLights[0]->m_worldPosition, glm::vec3(0.3f), true, glm::vec4(pointLights[0]->m_lightColour, 1.f));
 	
 	// add an identity matrix gizmo
 	Gizmos::addTransform( glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1) );
@@ -88,14 +92,6 @@ void RenderingProject::Update(float a_deltaTime)
 		
 		Gizmos::addLine( glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i), 
 						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
-	}
-
-	if(glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	{
-		pointLights[0]->m_worldPosition = pointLights[0]->m_worldPosition + glm::vec3(0.0, 0.1, 0);
-	}else if(glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT))
-	{
-		pointLights[0]->m_worldPosition = pointLights[0]->m_worldPosition + glm::vec3(0.0, -0.1, 0);
 	}
 	
 	static bool show_demo_window = true;
@@ -125,7 +121,6 @@ void RenderingProject::Draw()
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
-
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
 
@@ -145,10 +140,54 @@ void RenderingProject::Draw()
 	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
 
 	pMesh->Render();
+
+	RenderImguiWindow();
+
+	//Unbind Program
+	glUseProgram(0);
 }
 
 void RenderingProject::Destroy()
 {
+	//delete pLightingProgram;
+	//delete pointLights;
 	Gizmos::destroy();
+}
+
+void RenderingProject::RenderImguiWindow()
+{
+	ImGui::Begin("Setting Window");
+	if (ImGui::CollapsingHeader("Lighting Settings")) { 
+
+		if (ImGui::CollapsingHeader("Point Lights")) {
+			for (int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(pointLights); i++) {
+				if (pointLights[i] != nullptr) {
+
+
+					//Position
+					constexpr float posDragInterval = 0.1f;
+					float* pos[3] = { &pointLights[i]->m_worldPosition.x, &pointLights[i]->m_worldPosition.y, &pointLights[i]->m_worldPosition.z };
+					ImGui::DragFloat3("Position", *pos, posDragInterval);
+
+					//Colour
+					float* col[3] = { &pointLights[i]->m_lightColour.r, &pointLights[i]->m_lightColour.g, &pointLights[i]->m_lightColour.b };
+					ImGui::Text("Light Colour");
+					ImGui::ColorEdit3("Colour Picker", *col);
+
+					//Fall off
+					constexpr float lightFalloffInterval = 0.001f;
+					ImGui::DragFloat("Constant Falloff", &pointLights[i]->m_attenuation.m_constant, lightFalloffInterval);
+					ImGui::DragFloat("Linear Falloff", &pointLights[i]->m_attenuation.m_linear, lightFalloffInterval);
+					ImGui::DragFloat("Exp Falloff", &pointLights[i]->m_attenuation.m_exponential, lightFalloffInterval);
+
+					
+
+
+				}
+			}
+		}
+
+	}
+	ImGui::End();
 }
 

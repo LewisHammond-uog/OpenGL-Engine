@@ -222,7 +222,6 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 			m_materials[i].m_diffuseColour.g = diffuseColour.g;
 			m_materials[i].m_diffuseColour.b = diffuseColour.b;
 		}
-
 	}
 
 	return success;
