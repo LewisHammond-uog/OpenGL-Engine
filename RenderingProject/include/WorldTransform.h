@@ -27,6 +27,8 @@ public:
     glm::vec3 GetPos() const { return m_pos; }
     glm::vec3 GetRotation() const { return m_rotation; }
 
+    static float ToRadians(float a_degrees);
+
 private:
 
     glm::mat4 CreateScaleTransform(float ScaleX, float ScaleY, float ScaleZ);

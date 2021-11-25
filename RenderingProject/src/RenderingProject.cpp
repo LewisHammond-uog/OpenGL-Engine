@@ -13,6 +13,7 @@
 #include "DirectionalLight.h"
 #include "Macros.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "WorldTransform.h"
 #include "../../deps/imgui/impl/imgui_impl_glfw.h"
 #include "../../deps/imgui/impl/imgui_impl_opengl3.h"
@@ -54,13 +55,21 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 
 
-	pointLights[0] = new PointLight();
-	pointLights[0]->m_worldPosition = glm::vec3(0, 10, 0);
-	pointLights[0]->m_diffuseIntensity = 0.0f;
-	pointLights[0]->m_ambientIntensity = 1.0f;
-	pointLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
-	pointLights[0]->m_attenuation.m_linear = 0.0f;
-	pointLights[0]->m_attenuation.m_exponential = 0.1f;
+	//pointLights[0] = new PointLight();
+	//pointLights[0]->m_worldPosition = glm::vec3(0, 10, 0);
+	//pointLights[0]->m_diffuseIntensity = 0.0f;
+	//pointLights[0]->m_ambientIntensity = 1.0f;
+	//pointLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
+	//pointLights[0]->m_attenuation.m_linear = 0.0f;
+	//pointLights[0]->m_attenuation.m_exponential = 0.1f;
+
+	spotLights[0] = new SpotLight();
+	spotLights[0]->m_worldPosition = glm::vec3(0.f, 10.f, 0.f);
+	spotLights[0]->m_worldDirection = glm::vec3(0.f, -1.f, 0.f);
+	spotLights[0]->m_diffuseIntensity = 1.0f;
+	spotLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
+	spotLights[0]->m_attenuation.m_linear = 0.01;
+	spotLights[0]->m_cutoff = 20.f;
 
 	glUseProgram(0);
 
@@ -80,7 +89,7 @@ void RenderingProject::Update(float a_deltaTime)
 	// clear all gizmos from last frame
 	Gizmos::clear();
 	
-	Gizmos::addBox(pointLights[0]->m_worldPosition, glm::vec3(0.3f), true, glm::vec4(pointLights[0]->m_lightColour, 1.f));
+	Gizmos::addBox(spotLights[0]->m_worldPosition, glm::vec3(0.3f), true, glm::vec4(spotLights[0]->m_lightColour, 1.f));
 	
 	// add an identity matrix gizmo
 	Gizmos::addTransform( glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1) );
@@ -133,9 +142,10 @@ void RenderingProject::Draw()
 	//pLightingProgram->SetDirectionalLight(*directionalLight);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
 
-	pointLights[0]->CalculateLocalPosition(*transform);
+	spotLights[0]->CalculateLocalDirectionAndPosition(*transform);
 	//pointLights[1]->CalculateLocalPosition(*transform);
-	pLightingProgram->SetPointLights(1, *pointLights);
+	//pLightingProgram->SetPointLights(1, *pointLights);
+	pLightingProgram->SetSpotLights(1, *spotLights);
 
 	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
 

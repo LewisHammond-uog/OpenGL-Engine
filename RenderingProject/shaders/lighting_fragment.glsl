@@ -29,6 +29,12 @@ struct PointLight{
 	Attenuation atten;
 };
 
+struct SpotLight {
+	PointLight base; //Point light is base member as we use all of its properties
+	vec3 direction;
+	float cutoff; //COS of the cutoff rather than the angle itself
+};
+
 struct Material{
 	vec3 AmbientColour;
 	vec3 DiffuseColour;
@@ -37,9 +43,14 @@ struct Material{
 
 //Lights
 const int MAX_POINT_LIGHTS = 4;
+const int MAX_SPOT_LIGHTS = 2;
 uniform DirectionalLight uDirectionalLight;
+//Point Lights
 uniform int uPointLightCount; //Number of point lights passed 
 uniform PointLight uPointLights[MAX_POINT_LIGHTS];
+//Spot Lights
+uniform int uSpotLightCount;
+uniform SpotLight uSpotLights[MAX_SPOT_LIGHTS];
 
 //Textures/Materials
 uniform sampler2D uDiffuseSampler;
@@ -92,18 +103,39 @@ vec4 CalculateDirectionalLight(vec3 normal)
 	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal);
 }
 
-vec4 CalculatePointLight(int index, vec3 normal)
+vec4 CalculatePointLight(PointLight light, vec3 normal)
 {
-	vec3 LightDirection =  uPointLights[index].localPos - vLocalPos;
+	vec3 LightDirection = light.localPos - vLocalPos;
 	float Distance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
 
-	vec4 Color = CalculateLightInternal(uPointLights[index].base, LightDirection, normal);
-	float Attenuation = uPointLights[index].atten.constant +
-		uPointLights[index].atten.linear * Distance +
-		uPointLights[index].atten.exponential * Distance * Distance;
+	vec4 Color = CalculateLightInternal(light.base, LightDirection, normal);
+	float Attenuation = light.atten.constant +
+		light.atten.linear * Distance +
+		light.atten.exponential * Distance * Distance;
 
 	return Color / Attenuation;
+}
+
+vec4 CalculateSpotLight(SpotLight light, vec3 normal) 
+{
+	//Get the vector from the spot light to the pixel
+	vec3 lightToPixel = normalize(vLocalPos - light.base.localPos);
+	//Calculate the COS of the angle that we are at compare to the spot lights direction
+	float spotFactor = dot(lightToPixel, light.direction);
+
+	//Check if we are within the cone of the spot light by comparing if the spot factor (COS of angle from light to pixel and light direction)
+	//is greater than the cutoff value (which is the COS of the light direction and it's the outer angle vector)
+	if (spotFactor > light.cutoff) {
+		//Calculate as if we are a point light then determine the intensity base on the cuttoff
+		vec4 colour = CalculatePointLight(light.base, normal);
+		float intensity = (1.0 - (1.0 - spotFactor) / (1.0 - light.cutoff));
+		return colour * intensity;
+	}
+	else {
+		//Not in cone - zero light
+		return vec4(0, 0, 0, 0);
+	}
 }
 
 void main(){
@@ -113,7 +145,12 @@ void main(){
 
 	//Loop all of the point lights and add up the lighting
 	for(int i = 0; i < uPointLightCount; i++){
-		totalLight += CalculatePointLight(i, normal);
+		totalLight += CalculatePointLight(uPointLights[i], normal);
+	}
+
+	//Loop all of the spot lights and add up the lighting
+	for (int i = 0; i < uSpotLightCount; i++) {
+		totalLight += CalculateSpotLight(uSpotLights[i], normal);
 	}
 
 	//Final Colour is the colour of the texture multiplied by the light colours

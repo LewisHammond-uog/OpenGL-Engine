@@ -61,6 +61,12 @@ glm::mat4 WorldTransform::GetReversedRotationMatrix()
     return ReversedRotation;
 }
 
+float WorldTransform::ToRadians(float a_degrees)
+{
+    constexpr double pi = 3.14159265359;
+    return (a_degrees * (pi / 180));
+}
+
 glm::mat4 WorldTransform::CreateScaleTransform(float ScaleX, float ScaleY, float ScaleZ)
 {
     glm::mat4 matrix;

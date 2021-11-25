@@ -63,6 +63,9 @@
     <ClInclude Include="include\WorldTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\SpotLight.h">
+      <Filter>Header Files\Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="src\WorldTransform.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpotLight.cpp">
+      <Filter>Source Files\Lights</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

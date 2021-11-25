@@ -8,7 +8,9 @@
 #include "Material.h"
 #include "BaseLight.h"
 #include "DirectionalLight.h"
+#include "WorldTransform.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 
 bool LightingProgram::Initialise()
@@ -49,12 +51,15 @@ bool LightingProgram::Initialise()
 	dirLightLocation.ambientIntensity = GetUniformLocation("uDirectionalLight.base.AmbientIntensity");
 	dirLightLocation.direction = GetUniformLocation("uDirectionalLight.Direction");
 	dirLightLocation.diffuseIntensity = GetUniformLocation("uDirectionalLight.base.DiffuseIntensity");
-	//Point Light Numbers
+	//Point Light Count
 	m_numPointLightsLocation = GetUniformLocation("uPointLightCount");
+	//Spot Light Count
+	m_numSpotLightsLocation = GetUniformLocation("uSpotLightCount");
 	//Camera Uniform Locations
 	m_cameraPositionLocation = GetUniformLocation("uCameraLocalPos");
 
 	InitalizePointLightUniformLocations();
+	InitalizeSpotLightUniformLocations();
 
 	return true;
 }
@@ -97,6 +102,55 @@ void LightingProgram::InitalizePointLightUniformLocations()
 		//Exponential attenuation
 		_snprintf(name, sizeof(name), "uPointLights[%d].atten.exponential", i);
 		pointLightsLocation[i].attenuation.exponential = GetUniformLocation(name);
+	}
+}
+
+/// <summary>
+/// Initalize the locactions of the spot light uniforms
+/// </summary>
+void LightingProgram::InitalizeSpotLightUniformLocations()
+{
+	//Loop all of the spot lights
+	//Generate the name of the uniform using the index of the current spot light
+	for (int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(spotLightLocations); i++)
+	{
+		char name[128] = {};
+
+		//Position
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.localPos", i);
+		spotLightLocations[i].position = GetUniformLocation(name);
+
+		//Direction
+		_snprintf(name, sizeof(name), "uSpotLights[%d].direction", i);
+		spotLightLocations[i].direction = GetUniformLocation(name);
+
+		//Cutoff
+		_snprintf(name, sizeof(name), "uSpotLights[%d].cutoff", i);
+		spotLightLocations[i].cutoff = GetUniformLocation(name);
+
+		//Colour
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.base.Colour", i);
+		spotLightLocations[i].colour = GetUniformLocation(name);
+
+		//Ambient Intensity
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.base.AmbientIntensity", i);
+		spotLightLocations[i].ambientIntensity = GetUniformLocation(name);
+
+		//Diffuse Intensity
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.base.DiffuseIntensity", i);
+		spotLightLocations[i].diffuseIntensity = GetUniformLocation(name);
+
+		//Constant attenuation
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.atten.constant", i);
+		spotLightLocations[i].attenuation.constant = GetUniformLocation(name);
+		
+		//Linear attenuation
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.atten.linear", i);
+		spotLightLocations[i].attenuation.linear = GetUniformLocation(name);
+
+		//Exponential attenuation
+		_snprintf(name, sizeof(name), "uSpotLights[%d].base.atten.exponential", i);
+		spotLightLocations[i].attenuation.exponential = GetUniformLocation(name);
 	}
 }
 
@@ -149,6 +203,30 @@ void LightingProgram::SetPointLights(unsigned a_numLights, const PointLight* a_p
 		glUniform1f(pointLightsLocation[i].attenuation.constant, a_pLights->m_attenuation.m_constant); //Constant Attenuation
 		glUniform1f(pointLightsLocation[i].attenuation.linear, a_pLights->m_attenuation.m_linear); //Linear Attenuation
 		glUniform1f(pointLightsLocation[i].attenuation.exponential, a_pLights->m_attenuation.m_exponential); //Exponential Attenuation
+	}
+}
+
+void LightingProgram::SetSpotLights(unsigned a_numLights, const SpotLight* a_pLights) 
+{
+	//Set number of lights
+	glUniform1i(m_numSpotLightsLocation, a_numLights);
+
+	//Loop all of the lights and set their properties
+	for (unsigned int i = 0; i < a_numLights; i++)
+	{
+		glUniform3fv(spotLightLocations[i].colour, 1, glm::value_ptr(a_pLights[i].m_lightColour));
+		glUniform1f(spotLightLocations[i].ambientIntensity, a_pLights[i].m_ambientIntensity);
+		glUniform1f(spotLightLocations[i].diffuseIntensity, a_pLights[i].m_diffuseIntensity);
+		//Position
+		const glm::vec3& localPos = a_pLights->GetLocalPosition();
+		glUniform3fv(spotLightLocations[i].position, 1, glm::value_ptr(a_pLights->GetLocalPosition()));
+		//Direction
+		glm::vec3 localDirection = glm::normalize(a_pLights[i].GetLocalDirection());
+		glUniform3fv(spotLightLocations[i].direction, 1, glm::value_ptr(localDirection));
+		glUniform1f(spotLightLocations[i].cutoff, cosf(WorldTransform::ToRadians(a_pLights->m_cutoff)));
+		glUniform1f(spotLightLocations[i].attenuation.constant, a_pLights[i].m_attenuation.m_constant);
+		glUniform1f(spotLightLocations[i].attenuation.linear, a_pLights[i].m_attenuation.m_linear);
+		glUniform1f(spotLightLocations[i].attenuation.exponential, a_pLights[i].m_attenuation.m_exponential);
 	}
 }
 
