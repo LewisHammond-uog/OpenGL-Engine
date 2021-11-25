@@ -186,7 +186,12 @@ void LightingProgram::SetDirectionalLight(const DirectionalLight& a_light)
 	glUniform1f(dirLightLocation.diffuseIntensity, a_light.m_diffuseIntensity);
 }
 
-void LightingProgram::SetPointLights(unsigned a_numLights, const PointLight* a_pLights)
+/// <summary>
+/// Set the point lights in the shader
+/// </summary>
+/// <param name="a_numLights"></param>
+/// <param name="a_pLights">Array of Point Light Pointers</param>
+void LightingProgram::SetPointLights(unsigned a_numLights, PointLight* a_pLights[])
 {
 	//Set number of lights
 	glUniform1i(m_numPointLightsLocation, a_numLights);
@@ -194,19 +199,22 @@ void LightingProgram::SetPointLights(unsigned a_numLights, const PointLight* a_p
 	//Loop all of the lights and set their properties
 	for(unsigned int i = 0; i < a_numLights; i++)
 	{
-		glUniform3f(pointLightsLocation[i].colour, a_pLights->m_lightColour.r, a_pLights->m_lightColour.g, a_pLights->m_lightColour.b); //Colour
-		glUniform1f(pointLightsLocation[i].ambientIntensity, a_pLights->m_ambientIntensity); //Ambient Intensity
-		glUniform1f(pointLightsLocation[i].diffuseIntensity, a_pLights->m_diffuseIntensity); //Diffuse Intensity
-		//const glm::vec3 localPos = a_pLights[i].GetLocalPosition();
-		const glm::vec3 localPos = a_pLights[i].m_worldPosition;
+		//Get the light pointer in the array of light pointers
+		PointLight* light = a_pLights[i];
+
+		glUniform3f(pointLightsLocation[i].colour, light->m_lightColour.r, light->m_lightColour.g, light->m_lightColour.b); //Colour
+		glUniform1f(pointLightsLocation[i].ambientIntensity, light->m_ambientIntensity); //Ambient Intensity
+		glUniform1f(pointLightsLocation[i].diffuseIntensity, light->m_diffuseIntensity); //Diffuse Intensity
+		//const glm::vec3 localPos = light->GetLocalPosition();
+		const glm::vec3 localPos = light->m_worldPosition;
 		glUniform3fv(pointLightsLocation[i].position, 1, glm::value_ptr(localPos)); //Light Local Position
-		glUniform1f(pointLightsLocation[i].attenuation.constant, a_pLights->m_attenuation.m_constant); //Constant Attenuation
-		glUniform1f(pointLightsLocation[i].attenuation.linear, a_pLights->m_attenuation.m_linear); //Linear Attenuation
-		glUniform1f(pointLightsLocation[i].attenuation.exponential, a_pLights->m_attenuation.m_exponential); //Exponential Attenuation
+		glUniform1f(pointLightsLocation[i].attenuation.constant, light->m_attenuation.m_constant); //Constant Attenuation
+		glUniform1f(pointLightsLocation[i].attenuation.linear, light->m_attenuation.m_linear); //Linear Attenuation
+		glUniform1f(pointLightsLocation[i].attenuation.exponential, light->m_attenuation.m_exponential); //Exponential Attenuation
 	}
 }
 
-void LightingProgram::SetSpotLights(unsigned a_numLights, const SpotLight* a_pLights) 
+void LightingProgram::SetSpotLights(unsigned a_numLights, SpotLight* a_pLights[]) 
 {
 	//Set number of lights
 	glUniform1i(m_numSpotLightsLocation, a_numLights);
@@ -214,19 +222,22 @@ void LightingProgram::SetSpotLights(unsigned a_numLights, const SpotLight* a_pLi
 	//Loop all of the lights and set their properties
 	for (unsigned int i = 0; i < a_numLights; i++)
 	{
-		glUniform3fv(spotLightLocations[i].colour, 1, glm::value_ptr(a_pLights[i].m_lightColour));
-		glUniform1f(spotLightLocations[i].ambientIntensity, a_pLights[i].m_ambientIntensity);
-		glUniform1f(spotLightLocations[i].diffuseIntensity, a_pLights[i].m_diffuseIntensity);
+		//Get the light pointer in the array of light pointers
+		SpotLight* light = a_pLights[i];
+
+		glUniform3fv(spotLightLocations[i].colour, 1, glm::value_ptr(light->m_lightColour));
+		glUniform1f(spotLightLocations[i].ambientIntensity, light->m_ambientIntensity);
+		glUniform1f(spotLightLocations[i].diffuseIntensity, light->m_diffuseIntensity);
 		//Position
-		const glm::vec3& localPos = a_pLights->GetLocalPosition();
-		glUniform3fv(spotLightLocations[i].position, 1, glm::value_ptr(a_pLights->GetLocalPosition()));
+		const glm::vec3& localPos = light->GetLocalPosition();
+		glUniform3fv(spotLightLocations[i].position, 1, glm::value_ptr(light->GetLocalPosition()));
 		//Direction
-		glm::vec3 localDirection = glm::normalize(a_pLights[i].GetLocalDirection());
+		glm::vec3 localDirection = glm::normalize(light->GetLocalDirection());
 		glUniform3fv(spotLightLocations[i].direction, 1, glm::value_ptr(localDirection));
-		glUniform1f(spotLightLocations[i].cutoff, cosf(WorldTransform::ToRadians(a_pLights->m_cutoff)));
-		glUniform1f(spotLightLocations[i].attenuation.constant, a_pLights[i].m_attenuation.m_constant);
-		glUniform1f(spotLightLocations[i].attenuation.linear, a_pLights[i].m_attenuation.m_linear);
-		glUniform1f(spotLightLocations[i].attenuation.exponential, a_pLights[i].m_attenuation.m_exponential);
+		glUniform1f(spotLightLocations[i].cutoff, cosf(WorldTransform::ToRadians(light->m_cutoff)));
+		glUniform1f(spotLightLocations[i].attenuation.constant, light->m_attenuation.m_constant);
+		glUniform1f(spotLightLocations[i].attenuation.linear, light->m_attenuation.m_linear);
+		glUniform1f(spotLightLocations[i].attenuation.exponential, light->m_attenuation.m_exponential);
 	}
 }
 
