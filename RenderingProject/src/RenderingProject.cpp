@@ -10,13 +10,12 @@
 #include "Application_Log.h"
 #include "Mesh.h"
 #include "LightingProgram.h"
+#include "LightingManager.h"
 #include "DirectionalLight.h"
 #include "Macros.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "WorldTransform.h"
-#include "../../deps/imgui/impl/imgui_impl_glfw.h"
-#include "../../deps/imgui/impl/imgui_impl_opengl3.h"
 
 RenderingProject::RenderingProject()
 {
@@ -54,29 +53,11 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 
+	pLightingManager = new LightingManager(pLightingProgram);
+	pLightingManager->CreatePointLight();
+	pLightingManager->CreatePointLight();
+	pLightingManager->CreateSpotLight();
 
-	//pointLights[0] = new PointLight();
-	//pointLights[0]->m_worldPosition = glm::vec3(0, 10, 0);
-	//pointLights[0]->m_diffuseIntensity = 0.0f;
-	//pointLights[0]->m_ambientIntensity = 1.0f;
-	//pointLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
-	//pointLights[0]->m_attenuation.m_linear = 0.0f;
-	//pointLights[0]->m_attenuation.m_exponential = 0.1f;
-
-	spotLights[0] = new SpotLight();
-	spotLights[0]->m_worldPosition = glm::vec3(0.f, 10.f, 0.f);
-	spotLights[0]->m_worldDirection = glm::vec3(0.f, -1.f, 0.f);
-	spotLights[0]->m_diffuseIntensity = 1.0f;
-	spotLights[0]->m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
-	spotLights[0]->m_attenuation.m_linear = 0.01;
-	spotLights[0]->m_cutoff = 20.f;
-
-	glUseProgram(0);
-
-	//directionalLight = new DirectionalLight();
-	//directionalLight->m_ambientIntensity = 0.1f;
-	//directionalLight->m_diffuseIntensity = 1.f;
-	//directionalLight->m_worldDirection = glm::vec3(1.0f, 0.f, 0.f);
 
 	return true;
 }
@@ -88,8 +69,6 @@ void RenderingProject::Update(float a_deltaTime)
 
 	// clear all gizmos from last frame
 	Gizmos::clear();
-	
-	Gizmos::addBox(spotLights[0]->m_worldPosition, glm::vec3(0.3f), true, glm::vec4(spotLights[0]->m_lightColour, 1.f));
 	
 	// add an identity matrix gizmo
 	Gizmos::addTransform( glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1) );
@@ -135,23 +114,16 @@ void RenderingProject::Draw()
 
 	pLightingProgram->UseProgram();
 
-	//directionalLight->CalculateLocalDirection(modelWorldTransform);
-
+	//Set positions/materials for rendering
 	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
-	//pLightingProgram->SetDirectionalLight(*directionalLight);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
-
-	spotLights[0]->CalculateLocalDirectionAndPosition(*transform);
-	//pointLights[1]->CalculateLocalPosition(*transform);
-	//pLightingProgram->SetPointLights(1, *pointLights);
-	pLightingProgram->SetSpotLights(1, *spotLights);
-
 	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
 
-	pMesh->Render();
+	pLightingManager->Update(*transform);
+	pLightingManager->RenderImguiWindow();
 
-	RenderImguiWindow();
+	pMesh->Render();
 
 	//Unbind Program
 	glUseProgram(0);
@@ -162,42 +134,5 @@ void RenderingProject::Destroy()
 	//delete pLightingProgram;
 	//delete pointLights;
 	Gizmos::destroy();
-}
-
-void RenderingProject::RenderImguiWindow()
-{
-	ImGui::Begin("Setting Window");
-	if (ImGui::CollapsingHeader("Lighting Settings")) { 
-
-		if (ImGui::CollapsingHeader("Point Lights")) {
-			for (int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(pointLights); i++) {
-				if (pointLights[i] != nullptr) {
-
-
-					//Position
-					constexpr float posDragInterval = 0.1f;
-					float* pos[3] = { &pointLights[i]->m_worldPosition.x, &pointLights[i]->m_worldPosition.y, &pointLights[i]->m_worldPosition.z };
-					ImGui::DragFloat3("Position", *pos, posDragInterval);
-
-					//Colour
-					float* col[3] = { &pointLights[i]->m_lightColour.r, &pointLights[i]->m_lightColour.g, &pointLights[i]->m_lightColour.b };
-					ImGui::Text("Light Colour");
-					ImGui::ColorEdit3("Colour Picker", *col);
-
-					//Fall off
-					constexpr float lightFalloffInterval = 0.001f;
-					ImGui::DragFloat("Constant Falloff", &pointLights[i]->m_attenuation.m_constant, lightFalloffInterval);
-					ImGui::DragFloat("Linear Falloff", &pointLights[i]->m_attenuation.m_linear, lightFalloffInterval);
-					ImGui::DragFloat("Exp Falloff", &pointLights[i]->m_attenuation.m_exponential, lightFalloffInterval);
-
-					
-
-
-				}
-			}
-		}
-
-	}
-	ImGui::End();
 }
 

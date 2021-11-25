@@ -8,9 +8,7 @@
 //Forward declare mesh
 class Mesh;
 class LightingProgram;
-class DirectionalLight;
-class PointLight;
-class SpotLight;
+class LightingManager;
 
 // Derived application class that wraps up all globals neatly
 class RenderingProject : public Application
@@ -27,19 +25,15 @@ protected:
 	virtual void Draw();
 	virtual void Destroy();
 
-	void RenderImguiWindow();
-
-	
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;
 
 	unsigned int m_programID;
 
+private:
 	Mesh* pMesh;
 	LightingProgram* pLightingProgram;
-	//DirectionalLight* directionalLight;
-	PointLight* pointLights[2];
-	SpotLight* spotLights[1];
+	LightingManager* pLightingManager;
 };
 
 #endif // __RenderingProject_H_

@@ -24,8 +24,8 @@ public:
 	void SetDiffuseTextureUnit(const unsigned int a_textureUnit) const;
 	void SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const;
 	void SetDirectionalLight(const DirectionalLight& a_light);
-	void SetPointLights(unsigned int a_numLights, const PointLight* a_pLights);
-	void SetSpotLights(unsigned int a_numLights, const SpotLight* a_pLights);
+	void SetPointLights(unsigned int a_numLights, PointLight* a_pLights[]);
+	void SetSpotLights(unsigned int a_numLights, SpotLight* a_pLights[]);
 	void SetCameraLocalPos(const glm::vec3& a_cameraLocalPosition) const;
 	void SetMaterial(const Material& a_material) const;
 
