@@ -34,7 +34,8 @@ public:
 
 private:
 
-	void DrawImguiPointLightSetting(PointLight* a_pLight);
+	void DrawImguiPointLightSetting(PointLight* a_pLight) const;
+	void DrawImguiSpotLightSetting(SpotLight* a_pLight) const;
 
 	//Lighting Program
 	LightingProgram* m_pLightingProgram;

@@ -54,8 +54,8 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 
 	pLightingManager = new LightingManager(pLightingProgram);
-	pLightingManager->CreatePointLight();
-	pLightingManager->CreatePointLight();
+	//pLightingManager->CreatePointLight();
+	//pLightingManager->CreatePointLight();
 	pLightingManager->CreateSpotLight();
 
 

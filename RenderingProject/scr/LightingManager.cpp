@@ -82,7 +82,7 @@ PointLight* LightingManager::CreatePointLight(glm::vec3 a_worldPosition, glm::ve
 	m_pointLights[m_createdPointLightsCount]->m_attenuation.m_exponential = a_exponentialAttenuation;
 
 	m_createdPointLightsCount++;
-	return m_pointLights[m_createdPointLightsCount];
+	return m_pointLights[m_createdPointLightsCount - 1];
 }
 
 SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_worldPosition, glm::vec3 a_worldDirection, glm::vec3 a_colour,
@@ -111,7 +111,7 @@ SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_worldPosition, glm::vec3
 	m_spotLights[m_createdSpotLightCount]->m_cutoff = a_cutOffAngle;
 
 	m_createdSpotLightCount++;
-	return m_spotLights[m_createdSpotLightCount];
+	return m_spotLights[m_createdSpotLightCount - 1];
 }
 
 /// <summary>
@@ -142,16 +142,36 @@ void LightingManager::RenderImguiWindow()
 			}
 		}
 
+		if (ImGui::CollapsingHeader("Spot Lights"))
+		{
+			for (int i = 0; i < std::size(m_spotLights); ++i)
+			{
+				//Do not draw if light is null
+				if (m_spotLights[i] == nullptr)
+				{
+					continue;
+				}
+
+				//Construct header name
+				std::stringstream headerSS;
+				headerSS << "Light #" << i << std::endl;
+
+				if (ImGui::CollapsingHeader(headerSS.str().c_str())) {
+					DrawImguiSpotLightSetting(m_spotLights[i]);
+				}
+			}
+		}
+
 	}
 	ImGui::End();
 }
 
 /// <summary>
-/// Draw the settings for a point lights in an Imgui Context
+/// Draw the settings for a point light in an Imgui Context
 /// </summary>
-void LightingManager::DrawImguiPointLightSetting(PointLight* a_pLight)
+void LightingManager::DrawImguiPointLightSetting(PointLight* a_pLight) const
 {
-	ImGui::PushID(a_pLight); //Push a unqiue ID to imgui to stop the ID stack from generating the same ID for all lights
+	ImGui::PushID(a_pLight); //Push a unqiqe ID to imgui to stop the ID stack from generating the same ID for all lights
 	ImGui::Spacing();
 
 	//Position
@@ -179,6 +199,29 @@ void LightingManager::DrawImguiPointLightSetting(PointLight* a_pLight)
 	ImGui::DragFloat("Exp Falloff", &a_pLight->m_attenuation.m_exponential, lightFalloffInterval);
 
 	ImGui::Spacing();
+	ImGui::PopID();
+}
+
+/// <summary>
+/// Draw the settings for a spot light in an Imgui Context
+/// </summary>
+/// <param name="a_pLight"></param>
+void LightingManager::DrawImguiSpotLightSetting(SpotLight* a_pLight) const
+{
+	ImGui::PushID(a_pLight);
+	//Draw settings for point light - because spot light inherits from point light
+	DrawImguiPointLightSetting(a_pLight);
+
+	ImGui::Spacing();
+
+	//Direction
+	constexpr float dirDragInterval = 0.01f;
+	ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&a_pLight->m_worldDirection), dirDragInterval);
+
+	//Angle
+	constexpr float cutoffDragInterval = 0.1f;
+	ImGui::DragFloat("Cutoff Angle", &a_pLight->m_cutoff, cutoffDragInterval);
+
 	ImGui::PopID();
 }
 
