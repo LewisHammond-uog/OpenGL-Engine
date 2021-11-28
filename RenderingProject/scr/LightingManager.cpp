@@ -15,15 +15,23 @@
 
 //Construct Lighting Manager with Lighting Program
 LightingManager::LightingManager(LightingProgram* a_program) :
-	m_pLightingProgram(a_program)
+	m_pLightingProgram(a_program),
+	m_pDirectionalLight(nullptr)
 {
 }
 
 LightingManager::~LightingManager()
 {
 	//Delete all of the created lights
-	delete[] m_pointLights;
-	delete[] m_spotLights;
+	for (PointLight*& pointLight : m_pointLights)
+	{
+		delete pointLight;
+	}
+	for (SpotLight*& spotLight : m_spotLights)
+	{
+		delete spotLight;
+	}
+
 	delete m_pDirectionalLight;
 }
 

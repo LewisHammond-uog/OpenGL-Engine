@@ -130,8 +130,9 @@ void RenderingProject::Draw()
 
 void RenderingProject::Destroy()
 {
-	//delete pLightingProgram;
-	//delete pointLights;
+	delete pLightingProgram;
+	delete pMesh;
+	delete pLightingManager;
 	Gizmos::destroy();
 }
 
