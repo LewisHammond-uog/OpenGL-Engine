@@ -18,6 +18,8 @@
     <ClInclude Include="include\Macros.h" />
     <ClInclude Include="include\Material.h" />
     <ClInclude Include="include\PointLight.h" />
+    <ClInclude Include="include\ShadowFBO.h" />
+    <ClInclude Include="include\ShadowProgram.h" />
     <ClInclude Include="include\SpotLight.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\Mesh.h" />
@@ -36,6 +38,8 @@
     <ClCompile Include="src\PointLight.cpp" />
     <ClCompile Include="src\RenderingProject.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
+    <ClCompile Include="src\ShadowFBO.cpp" />
+    <ClCompile Include="src\ShadowProgram.cpp" />
     <ClCompile Include="src\SpotLight.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\WorldTransform.cpp" />
@@ -45,6 +49,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="shaders\lighting_vertex.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\shadow_fragment.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\shadow_vertex.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="shaders\vertex.glsl">

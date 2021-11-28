@@ -8,12 +8,15 @@
 #include <imgui.h>
 
 //Project Includes
+#include "Macros.h"
 #include "Application_Log.h"
+#include "WorldTransform.h"
 #include "Mesh.h"
 #include "LightingProgram.h"
 #include "LightingManager.h"
-#include "Macros.h"
-#include "WorldTransform.h"
+#include "ShadowProgram.h"
+#include "ShadowFBO.h"
+
 
 RenderingProject::RenderingProject()
 {
@@ -61,6 +64,11 @@ bool RenderingProject::onCreate()
 	//pLightingManager->CreatePointLight();
 	//pLightingManager->CreateSpotLight();
 
+	pShadowProgram = new ShadowProgram();
+	pShadowProgram->Initialise();
+
+	pFBO = new ShadowFBO();
+	pFBO->Init();
 
 	return true;
 }
@@ -114,6 +122,11 @@ void RenderingProject::Draw()
 
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
+
+	pShadowProgram->UseProgram();
+	pFBO->BindForWriting();
+	glClear(GL_DEPTH_BUFFER_BIT);
+	pMesh->Render();
 
 	pLightingProgram->UseProgram();
 
