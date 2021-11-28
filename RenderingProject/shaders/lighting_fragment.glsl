@@ -3,6 +3,7 @@
 in vec2 vTexCoord;
 in vec3 vNormal;
 in vec3 vLocalPos;
+in vec3 vTangent;
 
 out vec4 fragColour;
 
@@ -139,9 +140,30 @@ vec4 CalculateSpotLight(SpotLight light, vec3 normal)
 	}
 }
 
+vec3 CalcuateBumpedNormal()
+{
+	//Normalize the tanget and normal
+	vec3 Normal = normalize(vNormal);
+	vec3 Tangent = normalize(vTangent);
+	//Get the length of the projection along the normal vector - Gramm-Schmidt
+	Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
+	//Get the Bi Tangent
+	vec3 Bitangent = cross(Tangent, Normal);
+	//Sample the normal from the Normal Map - this is stored in 0 to 1 we need it in -1 to 1
+	//bring it back with f(x) = 2 * x - 1
+	vec3 BumpMapNormal = texture(uNormalSampler, vTexCoord).xyz;
+	BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+	//Transform the normal back to world space
+	vec3 NewNormal;
+	mat3 TBN = mat3(Tangent, Bitangent, Normal);
+	NewNormal = TBN * BumpMapNormal;
+	NewNormal = normalize(NewNormal);
+	return NewNormal;
+}
+
 void main(){
 	
-	vec3 normal = normalize(vNormal);
+	vec3 normal = CalcuateBumpedNormal();
 	vec4 totalLight = CalculateDirectionalLight(normal);
 
 	//Loop all of the point lights and add up the lighting

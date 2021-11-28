@@ -8,6 +8,7 @@ layout (location = 3) in vec3 Tangent;
 out vec2 vTexCoord;
 out vec3 vNormal;
 out vec3 vLocalPos;
+out vec3 vTangent;
 
 uniform mat4 uWorldViewPoint;
 
@@ -16,5 +17,6 @@ void main(){
 	vTexCoord = TexCoord;
 	vNormal = Normal;
 	vLocalPos = Position.xyz;
+	vTangent = Tangent;
 	gl_Position = uWorldViewPoint * vec4(Position.xyz, 1.0);
 }

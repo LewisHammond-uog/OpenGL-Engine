@@ -43,7 +43,7 @@ bool RenderingProject::onCreate()
 
 	//Load mesh
 	pMesh = new Mesh();
-	if(!pMesh->LoadMesh("../models/test/Anvil.fbx"))
+	if(!pMesh->LoadMesh("../models/ruinedtank/tank.fbx"))
 	{
 		
 	}
