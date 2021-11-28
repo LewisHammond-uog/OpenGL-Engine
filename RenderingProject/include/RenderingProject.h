@@ -27,6 +27,9 @@ protected:
 	virtual void Draw();
 	virtual void Destroy();
 
+	void ShadowPass();
+	void RenderPass(glm::mat4 a_viewMatrix);
+
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;
 

@@ -60,6 +60,9 @@ bool ShadowFBO::Init(unsigned a_width, unsigned a_height)
 		return false;
 	}
 
+	//Unbund FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	return true;
 }
 

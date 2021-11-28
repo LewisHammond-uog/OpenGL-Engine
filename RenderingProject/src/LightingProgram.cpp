@@ -39,10 +39,14 @@ bool LightingProgram::Initialise()
 	}
 
 	//Get Uniform Locations
+	//View Points
 	m_worldViewPointLocation = GetUniformLocation("uWorldViewPoint");
+	m_lightWVPLocation = GetUniformLocation("uLightViewPoint");
+	//Samplers
 	m_diffuseSamplerLocation = GetUniformLocation("uDiffuseSampler");
 	m_specularSamplerLocation = GetUniformLocation("uSpecularSampler");
 	m_normalSamplerLocation = GetUniformLocation("uNormalSampler");
+	m_shadowSamplerLocation = GetUniformLocation("");
 	//Shader Material Uniform Locations
 	materialLocation.ambientColour = GetUniformLocation("uMaterial.AmbientColour");
 	materialLocation.diffuseColour = GetUniformLocation("uMaterial.DiffuseColour");
@@ -161,6 +165,15 @@ void LightingProgram::SetWorldViewPoint(const glm::mat4 a_worldViewPoint) const
 }
 
 /// <summary>
+/// Set the WVP Matrix of the light in the shader
+/// </summary>
+/// <param name="a_lightViewPoint"></param>
+void LightingProgram::SetLightWorldViewPoint(const glm::mat4 a_lightViewPoint) const
+{
+	glUniformMatrix4fv(m_lightWVPLocation, 1, GL_FALSE, glm::value_ptr(a_lightViewPoint));
+}
+
+/// <summary>
 /// Set the texture unit to use for diffuse colour
 /// </summary>
 /// <param name="a_textureUnit"></param>
@@ -185,6 +198,15 @@ void LightingProgram::SetSpecularPowerTextureUnit(const unsigned int a_textureUn
 void LightingProgram::SetNormalTextureUnit(const unsigned a_textureUnit) const
 {
 	glUniform1i(m_normalSamplerLocation, a_textureUnit);
+}
+
+/// <summary>
+/// Set the texture unit used for the shadow (depth) texture
+/// </summary>
+/// <param name="a_textureUnit"></param>
+void LightingProgram::SetShadowTextureUnit(const unsigned a_textureUnit) const
+{
+	glUniform1i(m_shadowSamplerLocation, a_textureUnit);
 }
 
 void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight)
