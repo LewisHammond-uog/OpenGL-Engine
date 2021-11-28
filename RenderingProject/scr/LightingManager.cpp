@@ -10,12 +10,21 @@
 #include "BaseLight.h"
 #include "SpotLight.h"
 #include "PointLight.h"
+#include "DirectionalLight.h"
 #include "WorldTransform.h"
 
 //Construct Lighting Manager with Lighting Program
 LightingManager::LightingManager(LightingProgram* a_program) :
 	m_pLightingProgram(a_program)
 {
+}
+
+LightingManager::~LightingManager()
+{
+	//Delete all of the created lights
+	delete[] m_pointLights;
+	delete[] m_spotLights;
+	delete m_pDirectionalLight;
 }
 
 void LightingManager::Update(WorldTransform& a_pWorldTransform)
@@ -45,6 +54,28 @@ void LightingManager::Update(WorldTransform& a_pWorldTransform)
 	}
 	//Set Lights
 	m_pLightingProgram->SetSpotLights(m_createdSpotLightCount, m_spotLights);
+
+	//Set Directional Light
+	if(m_pDirectionalLight)
+	{
+		m_pDirectionalLight->CalculateLocalDirection(a_pWorldTransform);
+		m_pLightingProgram->SetDirectionalLight(m_pDirectionalLight);
+	}
+}
+
+/// <summary>
+/// Create the single directonal light in the scene
+/// </summary>
+/// <returns></returns>
+DirectionalLight* LightingManager::CreateDirectionalLight()
+{
+	//If a directonal light has not been allocated create one
+	if(m_pDirectionalLight == nullptr)
+	{
+		m_pDirectionalLight = new DirectionalLight();
+	}
+
+	return m_pDirectionalLight;
 }
 
 /// <summary>
@@ -94,7 +125,7 @@ SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_worldPosition, glm::vec3
 		Application_Log* log = Application_Log::Get();
 		if (log != nullptr)
 		{
-			log->addLog(LOG_WARNING, "Trying to create too many spot lights, max capacity is %i", MAX_SPOT_LIGHTS);
+			log->addLog(LOG_WARNING, "Trying to create too many spot lights, max capacity is %i.\nLight will not be created.", MAX_SPOT_LIGHTS);
 		}
 
 		return nullptr;
@@ -122,6 +153,17 @@ void LightingManager::RenderImguiWindow()
 {
 	ImGui::Begin("Lighting Settings");
 	if (ImGui::CollapsingHeader("Lighting Settings")) {
+
+		//Draw Directional Light
+		if (ImGui::CollapsingHeader("Directional Light"))
+		{
+			if (m_pDirectionalLight)
+			{
+				DrawImguiDirectionalLightSetting(m_pDirectionalLight);
+			}
+		}
+
+		//Draw Point Lights
 		if(ImGui::CollapsingHeader("Point Lights"))
 		{
 			for(int i = 0; i < std::size(m_pointLights); ++i)
@@ -142,6 +184,7 @@ void LightingManager::RenderImguiWindow()
 			}
 		}
 
+		//Draw Spot Lights
 		if (ImGui::CollapsingHeader("Spot Lights"))
 		{
 			for (int i = 0; i < std::size(m_spotLights); ++i)
@@ -164,6 +207,32 @@ void LightingManager::RenderImguiWindow()
 
 	}
 	ImGui::End();
+}
+
+/// <summary>
+/// Draw the settings of a directional light in an Imgui Context
+/// </summary>
+/// <param name="a_pLight"></param>
+void LightingManager::DrawImguiDirectionalLightSetting(DirectionalLight* a_pLight) const
+{
+	ImGui::PushID(a_pLight); //Push a unqiqe ID to imgui to stop the ID stack from generating the same ID for all lights
+	ImGui::Spacing();
+
+	//Direction
+	constexpr float dirDragInterval = 0.01f;
+	ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&a_pLight->m_worldDirection), dirDragInterval);
+	ImGui::Spacing();
+
+	//Intensity
+	constexpr float intensityDragInterval = 0.01f;
+	ImGui::DragFloat("Ambient Intensity", &a_pLight->m_ambientIntensity, intensityDragInterval);
+	ImGui::DragFloat("Diffuse Intensity", &a_pLight->m_diffuseIntensity, intensityDragInterval);
+
+	//Colour
+	ImGui::ColorEdit3("Light Colour", reinterpret_cast<float*>(&a_pLight->m_lightColour));
+	ImGui::Spacing();
+
+	ImGui::PopID();
 }
 
 /// <summary>

@@ -46,7 +46,7 @@ bool LightingProgram::Initialise()
 	materialLocation.ambientColour = GetUniformLocation("uMaterial.AmbientColour");
 	materialLocation.diffuseColour = GetUniformLocation("uMaterial.DiffuseColour");
 	materialLocation.specularColour = GetUniformLocation("uMaterial.SpecularColour");
-	//Shader Light Uniform Locations
+	//Directional Light Uniform Locations
 	dirLightLocation.colour = GetUniformLocation("uDirectionalLight.base.Colour");
 	dirLightLocation.ambientIntensity = GetUniformLocation("uDirectionalLight.base.AmbientIntensity");
 	dirLightLocation.direction = GetUniformLocation("uDirectionalLight.Direction");
@@ -177,13 +177,13 @@ void LightingProgram::SetSpecularPowerTextureUnit(const unsigned int a_textureUn
 	glUniform1i(m_specularSamplerLocation, a_textureUnit);
 }
 
-void LightingProgram::SetDirectionalLight(const DirectionalLight& a_light)
+void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight)
 {
-	glUniform3f(dirLightLocation.colour, a_light.m_lightColour.r, a_light.m_lightColour.g, a_light.m_lightColour.b);
-	glUniform1f(dirLightLocation.ambientIntensity, a_light.m_ambientIntensity);
-	glm::vec3 localDirection = a_light.GetLocalDirection();
+	glUniform3f(dirLightLocation.colour, a_pLight->m_lightColour.r, a_pLight->m_lightColour.g, a_pLight->m_lightColour.b);
+	glUniform1f(dirLightLocation.ambientIntensity, a_pLight->m_ambientIntensity);
+	glm::vec3 localDirection = a_pLight->GetLocalDirection();
 	glUniform3fv(dirLightLocation.direction, 1, glm::value_ptr(localDirection));
-	glUniform1f(dirLightLocation.diffuseIntensity, a_light.m_diffuseIntensity);
+	glUniform1f(dirLightLocation.diffuseIntensity, a_pLight->m_diffuseIntensity);
 }
 
 /// <summary>
@@ -205,8 +205,7 @@ void LightingProgram::SetPointLights(unsigned a_numLights, PointLight* a_pLights
 		glUniform3f(pointLightsLocation[i].colour, light->m_lightColour.r, light->m_lightColour.g, light->m_lightColour.b); //Colour
 		glUniform1f(pointLightsLocation[i].ambientIntensity, light->m_ambientIntensity); //Ambient Intensity
 		glUniform1f(pointLightsLocation[i].diffuseIntensity, light->m_diffuseIntensity); //Diffuse Intensity
-		//const glm::vec3 localPos = light->GetLocalPosition();
-		const glm::vec3 localPos = light->m_worldPosition;
+		const glm::vec3 localPos = light->GetLocalPosition();
 		glUniform3fv(pointLightsLocation[i].position, 1, glm::value_ptr(localPos)); //Light Local Position
 		glUniform1f(pointLightsLocation[i].attenuation.constant, light->m_attenuation.m_constant); //Constant Attenuation
 		glUniform1f(pointLightsLocation[i].attenuation.linear, light->m_attenuation.m_linear); //Linear Attenuation
@@ -229,7 +228,6 @@ void LightingProgram::SetSpotLights(unsigned a_numLights, SpotLight* a_pLights[]
 		glUniform1f(spotLightLocations[i].ambientIntensity, light->m_ambientIntensity);
 		glUniform1f(spotLightLocations[i].diffuseIntensity, light->m_diffuseIntensity);
 		//Position
-		const glm::vec3& localPos = light->GetLocalPosition();
 		glUniform3fv(spotLightLocations[i].position, 1, glm::value_ptr(light->GetLocalPosition()));
 		//Direction
 		glm::vec3 localDirection = glm::normalize(light->GetLocalDirection());
@@ -249,14 +247,6 @@ void LightingProgram::SetCameraLocalPos(const glm::vec3& a_cameraLocalPosition) 
 {
 	glUniform3fv(m_cameraPositionLocation, 1, glm::value_ptr(a_cameraLocalPosition));
 }
-
-/*
-void LightingProgram::SetLight(const BaseLight& a_light)
-{
-	glUniform3f(m_lightColourLocation, a_light.m_lightColour.r, a_light.m_lightColour.g, a_light.m_lightColour.b);
-	glUniform1f(m_lightAmbitentIntensityLocation, a_light.m_lightIntensity);
-}
-*/
 
 void LightingProgram::SetMaterial(const Material& a_material) const
 {

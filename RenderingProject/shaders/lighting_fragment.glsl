@@ -72,7 +72,7 @@ vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal){
 
 	//If the diffuse Factor is greater than zero then there is some lighting - calculate the lighting
 	//based on the colour of the material and light and the intenstity of the light
-	vec4 diffuseColour = vec4(1.f);
+	vec4 diffuseColour = vec4(0.f);
 	vec4 specularColour = vec4(0.f);
 	if(diffuseFactor > 0)
 	{
@@ -141,7 +141,7 @@ vec4 CalculateSpotLight(SpotLight light, vec3 normal)
 void main(){
 	
 	vec3 normal = normalize(vNormal);
-	vec4 totalLight = vec4(0);
+	vec4 totalLight = CalculateDirectionalLight(normal);
 
 	//Loop all of the point lights and add up the lighting
 	for(int i = 0; i < uPointLightCount; i++){

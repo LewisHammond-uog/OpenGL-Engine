@@ -105,7 +105,7 @@
       <Filter>Source Files\Lights</Filter>
     </ClCompile>
     <ClCompile Include="scr\LightingManager.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

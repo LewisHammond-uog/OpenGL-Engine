@@ -7,14 +7,12 @@
 #include <iostream>
 #include <imgui.h>
 
+//Project Includes
 #include "Application_Log.h"
 #include "Mesh.h"
 #include "LightingProgram.h"
 #include "LightingManager.h"
-#include "DirectionalLight.h"
 #include "Macros.h"
-#include "PointLight.h"
-#include "SpotLight.h"
 #include "WorldTransform.h"
 
 RenderingProject::RenderingProject()
@@ -54,9 +52,10 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 
 	pLightingManager = new LightingManager(pLightingProgram);
+	pLightingManager->CreateDirectionalLight();
 	//pLightingManager->CreatePointLight();
 	//pLightingManager->CreatePointLight();
-	pLightingManager->CreateSpotLight();
+	//pLightingManager->CreateSpotLight();
 
 
 	return true;

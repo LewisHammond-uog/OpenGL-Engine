@@ -12,8 +12,11 @@ class LightingManager
 {
 public:
 	explicit LightingManager(LightingProgram* a_program);
+	~LightingManager();
 
 	void Update(WorldTransform& a_pWorldTransform);
+
+	DirectionalLight* CreateDirectionalLight();
 
 	PointLight* CreatePointLight(glm::vec3 a_worldPosition = glm::vec3(0.f), 
 	                             glm::vec3 a_colour = glm::vec3(1.f, 1.f, 1.f),
@@ -34,11 +37,15 @@ public:
 
 private:
 
+	void DrawImguiDirectionalLightSetting(DirectionalLight* a_pLight) const;
 	void DrawImguiPointLightSetting(PointLight* a_pLight) const;
 	void DrawImguiSpotLightSetting(SpotLight* a_pLight) const;
 
 	//Lighting Program
 	LightingProgram* m_pLightingProgram;
+
+	//Single Directional Light
+	DirectionalLight* m_pDirectionalLight;
 
 	//All point lights
 	PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
