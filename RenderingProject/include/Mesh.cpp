@@ -25,6 +25,7 @@
 #define SHADER_POSITION_LOC 0
 #define SHADER_TEX_COORD_LOC 1
 #define SHADER_NORMAL_LOC 2
+#define SHADER_TANGENT_LOC 3
 
 bool Mesh::LoadMesh(const std::string& a_filePath)
 {
@@ -80,6 +81,13 @@ void Mesh::Render()
 			m_materials[matIndex].m_pSpecularTexture->Bind(SPECULAR_POWER_TEXTURE_UNIT);
 		}
 
+		//Bind Normal texture if we have one
+		//todo set in the texture that we have no normal map and just to use surface normals
+		if(m_materials[matIndex].m_pNormalTexture)
+		{
+			m_materials[matIndex].m_pNormalTexture->Bind(NORMAL_TEXTURE_UNIT);
+		}
+
 		//Do the draw!
 		glDrawElementsBaseVertex(GL_TRIANGLES,
 			m_meshes[i].NumIndices, //Number of indicies to draw
@@ -99,13 +107,7 @@ void Mesh::Render()
 /// <returns></returns>
 Material& Mesh::GetMaterial()
 {
-	for(unsigned int i = 0; i < m_materials.size(); i++)
-	{
-		if(m_materials[i].m_ambientColour != glm::vec3(0,0,0))
-		{
-			return m_materials[i];
-		}
-	}
+	return m_materials[0];
 }
 
 /// <summary>
@@ -134,7 +136,10 @@ bool Mesh::InitFromScene(const aiScene* a_pScene, const std::string& a_filePath)
 
 	InitAllMeshes(a_pScene);
 
-	InitMaterials(a_pScene, a_filePath);
+	if(InitMaterials(a_pScene, a_filePath) == false)
+	{
+		return false;
+	}
 
 	PopulateOpenGLBuffers();
 	return true;
@@ -165,10 +170,12 @@ void Mesh::InitSingleMesh(const aiMesh* a_pMesh)
 		const glm::vec3 pos = glm::vec3(a_pMesh->mVertices[i].x, a_pMesh->mVertices[i].y, a_pMesh->mVertices[i].z);
 		const glm::vec3 normal = glm::vec3(a_pMesh->mNormals[i].x, a_pMesh->mNormals[i].y, a_pMesh->mNormals[i].z);
 		const glm::vec2 texCoord = a_pMesh->HasTextureCoords(0) ? glm::vec2(a_pMesh->mTextureCoords[0][i].x, a_pMesh->mTextureCoords[0][i].y) : glm::vec2(0.f);
+		const glm::vec3 tangent = a_pMesh->HasTangentsAndBitangents() ? glm::vec3(a_pMesh->mTangents->x, a_pMesh->mTangents->y, a_pMesh->mTangents->z) : glm::vec3(0.f);
 
 		m_positions.push_back(pos);
 		m_normals.push_back(normal);
 		m_texCoords.push_back(texCoord);
+		m_tangents.push_back(tangent);
 	}
 
 	//Populate the index buffer
@@ -203,6 +210,7 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 		}
 
 		LoadSpecularTexture(directory, pMaterial, static_cast<int>(i));
+		LoadNormalTexture(directory, pMaterial, static_cast<int>(i));
 
 
 		//Get if the Material has a ambient lighting attribute
@@ -228,6 +236,7 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 
 }
 
+
 /// <summary>
 /// Load a diffuse texture from the diretory and save it in to material
 /// </summary>
@@ -240,10 +249,16 @@ bool Mesh::LoadDiffuseTexture(const std::string& a_directory, const aiMaterial* 
 	return m_materials[a_index].m_pDiffuseTexture != nullptr ? true : false;
 }
 
-bool Mesh::LoadSpecularTexture(std::string a_directory, const aiMaterial* a_assimpMaterial, int a_index)
+bool Mesh::LoadSpecularTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, int a_index)
 {
 	m_materials[a_index].m_pSpecularTexture = LoadTexture(a_directory, a_assimpMaterial, aiTextureType_SHININESS);
 	return m_materials[a_index].m_pSpecularTexture != nullptr ? true : false;
+}
+
+bool Mesh::LoadNormalTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, const int a_index)
+{
+	m_materials[a_index].m_pNormalTexture = LoadTexture(a_directory, a_assimpMaterial, aiTextureType_NORMALS);
+	return m_materials[a_index].m_pNormalTexture != nullptr ? true: false;
 }
 
 /// <summary>
@@ -369,6 +384,11 @@ Texture* Mesh::LoadTexture(const std::string& a_directory, const aiMaterial* a_a
 		{
 			//construct the full path of the texutre file
 			std::string p = path.data;
+			char* test = new char[256];
+			char* extension = new char[4];
+			_splitpath(path.C_Str(), nullptr, nullptr, test, extension);
+			p = test;
+			p += extension;
 			if (p.substr(0, 2) == ".\\")
 			{
 				p = p.substr(2, p.size() - 2);
@@ -412,6 +432,12 @@ void Mesh::PopulateOpenGLBuffers()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_normals[0]) * m_normals.size(), &m_normals[0], GL_STATIC_DRAW); //Send Data
 	glEnableVertexAttribArray(SHADER_NORMAL_LOC); //Enable vertex attrib
 	glVertexAttribPointer(SHADER_NORMAL_LOC, 3, GL_FLOAT, GL_FALSE, 0, 0); //Set pointer to data but because the positions are packed we don't need to give a stride
+
+	//Tangent Buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_buffers[TANGENT_VB]); //Bind Buffer
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_tangents[0]) * m_tangents.size(), &m_tangents[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(SHADER_TANGENT_LOC);
+	glVertexAttribPointer(SHADER_TANGENT_LOC, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	//Set the element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffers[INDEX_BUFFER]);

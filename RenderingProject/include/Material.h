@@ -18,6 +18,7 @@ public:
 
 	Texture* m_pDiffuseTexture = nullptr; //Texture that stores the colour values
 	Texture* m_pSpecularTexture = nullptr; // Texture that stores the specular exponent
+	Texture* m_pNormalTexture = nullptr; //Texture that stores the normals
 };
 
 #endif // __MATERIAL_H__

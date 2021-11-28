@@ -43,7 +43,8 @@ private:
 	bool InitMaterials(const aiScene* a_pScene, const std::string& a_filePath);
 
 	bool LoadDiffuseTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, int a_index);
-	bool LoadSpecularTexture(std::string a_directory, const aiMaterial* a_assimpMaterial, int a_index);
+	bool LoadSpecularTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, int a_index);
+	bool LoadNormalTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, const int a_index);
 	void LoadColours(const aiMaterial* a_pMaterial, int a_index);
 	Texture* LoadTexture(const std::string& a_directory, const aiMaterial* a_assimpMaterial, const aiTextureType a_textureType);
 
@@ -63,6 +64,7 @@ private:
 		POS_VB = 1, //Position
 		TEXCOORD_VB = 2, //TexCoord
 		NORMAL_VB = 3, //Normals
+		TANGENT_VB = 4, //Tangents
 
 		NUM_BUFFERS
 	};
@@ -78,6 +80,7 @@ private:
 	std::vector<glm::vec3> m_positions;
 	std::vector<glm::vec3> m_normals;
 	std::vector<glm::vec2> m_texCoords;
+	std::vector<glm::vec2> m_tangents;
 	std::vector<unsigned int> m_indicies;
 
 };

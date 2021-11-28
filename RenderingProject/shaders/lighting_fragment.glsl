@@ -55,6 +55,7 @@ uniform SpotLight uSpotLights[MAX_SPOT_LIGHTS];
 //Textures/Materials
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uSpecularSampler;
+uniform sampler2D uNormalSampler;
 uniform Material uMaterial;
 
 uniform vec3 uCameraLocalPos;

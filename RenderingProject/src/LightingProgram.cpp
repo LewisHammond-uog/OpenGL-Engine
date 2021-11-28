@@ -42,6 +42,7 @@ bool LightingProgram::Initialise()
 	m_worldViewPointLocation = GetUniformLocation("uWorldViewPoint");
 	m_diffuseSamplerLocation = GetUniformLocation("uDiffuseSampler");
 	m_specularSamplerLocation = GetUniformLocation("uSpecularSampler");
+	m_normalSamplerLocation = GetUniformLocation("uNormalSampler");
 	//Shader Material Uniform Locations
 	materialLocation.ambientColour = GetUniformLocation("uMaterial.AmbientColour");
 	materialLocation.diffuseColour = GetUniformLocation("uMaterial.DiffuseColour");
@@ -175,6 +176,15 @@ void LightingProgram::SetDiffuseTextureUnit(const unsigned int a_textureUnit) co
 void LightingProgram::SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const
 {
 	glUniform1i(m_specularSamplerLocation, a_textureUnit);
+}
+
+/// <summary>
+/// Set the texture unit to use form normals
+/// </summary>
+/// <param name="a_textureUnit"></param>
+void LightingProgram::SetNormalTextureUnit(const unsigned a_textureUnit) const
+{
+	glUniform1i(m_normalSamplerLocation, a_textureUnit);
 }
 
 void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight)

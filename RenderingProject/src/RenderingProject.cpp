@@ -43,13 +43,17 @@ bool RenderingProject::onCreate()
 
 	//Load mesh
 	pMesh = new Mesh();
-	pMesh->LoadMesh("../models/ruinedtank/tank.fbx");
+	if(!pMesh->LoadMesh("../models/test/Anvil.fbx"))
+	{
+		
+	}
 
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
 	pLightingProgram->UseProgram();
 	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
+	pLightingProgram->SetNormalTextureUnit(NORMAL_TEXTURE_INDEX);
 
 	pLightingManager = new LightingManager(pLightingProgram);
 	pLightingManager->CreateDirectionalLight();
