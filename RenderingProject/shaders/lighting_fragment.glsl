@@ -4,7 +4,6 @@ in vec2 vTexCoord;
 in vec3 vNormal;
 in vec3 vLocalPos;
 in vec3 vTangent;
-in vec4 vLightSpacePos;
 
 out vec4 fragColour;
 
@@ -58,31 +57,11 @@ uniform SpotLight uSpotLights[MAX_SPOT_LIGHTS];
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uSpecularSampler;
 uniform sampler2D uNormalSampler;
-uniform sampler2D uShadowMapSampler;
-
 uniform Material uMaterial;
 
 uniform vec3 uCameraLocalPos;
 
-float CalculateShadowFactor(vec4 LightSpacePos){
-	//Transform vector to NDC space
-	vec3 projCoords = LightSpacePos.xyz / LightSpacePos.w;
-	
-	//Get UV coords for the depth texture 
-	vec2 uvCoords;
-	uvCoords.x = 0.5 * projCoords.x + 0.5;
-	uvCoords.y = 0.5 * projCoords.y + 0.5;
-	float z = 0.5 * projCoords.z + 0.5;
-
-	float depth = texture(uShadowMapSampler, uvCoords).x;
-	if(depth < (z + 0.000001)){
-		return 0.5;
-	}else{
-		return 1.0f;
-	}
-}
-
-vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, float shadowFactor){
+vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal){
 
 	//Calculate ambient lighting based from properties of diretional light
 	vec4 ambientColour =	vec4(light.Colour, 1.f) *
@@ -118,12 +97,12 @@ vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, f
 		}
 	}
 
-	return (ambientColour + shadowFactor * (diffuseColour + specularColour));
+	return (ambientColour + diffuseColour + specularColour);
 }
 
 vec4 CalculateDirectionalLight(vec3 normal)
 {
-	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal, 1.0f);
+	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal);
 }
 
 vec4 CalculatePointLight(PointLight light, vec3 normal)

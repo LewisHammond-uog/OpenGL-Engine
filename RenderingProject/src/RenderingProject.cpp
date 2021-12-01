@@ -68,7 +68,7 @@ bool RenderingProject::onCreate()
 	pShadowProgram->Initialise();
 
 	pFBO = new ShadowFBO();
-	pFBO->Init(1920, 1080);
+	pFBO->Init();
 
 	return true;
 }
@@ -123,39 +123,15 @@ void RenderingProject::Draw()
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
 
-	//pShadowProgram->UseProgram();
-	//pFBO->BindForWriting();
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//pMesh->Render();
-
-	RenderPass(viewMatrix);
-
-}
-
-void RenderingProject::Destroy()
-{
-	delete pLightingProgram;
-	delete pMesh;
-	delete pLightingManager;
-	Gizmos::destroy();
-}
-
-void RenderingProject::ShadowPass()
-{
-}
-
-
-void RenderingProject::RenderPass(const glm::mat4 a_viewMatrix)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	WorldTransform* transform = new WorldTransform();
-	transform->SetPosition(glm::vec3(0, 0, 0));
+	pShadowProgram->UseProgram();
+	pFBO->BindForWriting();
+	glClear(GL_DEPTH_BUFFER_BIT);
+	pMesh->Render();
 
 	pLightingProgram->UseProgram();
 
 	//Set positions/materials for rendering
-	glm::mat4 worldViewProjection = m_projectionMatrix * a_viewMatrix * transform->GetMatrix();
+	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
 	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
@@ -167,5 +143,13 @@ void RenderingProject::RenderPass(const glm::mat4 a_viewMatrix)
 
 	//Unbind Program
 	glUseProgram(0);
+}
+
+void RenderingProject::Destroy()
+{
+	delete pLightingProgram;
+	delete pMesh;
+	delete pLightingManager;
+	Gizmos::destroy();
 }
 

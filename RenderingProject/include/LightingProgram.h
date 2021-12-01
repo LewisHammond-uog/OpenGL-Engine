@@ -21,17 +21,12 @@ public:
 	bool Initialise() override;
 
 	void SetWorldViewPoint(const glm::mat4 a_worldViewPoint) const;
-	void SetLightWorldViewPoint(const glm::mat4 a_lightViewPoint) const;
-
 	void SetDiffuseTextureUnit(const unsigned int a_textureUnit) const;
 	void SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const;
 	void SetNormalTextureUnit(const unsigned int a_textureUnit) const;
-	void SetShadowTextureUnit(const unsigned int a_textureUnit) const;
-
 	void SetDirectionalLight(const DirectionalLight* a_pLight);
 	void SetPointLights(unsigned int a_numLights, PointLight* a_pLights[]);
 	void SetSpotLights(unsigned int a_numLights, SpotLight* a_pLights[]);
-
 	void SetCameraLocalPos(const glm::vec3& a_cameraLocalPosition) const;
 	void SetMaterial(const Material& a_material) const;
 
@@ -41,13 +36,9 @@ private:
 	void InitalizeSpotLightUniformLocations();
 
 	GLint m_worldViewPointLocation; //Uniform Location for WVP Matrix
-	GLint m_lightWVPLocation; //Uniform location form the WVP Matrix from the perspective of the light
-
 	GLint m_diffuseSamplerLocation; //Uniform Location for the diffuse texture sampler
 	GLint m_specularSamplerLocation; //Uniform location for the specular power texture sampler
 	GLint m_normalSamplerLocation; //Uniform location for the normal texture sampler
-	GLint m_shadowSamplerLocation; //Uniform location for the shadow texture sampler
-
 	GLint m_cameraPositionLocation; //Uniform location for the camera location
 	GLint m_numPointLightsLocation; //Uniform location for the number of point lights
 	GLint m_numSpotLightsLocation; //Uniform location for the number of spot lights
