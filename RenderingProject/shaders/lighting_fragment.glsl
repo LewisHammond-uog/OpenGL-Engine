@@ -4,6 +4,7 @@ in vec2 vTexCoord;
 in vec3 vNormal;
 in vec3 vLocalPos;
 in vec3 vTangent;
+in vec4 vFragPosLightSpace;
 
 out vec4 fragColour;
 
@@ -57,11 +58,19 @@ uniform SpotLight uSpotLights[MAX_SPOT_LIGHTS];
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uSpecularSampler;
 uniform sampler2D uNormalSampler;
+uniform sampler2D uShadowSampler;
 uniform Material uMaterial;
 
 uniform vec3 uCameraLocalPos;
 
-vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal){
+float CalculateShadow()
+{
+	vec3 pos = vFragPosLightSpace.xyz * 0.5 + 0.5;
+	float depth = texture(uShadowSampler, pos.xy).r;
+	return depth < pos.z ? 0.0 : 1.0;
+}
+
+vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, float shadowFactor){
 
 	//Calculate ambient lighting based from properties of diretional light
 	vec4 ambientColour =	vec4(light.Colour, 1.f) *
@@ -97,12 +106,13 @@ vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal){
 		}
 	}
 
-	return (ambientColour + diffuseColour + specularColour);
+	return (ambientColour + (diffuseColour + specularColour));
 }
 
 vec4 CalculateDirectionalLight(vec3 normal)
 {
-	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal);
+	float shadow = CalculateShadow();
+	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal, shadow);
 }
 
 vec4 CalculatePointLight(PointLight light, vec3 normal)
@@ -111,7 +121,7 @@ vec4 CalculatePointLight(PointLight light, vec3 normal)
 	float Distance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
 
-	vec4 Color = CalculateLightInternal(light.base, LightDirection, normal);
+	vec4 Color = CalculateLightInternal(light.base, LightDirection, normal, 1.0);
 	float Attenuation = light.atten.constant +
 		light.atten.linear * Distance +
 		light.atten.exponential * Distance * Distance;

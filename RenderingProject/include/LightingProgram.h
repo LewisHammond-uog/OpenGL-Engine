@@ -24,11 +24,13 @@ public:
 	void SetDiffuseTextureUnit(const unsigned int a_textureUnit) const;
 	void SetSpecularPowerTextureUnit(const unsigned int a_textureUnit) const;
 	void SetNormalTextureUnit(const unsigned int a_textureUnit) const;
+	void SetShadowTextureUnit(const unsigned int a_textureUnit) const;
 	void SetDirectionalLight(const DirectionalLight* a_pLight);
 	void SetPointLights(unsigned int a_numLights, PointLight* a_pLights[]);
 	void SetSpotLights(unsigned int a_numLights, SpotLight* a_pLights[]);
 	void SetCameraLocalPos(const glm::vec3& a_cameraLocalPosition) const;
 	void SetMaterial(const Material& a_material) const;
+	void SetLightSpaceMatrix(const glm::mat4 a_matrix);
 
 private:
 
@@ -36,8 +38,10 @@ private:
 	void InitalizeSpotLightUniformLocations();
 
 	GLint m_worldViewPointLocation; //Uniform Location for WVP Matrix
+	GLint m_lightSpaceMatrixLocation; //Uniform Location for WVP Matrix
 	GLint m_diffuseSamplerLocation; //Uniform Location for the diffuse texture sampler
 	GLint m_specularSamplerLocation; //Uniform location for the specular power texture sampler
+	GLint m_shaodowSamplerLocation; //Uniform location for the specular power texture sampler
 	GLint m_normalSamplerLocation; //Uniform location for the normal texture sampler
 	GLint m_cameraPositionLocation; //Uniform location for the camera location
 	GLint m_numPointLightsLocation; //Uniform location for the number of point lights

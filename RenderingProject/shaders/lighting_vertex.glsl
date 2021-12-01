@@ -9,8 +9,10 @@ out vec2 vTexCoord;
 out vec3 vNormal;
 out vec3 vLocalPos;
 out vec3 vTangent;
+out vec4 vFragPosLightSpace;
 
 uniform mat4 uWorldViewPoint;
+uniform mat4 uLightSpaceMatrix;
 
 
 void main(){
@@ -18,5 +20,6 @@ void main(){
 	vNormal = Normal;
 	vLocalPos = Position.xyz;
 	vTangent = Tangent;
+	vFragPosLightSpace = uLightSpaceMatrix * vec4(vLocalPos, 1.0);
 	gl_Position = uWorldViewPoint * vec4(Position.xyz, 1.0);
 }

@@ -40,9 +40,11 @@ bool LightingProgram::Initialise()
 
 	//Get Uniform Locations
 	m_worldViewPointLocation = GetUniformLocation("uWorldViewPoint");
+	m_worldViewPointLocation = GetUniformLocation("uLightSpaceMatrix");
 	m_diffuseSamplerLocation = GetUniformLocation("uDiffuseSampler");
 	m_specularSamplerLocation = GetUniformLocation("uSpecularSampler");
 	m_normalSamplerLocation = GetUniformLocation("uNormalSampler");
+	m_shaodowSamplerLocation = GetUniformLocation("uShadowSampler");
 	//Shader Material Uniform Locations
 	materialLocation.ambientColour = GetUniformLocation("uMaterial.AmbientColour");
 	materialLocation.diffuseColour = GetUniformLocation("uMaterial.DiffuseColour");
@@ -187,6 +189,11 @@ void LightingProgram::SetNormalTextureUnit(const unsigned a_textureUnit) const
 	glUniform1i(m_normalSamplerLocation, a_textureUnit);
 }
 
+void LightingProgram::SetShadowTextureUnit(const unsigned a_textureUnit) const
+{
+	glUniform1i(m_shaodowSamplerLocation, a_textureUnit);
+}
+
 void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight)
 {
 	glUniform3f(dirLightLocation.colour, a_pLight->m_lightColour.r, a_pLight->m_lightColour.g, a_pLight->m_lightColour.b);
@@ -263,6 +270,11 @@ void LightingProgram::SetMaterial(const Material& a_material) const
 	glUniform3f(materialLocation.ambientColour, a_material.m_ambientColour.r, a_material.m_ambientColour.g, a_material.m_ambientColour.b);
 	glUniform3f(materialLocation.diffuseColour, a_material.m_diffuseColour.r, a_material.m_diffuseColour.g, a_material.m_diffuseColour.b);
 	glUniform3f(materialLocation.specularColour, a_material.m_specularColour.r, a_material.m_specularColour.g, a_material.m_specularColour.b);
+}
+
+void LightingProgram::SetLightSpaceMatrix(const glm::mat4 a_matrix)
+{
+	glUniformMatrix4fv(m_lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(a_matrix));
 }
 
 

@@ -28,25 +28,28 @@ bool ShadowFBO::Init(unsigned a_width, unsigned a_height)
 {
 	//Create FBO object and bind it as the active Frame Buffer
 	glGenFramebuffers(1, &m_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
 	//Create a depth texture and set it as the active texture
 	glGenTextures(1, &m_depthTexture);
 	glBindTexture(GL_TEXTURE_2D, m_depthTexture);
 
 	//Set its size, mipmap node and clamp
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, a_width, a_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, a_width, a_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//Bind Frame Buffer to the depth texture
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_depthTexture, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
 
 	//Disable writes to the color buffer
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
+
+	//Unbund FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Check for successful setup
 	const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -59,6 +62,8 @@ bool ShadowFBO::Init(unsigned a_width, unsigned a_height)
 		}
 		return false;
 	}
+
+
 
 	return true;
 }
