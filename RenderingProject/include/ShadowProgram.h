@@ -2,8 +2,6 @@
 #define __SHADOW_PROGRAM_H__
 
 
-#include <glm/detail/type_mat.hpp>
-
 #include "ShaderProgram.h"
 
 class ShadowProgram : public ShaderProgram
@@ -13,10 +11,8 @@ public:
 
 	bool Initialise() override;
 
-	void SetLightSpaceMatrix(glm::mat4 a_matrix);
-
 private:
-	GLint m_lightSpaceMatrixLocation;//Uniform Location for WVP Matrix
+	GLint m_worldViewPointLocation;//Uniform Location for WVP Matrix
 	GLint m_depthSamplerLocation;  //Uniform Location for the shadow texture
 }; 
 

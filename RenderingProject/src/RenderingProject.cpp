@@ -57,8 +57,7 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 	pLightingProgram->SetNormalTextureUnit(NORMAL_TEXTURE_INDEX);
-	pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
-	
+
 	pLightingManager = new LightingManager(pLightingProgram);
 	pLightingManager->CreateDirectionalLight();
 	//pLightingManager->CreatePointLight();
@@ -69,7 +68,7 @@ bool RenderingProject::onCreate()
 	pShadowProgram->Initialise();
 
 	pFBO = new ShadowFBO();
-	pFBO->Init(1920,1080);
+	pFBO->Init();
 
 	return true;
 }
@@ -124,26 +123,13 @@ void RenderingProject::Draw()
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
 
-	glm::mat4 lightProjection, lightView;
-	glm::mat4 lightSpaceMatrix;
-	glm::vec3 lightPos = glm::vec3(10, 10, 10);
-	float nearPlane = 1.0f, farPlane = 100.f;
-	lightProjection = glm::ortho(-10.f, 10.f, -10.f, 10.f, nearPlane, farPlane);
-	lightView = glm::lookAt(lightPos, glm::vec3(0.f), glm::vec3(0, 1, 0));
-	lightSpaceMatrix = lightProjection * lightView;
-
 	pShadowProgram->UseProgram();
-	pShadowProgram->SetLightSpaceMatrix(lightSpaceMatrix);
 	pFBO->BindForWriting();
-	glViewport(0, 0, 1920, 1080); //set to the shadow map size
 	glClear(GL_DEPTH_BUFFER_BIT);
 	pMesh->Render();
-	//Unbund FBO
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
 
 	pLightingProgram->UseProgram();
-	glViewport(0, 0, 1920, 1080); //set to the screen map size
+
 	//Set positions/materials for rendering
 	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);

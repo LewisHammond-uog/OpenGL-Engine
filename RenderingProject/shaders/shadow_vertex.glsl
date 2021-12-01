@@ -5,7 +5,6 @@ layout (location = 1) in vec2 TexCoord;
 layout (location = 2) in vec3 Normal;
 layout (location = 3) in vec3 Tangent;
 
-uniform mat4 uModelMatrix;
 uniform mat4 uWorldViewPoint;
 
 void main(){
