@@ -15,10 +15,10 @@ bool ShadowProgram::Initialise()
 	{
 		return false;
 	}
-	//if(!AddShader(GL_FRAGMENT_SHADER, "../shaders/shadow_fragment.glsl"))
-	//{
-	//	return false;
-	//}
+	if(!AddShader(GL_FRAGMENT_SHADER, "../shaders/shadow_fragment.glsl"))
+	{
+		return false;
+	}
 
 	//Compile Shader
 	if(!CompileProgram())

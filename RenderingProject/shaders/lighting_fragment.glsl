@@ -4,6 +4,7 @@ in vec2 vTexCoord;
 in vec3 vNormal;
 in vec3 vLocalPos;
 in vec3 vTangent;
+in vec4 vFragPosLight;
 
 out vec4 fragColour;
 
@@ -57,11 +58,29 @@ uniform SpotLight uSpotLights[MAX_SPOT_LIGHTS];
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uSpecularSampler;
 uniform sampler2D uNormalSampler;
+uniform sampler2D uShadowSampler;
 uniform Material uMaterial;
 
 uniform vec3 uCameraLocalPos;
 
-vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal){
+float CalculateShadow(){
+	float shadow = 0.f;
+	vec3 lightCoords = vFragPosLight.xyz / vFragPosLight.w; //light coords in clip space
+	if(lightCoords.z <= 1.0)
+	{
+		lightCoords = (lightCoords + 1.0f) / 2.f;
+		float closestDepth = texture(uShadowSampler, lightCoords.xy).r;
+		float currentDepth = lightCoords.z;
+
+		if(currentDepth > closestDepth){
+			shadow = 1.0f;
+		}
+	}
+
+	return shadow;
+}
+
+vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, float shadowFactor){
 
 	//Calculate ambient lighting based from properties of diretional light
 	vec4 ambientColour =	vec4(light.Colour, 1.f) *
@@ -97,12 +116,13 @@ vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal){
 		}
 	}
 
-	return (ambientColour + diffuseColour + specularColour);
+	return (ambientColour + shadowFactor * (diffuseColour + specularColour));
 }
 
 vec4 CalculateDirectionalLight(vec3 normal)
 {
-	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal);
+	float shadowFactor = 1 - CalculateShadow();
+	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal, shadowFactor);
 }
 
 vec4 CalculatePointLight(PointLight light, vec3 normal)
@@ -111,7 +131,7 @@ vec4 CalculatePointLight(PointLight light, vec3 normal)
 	float Distance = length(LightDirection);
 	LightDirection = normalize(LightDirection);
 
-	vec4 Color = CalculateLightInternal(light.base, LightDirection, normal);
+	vec4 Color = CalculateLightInternal(light.base, LightDirection, normal, 1);
 	float Attenuation = light.atten.constant +
 		light.atten.linear * Distance +
 		light.atten.exponential * Distance * Distance;

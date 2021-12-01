@@ -128,8 +128,8 @@ void RenderingProject::Draw()
 	//-----------------------------------------------------
 
 	// Matrices needed for the light's perspective
-	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::mat4 lightView = glm::lookAt(20.0f * glm::vec3(0,1,0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 orthgonalProjection = glm::ortho(-135.0f, 135.0f, -135.0f, 315.0f, 0.1f, 1000.0f);
+	glm::mat4 lightView = glm::lookAt(glm::vec3(m_cameraMatrix[3]), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
 
 	const int shadowMapWidth = 1920;
@@ -151,12 +151,14 @@ void RenderingProject::Draw()
 	//-----------------------------------------------------
 
 	pLightingProgram->UseProgram();
+	pFBO->BindForReading();
 
 	//Set positions/materials for rendering
 	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
 	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
+	pLightingProgram->SetLightViewPoint(lightProjectionView);
 
 	pLightingManager->Update(*transform);
 	pLightingManager->RenderImguiWindow();
