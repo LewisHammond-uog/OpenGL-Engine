@@ -1,5 +1,7 @@
 #include "ShadowProgram.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 bool ShadowProgram::Initialise()
 {
 	//Call base initalisation
@@ -25,8 +27,13 @@ bool ShadowProgram::Initialise()
 	}
 
 	//Get Uniform Locations
-	m_worldViewPointLocation = GetUniformLocation("uWorldViewPoint"); 
+	m_lightViewPointLocation = GetUniformLocation("uLightViewPoint"); 
 	m_depthSamplerLocation = GetUniformLocation("uDepthSampler");
 
 	return true;
+}
+
+void ShadowProgram::SetLightViewPoint(glm::mat4 a_matrix)
+{
+	glUniformMatrix4fv(m_lightViewPointLocation, 1, GL_FALSE, glm::value_ptr(a_matrix));
 }

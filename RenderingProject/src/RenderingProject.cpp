@@ -68,7 +68,7 @@ bool RenderingProject::onCreate()
 	pShadowProgram->Initialise();
 
 	pFBO = new ShadowFBO();
-	pFBO->Init();
+	pFBO->Init(1920, 1080);
 
 	return true;
 }
@@ -123,10 +123,32 @@ void RenderingProject::Draw()
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
 
+	//-----------------------------------------------------
+	//SHADOW
+	//-----------------------------------------------------
+
+	// Matrices needed for the light's perspective
+	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+	glm::mat4 lightView = glm::lookAt(20.0f * glm::vec3(0,1,0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
+
+	const int shadowMapWidth = 1920;
+	const int shadowMapHeight = 1080;
+
 	pShadowProgram->UseProgram();
+	pShadowProgram->SetLightViewPoint(lightProjectionView);
 	pFBO->BindForWriting();
 	glClear(GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+
 	pMesh->Render();
+	//Unbund FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	//-----------------------------------------------------
+	//NORMAL
+	//-----------------------------------------------------
 
 	pLightingProgram->UseProgram();
 
