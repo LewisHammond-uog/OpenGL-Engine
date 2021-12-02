@@ -10,9 +10,17 @@ out vec3 vNormal;
 out vec3 vLocalPos;
 out vec3 vTangent;
 out vec4 vFragPosLight;
+out vec4 vShadowCoord;
 
 uniform mat4 uWorldViewPoint;
 uniform mat4 uLightViewPoint;
+
+const mat4 SHADOW_BIAS_MATRIX = mat4(
+	0.5, 0.0, 0.0, 0.0,
+	0.0, 0.5, 0.0, 0.0,
+	0.0, 0.0, 0.5, 0.0,
+	0.5, 0.5, 0.5, 1.0
+);
 
 
 void main(){
@@ -21,5 +29,6 @@ void main(){
 	vLocalPos = Position.xyz;
 	vTangent = Tangent;
 	vFragPosLight = uLightViewPoint * vec4(vLocalPos, 0);
+	vShadowCoord = SHADOW_BIAS_MATRIX * uLightViewPoint * Position;
 	gl_Position = uWorldViewPoint * vec4(Position.xyz, 1.0);
 }

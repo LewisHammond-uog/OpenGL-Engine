@@ -35,6 +35,10 @@ public:
 
 	void RenderImguiWindow();
 
+	//All point lights
+	PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
+	unsigned int m_createdPointLightsCount = 0;
+
 private:
 
 	void DrawImguiDirectionalLightSetting(DirectionalLight* a_pLight) const;
@@ -48,8 +52,8 @@ private:
 	DirectionalLight* m_pDirectionalLight;
 
 	//All point lights
-	PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
-	unsigned int m_createdPointLightsCount = 0;
+	//PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
+	//unsigned int m_createdPointLightsCount = 0;
 
 	//All spot lights
 	SpotLight* m_spotLights[MAX_SPOT_LIGHTS]{};

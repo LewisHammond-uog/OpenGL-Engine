@@ -5,6 +5,7 @@ in vec3 vNormal;
 in vec3 vLocalPos;
 in vec3 vTangent;
 in vec4 vFragPosLight;
+in vec4 vShadowCoord;
 
 out vec4 fragColour;
 
@@ -63,21 +64,14 @@ uniform Material uMaterial;
 
 uniform vec3 uCameraLocalPos;
 
+const float SHADOW_BIAS = 0.002f;
+
 float CalculateShadow(){
-	float shadow = 0.f;
-	vec3 lightCoords = vFragPosLight.xyz / vFragPosLight.w; //light coords in clip space
-	if(lightCoords.z <= 1.0)
-	{
-		lightCoords = (lightCoords + 1.0f) / 2.f;
-		float closestDepth = texture(uShadowSampler, lightCoords.xy).r;
-		float currentDepth = lightCoords.z;
-
-		if(currentDepth > closestDepth){
-			shadow = 1.0f;
-		}
+	float shadowFactor = 0;
+	if (texture(uShadowSampler, vShadowCoord.xy).z < vShadowCoord.z - SHADOW_BIAS) {
+		shadowFactor = 1;
 	}
-
-	return shadow;
+	return shadowFactor;
 }
 
 vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, float shadowFactor){

@@ -57,12 +57,13 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 	pLightingProgram->SetNormalTextureUnit(NORMAL_TEXTURE_INDEX);
+	pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
 
 	pLightingManager = new LightingManager(pLightingProgram);
 	pLightingManager->CreateDirectionalLight();
-	//pLightingManager->CreatePointLight();
-	//pLightingManager->CreatePointLight();
-	//pLightingManager->CreateSpotLight();
+	pLightingManager->CreatePointLight();
+	pLightingManager->CreatePointLight();
+	pLightingManager->CreateSpotLight();
 
 	pShadowProgram = new ShadowProgram();
 	pShadowProgram->Initialise();
@@ -92,6 +93,16 @@ void RenderingProject::Update(float a_deltaTime)
 		Gizmos::addLine( glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i), 
 						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
 	}
+
+	ImGui::Begin("Test");
+	ImGui::BeginTabBar("FBO");
+	if (ImGui::BeginTabItem("Depth Buffer")) {
+		ImTextureID texID = (void*)(intptr_t)pFBO->m_depthTexture;
+		ImGui::Image(texID, ImVec2(m_windowWidth * 0.25, m_windowHeight * 0.25), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+	ImGui::EndTabBar();
+	ImGui::End();
 	
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
@@ -116,21 +127,27 @@ void RenderingProject::Draw()
 	
 	// get the view matrix from the world-space camera matrix
 	glm::mat4 viewMatrix = glm::inverse( m_cameraMatrix );
+
+	WorldTransform* transform = new WorldTransform();
+	transform->SetPosition(glm::vec3(0, 0, 0));
+
+	// Matrices needed for the light's perspective
+	glm::vec3 lightPos = pLightingManager->m_pointLights[0]->m_worldPosition;
+	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
+	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
+
+	Gizmos::addBox(lightPos, glm::vec3(0.5f), true);
 	
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
-	WorldTransform* transform = new WorldTransform();
-	transform->SetPosition(glm::vec3(0, 0, 0));
 
 	//-----------------------------------------------------
 	//SHADOW
 	//-----------------------------------------------------
 
-	// Matrices needed for the light's perspective
-	glm::mat4 orthgonalProjection = glm::ortho(-135.0f, 135.0f, -135.0f, 315.0f, 0.1f, 1000.0f);
-	glm::mat4 lightView = glm::lookAt(glm::vec3(m_cameraMatrix[3]), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
+
 
 	const int shadowMapWidth = 1920;
 	const int shadowMapHeight = 1080;

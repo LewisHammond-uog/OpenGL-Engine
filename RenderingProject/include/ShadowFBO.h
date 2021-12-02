@@ -15,9 +15,11 @@ public:
 	void BindForWriting();
 	void BindForReading();
 
+	GLuint m_depthTexture; //Handle to Shadow Map Texture
+
 private:
 	GLuint m_fbo; //Handle to Frame Buffer Object
-	GLuint m_depthTexture; //Handle to Shadow Map Texture
+
 };
 
 #endif //__SHADOW_FBO_H__
