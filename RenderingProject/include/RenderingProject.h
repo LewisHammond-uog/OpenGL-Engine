@@ -8,6 +8,7 @@
 //Forward declare
 class Mesh;
 class LightingProgram;
+class GeometryProgram;
 class LightingManager;
 class DirectionalLight;
 class ShadowProgram;
@@ -42,9 +43,12 @@ private:
 	LightingProgram* pLightingProgram;
 	LightingManager* pLightingManager;
 
+	//Shadows
 	ShadowProgram* pShadowProgram;
 	ShadowFBO* pFBO;
-	
+
+	//Geometry Shader
+	GeometryProgram* m_pGeoProgram;
 };
 
 #endif // __RenderingProject_H_

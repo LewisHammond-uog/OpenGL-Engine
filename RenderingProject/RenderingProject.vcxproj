@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="include\BaseLight.h" />
     <ClInclude Include="include\DirectionalLight.h" />
+    <ClInclude Include="include\GeometryProgram.h" />
     <ClInclude Include="include\LightingManager.h" />
     <ClInclude Include="include\LightingProgram.h" />
     <ClInclude Include="include\Macros.h" />
@@ -32,6 +33,7 @@
     <ClCompile Include="include\Mesh.cpp" />
     <ClCompile Include="scr\LightingManager.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
+    <ClCompile Include="src\GeometryProgram.cpp" />
     <ClCompile Include="src\LightingProgram.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Material.cpp" />
@@ -45,6 +47,15 @@
     <ClCompile Include="src\WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\geo_fragment.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\geo_geometry.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="shaders\geo_vertex.glsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="shaders\lighting_fragment.glsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>

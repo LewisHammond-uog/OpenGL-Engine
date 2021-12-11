@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\Shadows">
       <UniqueIdentifier>{43f42e22-e861-47b8-b74d-ffbef6f10e26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Geometry">
+      <UniqueIdentifier>{49be0292-e0de-4ebc-b077-795a85c6ea4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\RenderingProject.h">
@@ -81,6 +84,9 @@
     <ClInclude Include="include\ShadowFBO.h">
       <Filter>Header Files\Shader Programs</Filter>
     </ClInclude>
+    <ClInclude Include="include\GeometryProgram.h">
+      <Filter>Header Files\Shader Programs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -125,6 +131,9 @@
     <ClCompile Include="src\ShadowProgram.cpp">
       <Filter>Source Files\Shader Programs</Filter>
     </ClCompile>
+    <ClCompile Include="src\GeometryProgram.cpp">
+      <Filter>Source Files\Shader Programs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -144,6 +153,15 @@
     </None>
     <None Include="shaders\shadow_vertex.glsl">
       <Filter>Resource Files\Shadows</Filter>
+    </None>
+    <None Include="shaders\geo_fragment.glsl">
+      <Filter>Resource Files\Geometry</Filter>
+    </None>
+    <None Include="shaders\geo_geometry.glsl">
+      <Filter>Resource Files\Geometry</Filter>
+    </None>
+    <None Include="shaders\geo_vertex.glsl">
+      <Filter>Resource Files\Geometry</Filter>
     </None>
   </ItemGroup>
 </Project>

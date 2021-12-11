@@ -17,6 +17,7 @@
 #include "LightingManager.h"
 #include "ShadowProgram.h"
 #include "ShadowFBO.h"
+#include "GeometryProgram.h"
 
 
 RenderingProject::RenderingProject()
@@ -71,6 +72,9 @@ bool RenderingProject::onCreate()
 
 	pFBO = new ShadowFBO();
 	pFBO->Init(1920, 1080);
+
+	m_pGeoProgram = new GeometryProgram();
+	m_pGeoProgram->Initialise();
 
 	return true;
 }
