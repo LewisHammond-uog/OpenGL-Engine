@@ -29,6 +29,8 @@ bool GeometryProgram::Initialise()
 	}
 
 	//Get uniform locations
-
+	m_projectionViewLocation = GetUniformLocation("ProjectionView");
+	m_cameraWorldPosLocation = GetUniformLocation("CameraPosition");
+	m_textureLocation = GetUniformLocation("TextureSampler");
 
 }
