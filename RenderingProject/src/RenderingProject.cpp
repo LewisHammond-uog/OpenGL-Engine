@@ -75,6 +75,7 @@ bool RenderingProject::onCreate()
 
 	m_pGeoProgram = new GeometryProgram();
 	m_pGeoProgram->Initialise();
+	m_pGeoProgram->SetupBuffers();
 
 	return true;
 }
@@ -154,6 +155,7 @@ void RenderingProject::Draw()
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
 
+
 	//-----------------------------------------------------
 	//SHADOW
 	//-----------------------------------------------------
@@ -177,7 +179,7 @@ void RenderingProject::Draw()
 	//-----------------------------------------------------
 	//NORMAL
 	//-----------------------------------------------------
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	pLightingProgram->UseProgram();
 	pFBO->BindForReading();
 
@@ -192,6 +194,18 @@ void RenderingProject::Draw()
 	pLightingManager->RenderImguiWindow();
 
 	pMesh->Render();
+
+
+	//-----------------------------------------------------
+//PARTICLES
+//-----------------------------------------------------
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	m_pGeoProgram->UseProgram();
+	m_pGeoProgram->SetProjectionView(m_projectionMatrix * viewMatrix);
+	m_pGeoProgram->SetCameraWorldPos(m_cameraMatrix[3]);
+	m_pGeoProgram->DrawParticles();
+
+
 
 	//Unbind Program
 	glUseProgram(0);

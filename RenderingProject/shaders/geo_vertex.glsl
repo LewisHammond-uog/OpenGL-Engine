@@ -1,7 +1,7 @@
 #version 330
 
-in float particleType;
 in vec4 particlePos;
+in float particleType;
 in vec4 particleVelocity;
 in float particleAge;
 
