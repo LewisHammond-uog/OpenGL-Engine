@@ -382,12 +382,10 @@ Texture* Mesh::LoadTexture(const std::string& a_directory, const aiMaterial* a_a
 		aiString path;
 		if (a_assimpMaterial->GetTexture(a_textureType, 0, &path) == AI_SUCCESS)
 		{
-			//construct the full path of the texutre file
-			std::string p = path.data;
-			char* test = new char[256];
+			char* fileName = new char[256];
 			char* extension = new char[4];
-			_splitpath(path.C_Str(), nullptr, nullptr, test, extension);
-			p = test;
+			_splitpath(path.C_Str(), nullptr, nullptr, fileName, extension);
+			std::string p = fileName;
 			p += extension;
 			if (p.substr(0, 2) == ".\\")
 			{

@@ -8,12 +8,16 @@
 #include <imgui.h>
 
 //Project Includes
+#include "Macros.h"
 #include "Application_Log.h"
+#include "WorldTransform.h"
 #include "Mesh.h"
+#include "DirectionalLight.h"
 #include "LightingProgram.h"
 #include "LightingManager.h"
-#include "Macros.h"
-#include "WorldTransform.h"
+#include "ShadowProgram.h"
+#include "ShadowFBO.h"
+
 
 RenderingProject::RenderingProject()
 {
@@ -54,13 +58,19 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
 	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
 	pLightingProgram->SetNormalTextureUnit(NORMAL_TEXTURE_INDEX);
+	pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
 
 	pLightingManager = new LightingManager(pLightingProgram);
-	pLightingManager->CreateDirectionalLight();
-	//pLightingManager->CreatePointLight();
-	//pLightingManager->CreatePointLight();
-	//pLightingManager->CreateSpotLight();
+	m_pShadowSourceLight = pLightingManager->CreateDirectionalLight();
+	pLightingManager->CreatePointLight();
+	pLightingManager->CreatePointLight();
+	pLightingManager->CreateSpotLight();
 
+	pShadowProgram = new ShadowProgram();
+	pShadowProgram->Initialise();
+
+	pFBO = new ShadowFBO();
+	pFBO->Init(1920, 1080);
 
 	return true;
 }
@@ -84,6 +94,16 @@ void RenderingProject::Update(float a_deltaTime)
 		Gizmos::addLine( glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i), 
 						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
 	}
+
+	ImGui::Begin("Test");
+	ImGui::BeginTabBar("FBO");
+	if (ImGui::BeginTabItem("Depth Buffer")) {
+		ImTextureID texID = (void*)(intptr_t)pFBO->m_depthTexture;
+		ImGui::Image(texID, ImVec2(m_windowWidth * 0.25, m_windowHeight * 0.25), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+	ImGui::EndTabBar();
+	ImGui::End();
 	
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
@@ -108,20 +128,61 @@ void RenderingProject::Draw()
 	
 	// get the view matrix from the world-space camera matrix
 	glm::mat4 viewMatrix = glm::inverse( m_cameraMatrix );
-	
-	// draw the gizmos from this frame
-	Gizmos::draw(viewMatrix, m_projectionMatrix);
 
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
 
+	glm::vec3 lightPos = glm::vec3(0, 0, 0);
+	if (m_pShadowSourceLight != nullptr) 
+	{
+		constexpr float lightProjectionDistance = 20.f;
+		lightPos = -m_pShadowSourceLight->m_worldDirection * lightProjectionDistance;
+	}
+
+	// Matrices needed for the light's perspective
+	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
+	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
+
+	Gizmos::addBox(lightPos, glm::vec3(0.5f), true);
+	
+	// draw the gizmos from this frame
+	Gizmos::draw(viewMatrix, m_projectionMatrix);
+
+
+	//-----------------------------------------------------
+	//SHADOW
+	//-----------------------------------------------------
+
+
+
+	const int shadowMapWidth = 1920;
+	const int shadowMapHeight = 1080;
+
+	pShadowProgram->UseProgram();
+	pShadowProgram->SetLightViewPoint(lightProjectionView);
+	pFBO->BindForWriting();
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+
+	pMesh->Render();
+	//Unbund FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	//-----------------------------------------------------
+	//NORMAL
+	//-----------------------------------------------------
+
 	pLightingProgram->UseProgram();
+	pFBO->BindForReading();
 
 	//Set positions/materials for rendering
 	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
 	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
+	pLightingProgram->SetLightViewPoint(lightProjectionView);
 
 	pLightingManager->Update(*transform);
 	pLightingManager->RenderImguiWindow();

@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Lights">
       <UniqueIdentifier>{ba82260e-aa2a-4964-aff7-30258543cc0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Lighting">
+      <UniqueIdentifier>{35e4b952-0fbf-4e21-b10f-6118e0bd1019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shadows">
+      <UniqueIdentifier>{43f42e22-e861-47b8-b74d-ffbef6f10e26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\RenderingProject.h">
@@ -69,6 +75,12 @@
     <ClInclude Include="include\LightingManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ShadowProgram.h">
+      <Filter>Header Files\Shader Programs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShadowFBO.h">
+      <Filter>Header Files\Shader Programs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -107,6 +119,12 @@
     <ClCompile Include="scr\LightingManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ShadowFBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowProgram.cpp">
+      <Filter>Source Files\Shader Programs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -116,10 +134,16 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="shaders\lighting_fragment.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Lighting</Filter>
     </None>
     <None Include="shaders\lighting_vertex.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Lighting</Filter>
+    </None>
+    <None Include="shaders\shadow_fragment.glsl">
+      <Filter>Resource Files\Shadows</Filter>
+    </None>
+    <None Include="shaders\shadow_vertex.glsl">
+      <Filter>Resource Files\Shadows</Filter>
     </None>
   </ItemGroup>
 </Project>

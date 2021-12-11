@@ -2,6 +2,7 @@
 #define __LIGHTING_MANAGER_H__
 
 #include "LightingProgram.h"
+#include "DirectionalLight.h"
 #include "SpotLight.h"
 #include "PointLight.h"
 
@@ -26,7 +27,7 @@ public:
 	                             float a_exponentialAttenuation = 0.1f);
 
 	SpotLight* CreateSpotLight(glm::vec3 a_worldPosition = glm::vec3(0.f),
-								glm::vec3 a_worldDirection = glm::vec3(0.f, 1.0f, 0.0f), //down
+								glm::vec3 a_worldDirection = glm::vec3(0.f, -1.0f, 0.0f), //down
 								glm::vec3 a_colour = glm::vec3(1.f, 1.f, 1.f),
 								float a_diffuseIntensity = 1.0f,
 								float a_linearAttenuation = 0.1f,
@@ -34,6 +35,7 @@ public:
 								float a_cutOffAngle = 20.f);
 
 	void RenderImguiWindow();
+
 
 private:
 
