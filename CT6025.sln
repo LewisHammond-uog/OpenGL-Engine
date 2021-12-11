@@ -5,11 +5,6 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "framework\framework.vcxproj", "{473F1220-17D6-4B43-BF91-9F839980F0A3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example", "example\example.vcxproj", "{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderingProject", "RenderingProject\RenderingProject.vcxproj", "{8AEBF200-FF9C-4942-8C6E-37C415200697}"
 	ProjectSection(ProjectDependencies) = postProject
 		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
@@ -29,12 +24,6 @@ Global
 		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Release|x64.ActiveCfg = Release|x64
 		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Release|x64.Build.0 = Release|x64
 		{473F1220-17D6-4B43-BF91-9F839980F0A3}.Release|x86.ActiveCfg = Release|x64
-		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Debug|x64.ActiveCfg = Debug|x64
-		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Debug|x64.Build.0 = Debug|x64
-		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Debug|x86.ActiveCfg = Debug|x64
-		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x64.ActiveCfg = Release|x64
-		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x64.Build.0 = Release|x64
-		{FD4570AB-7F0A-4AFE-8B38-383FC82E2A5E}.Release|x86.ActiveCfg = Release|x64
 		{8AEBF200-FF9C-4942-8C6E-37C415200697}.Debug|x64.ActiveCfg = Debug|x64
 		{8AEBF200-FF9C-4942-8C6E-37C415200697}.Debug|x64.Build.0 = Debug|x64
 		{8AEBF200-FF9C-4942-8C6E-37C415200697}.Debug|x86.ActiveCfg = Debug|x64
