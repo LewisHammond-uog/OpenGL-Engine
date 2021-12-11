@@ -13,7 +13,7 @@ public:
 
 	bool Initialise() override;
 
-	void SetupBuffers();
+	void SetupBuffers(int a_numberOfStars);
 
 	void DrawParticles() const;
 
@@ -28,7 +28,7 @@ private:
 	GLint m_textureLocation;
 
 	glm::vec4* m_vertices;
-	const int m_particleCount = 4;
+	int m_particleCount = 4;
 
 	unsigned int m_VAO; //Vertex Array Object
 	unsigned int m_VBO; //Vertex Buffer Object

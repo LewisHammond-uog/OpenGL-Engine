@@ -75,7 +75,7 @@ bool RenderingProject::onCreate()
 
 	m_pGeoProgram = new GeometryProgram();
 	m_pGeoProgram->Initialise();
-	m_pGeoProgram->SetupBuffers();
+	m_pGeoProgram->SetupBuffers(100);
 
 	return true;
 }

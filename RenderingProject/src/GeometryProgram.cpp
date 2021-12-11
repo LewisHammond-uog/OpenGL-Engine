@@ -1,6 +1,7 @@
 #include "GeometryProgram.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/random.hpp>
 
 bool GeometryProgram::Initialise()
 {
@@ -37,8 +38,9 @@ bool GeometryProgram::Initialise()
 
 }
 
-void GeometryProgram::SetupBuffers()
+void GeometryProgram::SetupBuffers(const int a_numberOfStars)
 {
+	m_particleCount = a_numberOfStars;
 	m_vertices = new glm::vec4[m_particleCount];
 
 	// Generate and bind our Vertex Array Object
@@ -48,7 +50,7 @@ void GeometryProgram::SetupBuffers()
 	//Generate our Vertex Buffer Object
 	glGenBuffers(1, &m_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(glm::vec4), m_vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_particleCount * sizeof(glm::vec4), m_vertices, GL_DYNAMIC_DRAW);
 
 	glBindAttribLocation(m_glShaderProgramID, 0, "particlePos");
 
@@ -72,19 +74,19 @@ void GeometryProgram::SetupBuffers()
 
 	//Set our vertex and Index buffers in here as they don't get altered for this programs run through
 	//set the vertices for our billboard -- there is no reason this couldn't be in the init function 
-	//as these vertice data do not change over time. 
+	//as these vertice data do not change over time.
+	for(int i = 0; i < m_particleCount; ++i)
+	{
+		m_vertices[i] = glm::vec4(0.f, i * 5, 0.f, 1.0f);
+	}
 
-	m_vertices[0] = glm::vec4(-4.f, 0.f, 0.f, 1.f);
-	m_vertices[1] = glm::vec4(4.f, 0.f, 0.f, 1.f);
-	m_vertices[2] = glm::vec4(-4.f, 4.f, 0.f, 1.f);
-	m_vertices[3] = glm::vec4(4.f, 4.f, 0.f, 1.f);
 
 	//bind our vertex buffer and fill it with our mertex data
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(glm::vec4), m_vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_particleCount * sizeof(glm::vec4), m_vertices, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//bind our index buffer and specify the indices order in the indices array		
-	unsigned int indices[] = { 0, 1, 2, 3 };
+	constexpr unsigned int indices[] = { 0, 1, 2, 3 };
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_particleCount * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
