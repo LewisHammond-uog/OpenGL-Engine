@@ -43,7 +43,6 @@ layout(binding = 0, offset = 0) uniform atomic_uint particleCount;
 vec4 GetRandomVelocity(float fTime)
 {
 	vec3 velocity = (texture(randomTexture, vec2(fTime * 10.0, fTime * 64.0)).rbg - 0.5) * 2.0;
-	velocity.y = 1.0f;
 	return vec4(velocity, 0.0);
 
 }
@@ -54,7 +53,7 @@ void main( )
 	
 	if (vertex[0].pType == PTYPE_EMITTER) //This is the particle emitter, let it emit particles
 	{
-		for (int i = 0; i < 1; ++i) //loop and emit 30 particles each frame from this emitter.
+		for (int i = 0; i < 31; ++i) //loop and emit 30 particles each frame from this emitter.
 		{
 			Type = PTYPE_PARTICLE;
 			Position = vertex[0].pPos;

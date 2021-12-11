@@ -18,12 +18,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "deps\glfw\proj\vs20
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "deps\imgui\Imgui.vcxproj", "{EB9D8959-331B-4B97-921D-82727E627FCF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Week_05_geometry_shdr", "Week_05_geometry_shdr\geometry_shdr.vcxproj", "{03C31986-5865-48E0-BC61-4309108A2EDB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Week_05_ParticleGeoShader", "Week_05_geometry_shdr\geometry_shdr.vcxproj", "{03C31986-5865-48E0-BC61-4309108A2EDB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "geo_test", "geometry_shdr\geo_test.vcxproj", "{9786359B-3559-4271-8CF6-0CB7AB9D45C4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Week05_SimpleGeoShader", "geometry_shdr\geo_test.vcxproj", "{9786359B-3559-4271-8CF6-0CB7AB9D45C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{473F1220-17D6-4B43-BF91-9F839980F0A3} = {473F1220-17D6-4B43-BF91-9F839980F0A3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

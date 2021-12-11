@@ -37,12 +37,12 @@ bool GeometryShdr::onCreate()
 	//limit the maximum vertices we can have
 	m_maxIndices = 4;
 	//Load the shaders for this program
-	m_vertexShader = Utility::loadShader("./shaders/vertex.glsl", GL_VERTEX_SHADER);
-	m_fragmentShader = Utility::loadShader("./shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+	m_vertexShader = Utility::loadShader("../resources/shaders/vertex.glsl", GL_VERTEX_SHADER);
+	m_fragmentShader = Utility::loadShader("../resources/shaders/fragment.glsl", GL_FRAGMENT_SHADER);
 	//here we have an additional shader to load and bind the geometry shader
 	//This is the only change to our loading code for this example as the geometry shader
 	//feeds into the fragment shader the outputs remain the same.
-	m_geometryShader = Utility::loadShader("./shaders/geometry.glsl", GL_GEOMETRY_SHADER);
+	m_geometryShader = Utility::loadShader("../resources/shaders/geometry.glsl", GL_GEOMETRY_SHADER);
 	//Define the input and output varialbes in the shaders
 	//Note: these names are taken from the glsl files -- added in inputs for UV coordinates
 	const char* szInputs[] = { "Position", "Colour" };
@@ -90,16 +90,16 @@ bool GeometryShdr::onCreate()
 	//set the vertices for our billboard -- there is no reason this couldn't be in the init function 
 	//as these vertice data do not change over time. 
 
-	m_vertices[0].pos = glm::vec4(-4.f, 0.f, 0.f, 1.f);
+	m_vertices[0].pos = glm::vec4(-100.f, 0.f, 0.f, 1.f);
 	m_vertices[0].colour = glm::vec4(1.f, 0.f, 0.f, 1.f);
 
-	m_vertices[1].pos = glm::vec4(4.f, 0.f, 0.f, 1.f);
+	m_vertices[1].pos = glm::vec4(100.f, 0.f, 0.f, 1.f);
 	m_vertices[1].colour = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
-	m_vertices[2].pos = glm::vec4(-4.f, 4.f, 0.f, 1.f);
+	m_vertices[2].pos = glm::vec4(-100.f, 4.f, 0.f, 1.f);
 	m_vertices[2].colour = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
-	m_vertices[3].pos = glm::vec4(4.f, 4.f, 0.f, 1.f);
+	m_vertices[3].pos = glm::vec4(100.f, 4.f, 0.f, 1.f);
 	m_vertices[3].colour = glm::vec4(1.f, 1.f, 1.f, 1.f);
 
 	//bind our vertex buffer and fill it with our mertex data
@@ -111,7 +111,7 @@ bool GeometryShdr::onCreate()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_maxIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-	LoadImageFromFile("./images/starAlpha.png", m_textureID);
+	LoadImageFromFile("../resources/images/starAlpha.png", m_textureID);
 	
 	// create a world-space matrix for a camera
 	m_cameraMatrix = glm::inverse( glm::lookAt(glm::vec3(10,10,10),glm::vec3(0,0,0), glm::vec3(0,1,0)) );
