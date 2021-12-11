@@ -12,6 +12,7 @@
 #include "Application_Log.h"
 #include "WorldTransform.h"
 #include "Mesh.h"
+#include "DirectionalLight.h"
 #include "LightingProgram.h"
 #include "LightingManager.h"
 #include "ShadowProgram.h"
@@ -60,7 +61,7 @@ bool RenderingProject::onCreate()
 	pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
 
 	pLightingManager = new LightingManager(pLightingProgram);
-	pLightingManager->CreateDirectionalLight();
+	m_pShadowSourceLight = pLightingManager->CreateDirectionalLight();
 	pLightingManager->CreatePointLight();
 	pLightingManager->CreatePointLight();
 	pLightingManager->CreateSpotLight();
@@ -131,8 +132,14 @@ void RenderingProject::Draw()
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
 
+	glm::vec3 lightPos = glm::vec3(0, 0, 0);
+	if (m_pShadowSourceLight != nullptr) 
+	{
+		constexpr float lightProjectionDistance = 20.f;
+		lightPos = -m_pShadowSourceLight->m_worldDirection * lightProjectionDistance;
+	}
+
 	// Matrices needed for the light's perspective
-	glm::vec3 lightPos = pLightingManager->m_pointLights[0]->m_worldPosition;
 	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
 	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();

@@ -2,6 +2,7 @@
 #define __LIGHTING_MANAGER_H__
 
 #include "LightingProgram.h"
+#include "DirectionalLight.h"
 #include "SpotLight.h"
 #include "PointLight.h"
 
@@ -26,7 +27,7 @@ public:
 	                             float a_exponentialAttenuation = 0.1f);
 
 	SpotLight* CreateSpotLight(glm::vec3 a_worldPosition = glm::vec3(0.f),
-								glm::vec3 a_worldDirection = glm::vec3(0.f, 1.0f, 0.0f), //down
+								glm::vec3 a_worldDirection = glm::vec3(0.f, -1.0f, 0.0f), //down
 								glm::vec3 a_colour = glm::vec3(1.f, 1.f, 1.f),
 								float a_diffuseIntensity = 1.0f,
 								float a_linearAttenuation = 0.1f,
@@ -35,9 +36,6 @@ public:
 
 	void RenderImguiWindow();
 
-	//All point lights
-	PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
-	unsigned int m_createdPointLightsCount = 0;
 
 private:
 
@@ -52,8 +50,8 @@ private:
 	DirectionalLight* m_pDirectionalLight;
 
 	//All point lights
-	//PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
-	//unsigned int m_createdPointLightsCount = 0;
+	PointLight* m_pointLights[MAX_POINT_LIGHTS]{};
+	unsigned int m_createdPointLightsCount = 0;
 
 	//All spot lights
 	SpotLight* m_spotLights[MAX_SPOT_LIGHTS]{};

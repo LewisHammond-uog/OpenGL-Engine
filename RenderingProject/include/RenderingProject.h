@@ -5,10 +5,11 @@
 #include <glm/glm.hpp>
 
 
-//Forward declare mesh
+//Forward declare
 class Mesh;
 class LightingProgram;
 class LightingManager;
+class DirectionalLight;
 class ShadowProgram;
 class ShadowFBO;
 
@@ -34,6 +35,9 @@ protected:
 
 private:
 	Mesh* pMesh;
+	
+	//Light used as the shadow source
+	DirectionalLight* m_pShadowSourceLight;
 
 	LightingProgram* pLightingProgram;
 	LightingManager* pLightingManager;
