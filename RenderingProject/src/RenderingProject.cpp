@@ -213,7 +213,7 @@ void RenderingProject::Draw()
 	pWaterProgram->SetWorldViewPoint(waterWVP);
 	pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
 	pWaterProgram->SetTime(Utility::getTotalTime());
-	pWaterMesh->Render();
+	pWaterMesh->Render(GL_TRIANGLES);
 
 	//Unbind Program
 	glUseProgram(0);

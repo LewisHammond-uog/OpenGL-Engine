@@ -67,11 +67,21 @@ uniform vec3 uCameraLocalPos;
 
 const float SHADOW_BIAS = 0.002f;
 
+const vec2 poissonDisk[4] = vec2[](
+  vec2( -0.94201624, -0.39906216 ),
+  vec2( 0.94558609, -0.76890725 ),
+  vec2( -0.094184101, -0.92938870 ),
+  vec2( 0.34495938, 0.29387760 )
+);
+
 float CalculateShadow(){
 	float shadowFactor = 0;
-	if (texture(uShadowSampler, vShadowCoord.xy).z < vShadowCoord.z - SHADOW_BIAS) {
-		shadowFactor = 1;
+	for(int i = 0; i < 4; ++i){
+		if( texture(uShadowSampler, vShadowCoord.xy + poissonDisk[i]/700).z  < vShadowCoord.z - SHADOW_BIAS){
+			shadowFactor += 0.2;
+		}
 	}
+
 	return shadowFactor;
 }
 
