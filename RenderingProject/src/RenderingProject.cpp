@@ -195,11 +195,12 @@ void RenderingProject::Draw()
 	pLightingManager->RenderImguiWindow();
 
 	//pMesh->Render();
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	pWaterProgram->UseProgram();
 	pWaterProgram->SetWorldViewPoint(worldViewProjection);
 	pWaterProgram->SetProjectionMatrix(worldViewProjection);
-	//pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
+	pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
 	pWaterProgram->SetTime(Utility::getTotalTime());
 	pWaterMesh->Render();
 
