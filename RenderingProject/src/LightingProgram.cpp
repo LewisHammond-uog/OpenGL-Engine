@@ -26,8 +26,15 @@ bool LightingProgram::Initialise()
 	{
 		return false;
 	}
-
 	if(!AddShader(GL_FRAGMENT_SHADER, "../shaders/lighting_fragment.glsl"))
+	{
+		return false;
+	}
+	if(!AddShader(GL_TESS_CONTROL_SHADER, "../shaders/lighting_tesscontrol.glsl"))
+	{
+		return false;
+	}
+	if (!AddShader(GL_TESS_EVALUATION_SHADER, "../shaders/lighting_tesseval.glsl"))
 	{
 		return false;
 	}
@@ -63,6 +70,8 @@ bool LightingProgram::Initialise()
 
 	InitalizePointLightUniformLocations();
 	InitalizeSpotLightUniformLocations();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	return true;
 }

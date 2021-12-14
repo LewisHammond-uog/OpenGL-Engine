@@ -72,6 +72,10 @@ bool RenderingProject::onCreate()
 	pFBO = new ShadowFBO();
 	pFBO->Init(1920, 1080);
 
+	GLint MaxPatchVertices = 0;
+	glGetIntegerv(GL_MAX_PATCH_VERTICES, &MaxPatchVertices);
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+
 	return true;
 }
 

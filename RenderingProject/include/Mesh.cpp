@@ -89,7 +89,7 @@ void Mesh::Render()
 		}
 
 		//Do the draw!
-		glDrawElementsBaseVertex(GL_TRIANGLES,
+		glDrawElementsBaseVertex(GL_PATCHES,
 			m_meshes[i].NumIndices, //Number of indicies to draw
 			GL_UNSIGNED_INT, //Index data type
 			(void*)(sizeof(unsigned int) * m_meshes[i].BaseIndex), //Offset to the 1st index of the current mesh
