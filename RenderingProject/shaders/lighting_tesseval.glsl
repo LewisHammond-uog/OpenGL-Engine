@@ -2,6 +2,7 @@
 
 layout( triangles, equal_spacing, ccw ) in;
 
+//Inputs from TessControl Shader
 in vec2 tcTexCoord[];
 in vec3 tcNormal[];
 in vec3 tcLocalPos[];
@@ -9,6 +10,7 @@ in vec3 tcTangent[];
 in vec4 tcFragPosLight[];
 in vec4 tcShadowCoord[];
 
+//Outputs to Fragment Shader
 out vec2 vTexCoord;
 out vec3 vNormal;
 out vec3 vLocalPos;

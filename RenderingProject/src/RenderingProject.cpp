@@ -72,11 +72,13 @@ bool RenderingProject::onCreate()
 	pFBO = new ShadowFBO();
 	pFBO->Init(1920, 1080);
 
+	//Set the max verts of patches
 	GLint MaxPatchVertices = 0;
 	glGetIntegerv(GL_MAX_PATCH_VERTICES, &MaxPatchVertices);
 	glPatchParameteri(GL_PATCH_VERTICES, 3);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//Set the polygon mode to fill (used for wire frame mode)
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	return true;
 }
@@ -101,7 +103,7 @@ void RenderingProject::Update(float a_deltaTime)
 						 i == 10 ? glm::vec4(1,1,1,1) : glm::vec4(0,0,0,1) );
 	}
 
-	ImGui::Begin("Test");
+	ImGui::Begin("Depth Buffer");
 	ImGui::BeginTabBar("FBO");
 	if (ImGui::BeginTabItem("Depth Buffer")) {
 		ImTextureID texID = (void*)(intptr_t)pFBO->m_depthTexture;
@@ -159,9 +161,6 @@ void RenderingProject::Draw()
 	//-----------------------------------------------------
 	//SHADOW
 	//-----------------------------------------------------
-
-
-
 	const int shadowMapWidth = 1920;
 	const int shadowMapHeight = 1080;
 

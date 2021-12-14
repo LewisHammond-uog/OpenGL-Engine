@@ -5,6 +5,7 @@ layout (location = 1) in vec2 TexCoord;
 layout (location = 2) in vec3 Normal;
 layout (location = 3) in vec3 Tangent;
 
+//Outputs to TC Shader OR Vertex Shader (if no tessellation)
 out vec2 iTexCoord;
 out vec3 iNormal;
 out vec3 iLocalPos;

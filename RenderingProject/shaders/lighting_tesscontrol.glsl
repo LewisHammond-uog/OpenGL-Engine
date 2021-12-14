@@ -2,6 +2,7 @@
 
 layout ( vertices = 3 ) out;
 
+//Inputs from vertex shader
 in vec2 iTexCoord[];
 in vec3 iNormal[];
 in vec3 iLocalPos[];
@@ -9,6 +10,7 @@ in vec3 iTangent[];
 in vec4 iFragPosLight[];
 in vec4 iShadowCoord[];
 
+//Outputs from TessControl Shader
 out vec2 tcTexCoord[];
 out vec3 tcNormal[];
 out vec3 tcLocalPos[];
