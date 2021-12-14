@@ -85,7 +85,7 @@
       <Filter>Header Files\Shader Programs</Filter>
     </ClInclude>
     <ClInclude Include="include\WaterProgram.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Shader Programs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,7 +132,7 @@
       <Filter>Source Files\Shader Programs</Filter>
     </ClCompile>
     <ClCompile Include="src\WaterProgram.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Shader Programs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

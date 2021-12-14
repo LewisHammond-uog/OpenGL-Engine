@@ -5,7 +5,7 @@ layout ( triangle_strip, max_vertices = 3) out;
 
 out vec3 finalColour;
 
-uniform mat4 projectionViewMatrix;
+uniform mat4 uWorldViewPoint;
 uniform vec3 cameraPosition;
 
 const vec3 lightDirection = normalize(vec3(0.4, -1.0, 0.8));
@@ -37,17 +37,17 @@ void main(void){
 	vec3 colour = waterColour * brightness;
 
 	vec4 worldPosition = gl_in[0].gl_Position;
-	gl_Position = projectionViewMatrix * worldPosition;
+	gl_Position = uWorldViewPoint * worldPosition;
 	finalColour = colour + calculateSpecular(worldPosition, normal);
 	EmitVertex();
 	
 	worldPosition = gl_in[1].gl_Position;
-	gl_Position = projectionViewMatrix * worldPosition;
+	gl_Position = uWorldViewPoint * worldPosition;
 	finalColour = colour+ calculateSpecular(worldPosition, normal);
 	EmitVertex();
 	
 	worldPosition = gl_in[2].gl_Position;
-	gl_Position = projectionViewMatrix * worldPosition;
+	gl_Position = uWorldViewPoint * worldPosition;
 	finalColour = colour+ calculateSpecular(worldPosition, normal);
 	EmitVertex();
 	

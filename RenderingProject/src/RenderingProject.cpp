@@ -52,6 +52,7 @@ bool RenderingProject::onCreate()
 	{
 		return false;
 	}
+	pMesh->m_transform->SetPosition(0, 0, 0);
 
 	//Load Plane for water
 	pWaterMesh = new Mesh();
@@ -59,6 +60,8 @@ bool RenderingProject::onCreate()
 	{
 		return false;
 	}
+	pWaterMesh->m_transform->SetPosition(0, 0, 0);
+	pWaterMesh->m_transform->SetScale(30);
 
 
 	pLightingProgram = new LightingProgram();
@@ -141,9 +144,6 @@ void RenderingProject::Draw()
 	// get the view matrix from the world-space camera matrix
 	glm::mat4 viewMatrix = glm::inverse( m_cameraMatrix );
 
-	WorldTransform* transform = new WorldTransform();
-	transform->SetPosition(glm::vec3(0, 0, 0));
-
 	glm::vec3 lightPos = glm::vec3(0, 0, 0);
 	if (m_pShadowSourceLight != nullptr) 
 	{
@@ -154,7 +154,7 @@ void RenderingProject::Draw()
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
 	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * pMesh->m_transform->GetMatrix();
 
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
@@ -185,21 +185,23 @@ void RenderingProject::Draw()
 
 	//Set positions/materials for rendering
 	glDisable(GL_BLEND);
-	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
-	pLightingProgram->SetWorldViewPoint(worldViewProjection);
+	glm::mat4 modelWVP = m_projectionMatrix * viewMatrix * pMesh->m_transform->GetMatrix();
+	pLightingProgram->SetWorldViewPoint(modelWVP);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
-	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
+	pLightingProgram->SetCameraLocalPos(pMesh->m_transform->WorldDirToLocalDir(m_cameraMatrix[3]));
 	pLightingProgram->SetLightViewPoint(lightProjectionView);
 
-	pLightingManager->Update(*transform);
+	pLightingManager->Update(*pMesh->m_transform);
 	pLightingManager->RenderImguiWindow();
 
 	pMesh->Render();
+
+
+	glm::mat4 waterWVP = m_projectionMatrix * viewMatrix * pWaterMesh->m_transform->GetMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	pWaterProgram->UseProgram();
-	pWaterProgram->SetWorldViewPoint(worldViewProjection);
-	pWaterProgram->SetProjectionMatrix(worldViewProjection);
+	pWaterProgram->SetWorldViewPoint(waterWVP);
 	pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
 	pWaterProgram->SetTime(Utility::getTotalTime());
 	pWaterMesh->Render();
