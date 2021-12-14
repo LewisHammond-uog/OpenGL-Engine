@@ -185,6 +185,7 @@ void RenderingProject::Draw()
 	pFBO->BindForReading();
 
 	//Set positions/materials for rendering
+	glDisable(GL_BLEND);
 	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
 	pLightingProgram->SetWorldViewPoint(worldViewProjection);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());

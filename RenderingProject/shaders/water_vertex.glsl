@@ -7,7 +7,7 @@ uniform mat4 uWorldViewPoint;
 uniform float uTime;
 
 const float PI = 3.1415926535897932384626433832795;
-const float amplitude = 0.01;
+const float amplitude = 0.001;
 
 //Generate the height for this vertex
 float GenerateHeight(){
