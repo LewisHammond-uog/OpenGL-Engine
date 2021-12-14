@@ -27,6 +27,11 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
     return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
 }
 
+vec4 interpolate4D(vec4 v0, vec4 v1, vec4 v2)
+{
+	return vec4(gl_TessCoord.x) * v0 + vec4(gl_TessCoord.y) * v1 + vec4(gl_TessCoord.z) * v2;
+}
+
 
 void main(){
 	
@@ -36,9 +41,8 @@ void main(){
     vNormal = normalize(vNormal);
     vLocalPos = interpolate3D(tcLocalPos[0], tcLocalPos[1], tcLocalPos[2]);
     vTangent = interpolate3D(tcTangent[0], tcTangent[1], tcTangent[2]);
-	vFragPosLight = tcFragPosLight[0];
-	vShadowCoord = tcFragPosLight[0];
-
+	vFragPosLight = interpolate4D(tcFragPosLight[0], tcFragPosLight[1], tcFragPosLight[2]);
+	vShadowCoord = interpolate4D(tcShadowCoord[0], tcShadowCoord[1], tcShadowCoord[2]);
 
 	vec4 p0 = gl_in[0].gl_Position;
 	vec4 p1 = gl_in[1].gl_Position;

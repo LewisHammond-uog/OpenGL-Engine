@@ -76,6 +76,8 @@ bool RenderingProject::onCreate()
 	glGetIntegerv(GL_MAX_PATCH_VERTICES, &MaxPatchVertices);
 	glPatchParameteri(GL_PATCH_VERTICES, 3);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	return true;
 }
 
@@ -169,7 +171,7 @@ void RenderingProject::Draw()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
 
-	pMesh->Render();
+	pMesh->Render(GL_TRIANGLES);
 	//Unbund FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
