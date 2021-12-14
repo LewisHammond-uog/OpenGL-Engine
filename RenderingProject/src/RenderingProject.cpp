@@ -198,6 +198,9 @@ void RenderingProject::Draw()
 
 	pWaterProgram->UseProgram();
 	pWaterProgram->SetWorldViewPoint(worldViewProjection);
+	pWaterProgram->SetProjectionMatrix(worldViewProjection);
+	//pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
+	pWaterProgram->SetTime(Utility::getTotalTime());
 	pWaterMesh->Render();
 
 	//Unbind Program

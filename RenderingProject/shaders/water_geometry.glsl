@@ -1,24 +1,56 @@
-#version 330
+#version 150
 
-layout (location = 0)  in vec4 Position;
-layout (location = 1) in vec2 TexCoord;
-in vec4 Colour;
-in vec4 Normal;
+layout ( triangles ) in;
+layout ( triangle_strip, max_vertices = 3) out;
 
-out vec4 vPosition;
-out vec4 vColour;
-out vec4 vNormal;
-out vec2 vTexCoord;
+out vec3 finalColour;
 
-uniform mat4 ProjectionView;
-uniform mat4 ModelMatrix;
-uniform mat4 NormalMatrix;
+uniform mat4 projectionViewMatrix;
+uniform vec3 cameraPosition;
 
-void main(){
+const vec3 lightDirection = normalize(vec3(0.4, -1.0, 0.8));
+const vec3 waterColour = vec3(0.2, 0.4, 0.45);
+const vec3 lightColour = vec3(1.0, 0.6, 0.6);
+const float reflectivity = 0.5;
+const float shineDamper = 14.0;
+const float ambientLighting = 0.3;
 
-	vColour = Colour;
-	vNormal = NormalMatrix * Normal;
-	vPosition = ModelMatrix * Position;
-	vTexCoord = TexCoord;
-	gl_Position = ProjectionView * ModelMatrix * Position;
+vec3 calculateTriangleNormal(){
+	vec3 tangent = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+	vec3 bitangent = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+	vec3 normal = cross(tangent, bitangent);	
+	return normalize(normal);
+}
+
+vec3 calculateSpecular(vec4 worldPosition, vec3 normal){
+	vec3 viewVector = normalize(cameraPosition - worldPosition.xyz);
+	vec3 reflectedLightDirection = reflect(lightDirection, normal);
+	float specularFactor = dot(reflectedLightDirection, viewVector);
+	specularFactor = max(pow(specularFactor, shineDamper), 0.0);
+	return lightColour * specularFactor * reflectivity;
+}
+
+void main(void){
+
+	vec3 normal = calculateTriangleNormal();
+	float brightness = max(dot(-lightDirection, normal), ambientLighting);
+	vec3 colour = waterColour * brightness;
+
+	vec4 worldPosition = gl_in[0].gl_Position;
+	gl_Position = projectionViewMatrix * worldPosition;
+	finalColour = colour + calculateSpecular(worldPosition, normal);
+	EmitVertex();
+	
+	worldPosition = gl_in[1].gl_Position;
+	gl_Position = projectionViewMatrix * worldPosition;
+	finalColour = colour+ calculateSpecular(worldPosition, normal);
+	EmitVertex();
+	
+	worldPosition = gl_in[2].gl_Position;
+	gl_Position = projectionViewMatrix * worldPosition;
+	finalColour = colour+ calculateSpecular(worldPosition, normal);
+	EmitVertex();
+	
+	EndPrimitive();
+
 }
