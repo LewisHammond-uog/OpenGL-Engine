@@ -31,7 +31,7 @@ public:
 
 	bool LoadMesh(const std::string& a_filePath);
 
-	void Render();
+	void Render(GLenum a_drawMode = GL_PATCHES);
 
 	Material& GetMaterial();
 

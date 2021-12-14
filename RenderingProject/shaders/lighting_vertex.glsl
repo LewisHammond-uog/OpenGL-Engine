@@ -5,12 +5,13 @@ layout (location = 1) in vec2 TexCoord;
 layout (location = 2) in vec3 Normal;
 layout (location = 3) in vec3 Tangent;
 
-out vec2 vTexCoord;
-out vec3 vNormal;
-out vec3 vLocalPos;
-out vec3 vTangent;
-out vec4 vFragPosLight;
-out vec4 vShadowCoord;
+//Outputs to TC Shader OR Vertex Shader (if no tessellation)
+out vec2 iTexCoord;
+out vec3 iNormal;
+out vec3 iLocalPos;
+out vec3 iTangent;
+out vec4 iFragPosLight;
+out vec4 iShadowCoord;
 
 uniform mat4 uWorldViewPoint;
 uniform mat4 uLightViewPoint;
@@ -24,11 +25,11 @@ const mat4 SHADOW_BIAS_MATRIX = mat4(
 
 
 void main(){
-	vTexCoord = TexCoord;
-	vNormal = Normal;
-	vLocalPos = Position.xyz;
-	vTangent = Tangent;
-	vFragPosLight = uLightViewPoint * vec4(vLocalPos, 0);
-	vShadowCoord = SHADOW_BIAS_MATRIX * uLightViewPoint * Position;
+	iTexCoord = TexCoord;
+	iNormal = Normal;
+	iLocalPos = Position.xyz;
+	iTangent = Tangent;
+	iFragPosLight = uLightViewPoint * vec4(iLocalPos, 0);
+	iShadowCoord = SHADOW_BIAS_MATRIX * uLightViewPoint * Position;
 	gl_Position = uWorldViewPoint * vec4(Position.xyz, 1.0);
 }

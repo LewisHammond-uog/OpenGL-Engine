@@ -145,5 +145,11 @@
     <None Include="shaders\shadow_vertex.glsl">
       <Filter>Resource Files\Shadows</Filter>
     </None>
+    <None Include="shaders\lighting_tesscontrol.glsl">
+      <Filter>Resource Files\Lighting</Filter>
+    </None>
+    <None Include="shaders\lighting_tesseval.glsl">
+      <Filter>Resource Files\Lighting</Filter>
+    </None>
   </ItemGroup>
 </Project>

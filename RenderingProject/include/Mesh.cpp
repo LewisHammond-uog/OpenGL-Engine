@@ -60,7 +60,11 @@ bool Mesh::LoadMesh(const std::string& a_filePath)
 	return success;
 }
 
-void Mesh::Render()
+/// <summary>
+/// Render the mesh to the active buffer
+/// </summary>
+/// <param name="a_drawMode">What mode to draw in, defaults to GL_PATCHES, use GL_TRIANGLES if tessellation is not used</param>
+void Mesh::Render(const GLenum a_drawMode /*= GL_PATCHES */)
 {
 	//Bind the VAO
 	glBindVertexArray(m_VAO);
@@ -89,7 +93,7 @@ void Mesh::Render()
 		}
 
 		//Do the draw!
-		glDrawElementsBaseVertex(GL_TRIANGLES,
+		glDrawElementsBaseVertex(a_drawMode,
 			m_meshes[i].NumIndices, //Number of indicies to draw
 			GL_UNSIGNED_INT, //Index data type
 			(void*)(sizeof(unsigned int) * m_meshes[i].BaseIndex), //Offset to the 1st index of the current mesh
