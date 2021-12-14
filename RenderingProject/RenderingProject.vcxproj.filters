@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\Shadows">
       <UniqueIdentifier>{43f42e22-e861-47b8-b74d-ffbef6f10e26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Water">
+      <UniqueIdentifier>{deab8347-ef08-494b-95ac-0e70a4b94121}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\RenderingProject.h">
@@ -81,6 +84,9 @@
     <ClInclude Include="include\ShadowFBO.h">
       <Filter>Header Files\Shader Programs</Filter>
     </ClInclude>
+    <ClInclude Include="include\WaterProgram.h">
+      <Filter>Header Files\Shader Programs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -125,6 +131,9 @@
     <ClCompile Include="src\ShadowProgram.cpp">
       <Filter>Source Files\Shader Programs</Filter>
     </ClCompile>
+    <ClCompile Include="src\WaterProgram.cpp">
+      <Filter>Source Files\Shader Programs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -145,6 +154,16 @@
     <None Include="shaders\shadow_vertex.glsl">
       <Filter>Resource Files\Shadows</Filter>
     </None>
+
+    <None Include="shaders\water_geometry.glsl">
+      <Filter>Resource Files\Water</Filter>
+    </None>
+    <None Include="shaders\water_vertex.glsl">
+      <Filter>Resource Files\Water</Filter>
+    </None>
+    <None Include="shaders\water_fragment.glsl">
+      <Filter>Resource Files\Water</Filter>
+
     <None Include="shaders\lighting_tesscontrol.glsl">
       <Filter>Resource Files\Lighting</Filter>
     </None>

@@ -20,12 +20,24 @@
 //Application Includes
 #include "Material.h"
 #include "Texture.h"
+#include "WorldTransform.h"
 
 //Macros for defintions of locations of attributes within the shader code
 #define SHADER_POSITION_LOC 0
 #define SHADER_TEX_COORD_LOC 1
 #define SHADER_NORMAL_LOC 2
 #define SHADER_TANGENT_LOC 3
+
+Mesh::Mesh()
+{
+	m_transform = new WorldTransform();
+	m_VAO = -1;
+}
+
+Mesh::~Mesh()
+{
+	delete m_transform;
+}
 
 bool Mesh::LoadMesh(const std::string& a_filePath)
 {
@@ -142,7 +154,7 @@ bool Mesh::InitFromScene(const aiScene* a_pScene, const std::string& a_filePath)
 
 	if(InitMaterials(a_pScene, a_filePath) == false)
 	{
-		return false;
+	//	return false;
 	}
 
 	PopulateOpenGLBuffers();

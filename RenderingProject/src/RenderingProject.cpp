@@ -17,6 +17,7 @@
 #include "LightingManager.h"
 #include "ShadowProgram.h"
 #include "ShadowFBO.h"
+#include "WaterProgram.h"
 
 
 RenderingProject::RenderingProject()
@@ -49,8 +50,19 @@ bool RenderingProject::onCreate()
 	pMesh = new Mesh();
 	if(!pMesh->LoadMesh("../models/ruinedtank/tank.fbx"))
 	{
-		
+		return false;
 	}
+	pMesh->m_transform->SetPosition(0, 0, 0);
+
+	//Load Plane for water
+	pWaterMesh = new Mesh();
+	if (!pWaterMesh->LoadMesh("../models/plane/Plane.fbx"))
+	{
+		return false;
+	}
+	pWaterMesh->m_transform->SetPosition(0, 0, 0);
+	pWaterMesh->m_transform->SetScale(30);
+
 
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
@@ -72,6 +84,10 @@ bool RenderingProject::onCreate()
 	pFBO = new ShadowFBO();
 	pFBO->Init(1920, 1080);
 
+
+	pWaterProgram = new WaterProgram();
+	pWaterProgram->Initialise();
+
 	//Set the max verts of patches
 	GLint MaxPatchVertices = 0;
 	glGetIntegerv(GL_MAX_PATCH_VERTICES, &MaxPatchVertices);
@@ -79,6 +95,7 @@ bool RenderingProject::onCreate()
 
 	//Set the polygon mode to fill (used for wire frame mode)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 
 	return true;
 }
@@ -137,9 +154,6 @@ void RenderingProject::Draw()
 	// get the view matrix from the world-space camera matrix
 	glm::mat4 viewMatrix = glm::inverse( m_cameraMatrix );
 
-	WorldTransform* transform = new WorldTransform();
-	transform->SetPosition(glm::vec3(0, 0, 0));
-
 	glm::vec3 lightPos = glm::vec3(0, 0, 0);
 	if (m_pShadowSourceLight != nullptr) 
 	{
@@ -150,13 +164,10 @@ void RenderingProject::Draw()
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
 	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * pMesh->m_transform->GetMatrix();
 
-	Gizmos::addBox(lightPos, glm::vec3(0.5f), true);
-	
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
-
 
 	//-----------------------------------------------------
 	//SHADOW
@@ -183,16 +194,27 @@ void RenderingProject::Draw()
 	pFBO->BindForReading();
 
 	//Set positions/materials for rendering
-	glm::mat4 worldViewProjection = m_projectionMatrix * viewMatrix * transform->GetMatrix();
-	pLightingProgram->SetWorldViewPoint(worldViewProjection);
+	glDisable(GL_BLEND);
+	glm::mat4 modelWVP = m_projectionMatrix * viewMatrix * pMesh->m_transform->GetMatrix();
+	pLightingProgram->SetWorldViewPoint(modelWVP);
 	pLightingProgram->SetMaterial(pMesh->GetMaterial());
-	pLightingProgram->SetCameraLocalPos(transform->WorldDirToLocalDir(m_cameraMatrix[3]));
+	pLightingProgram->SetCameraLocalPos(pMesh->m_transform->WorldDirToLocalDir(m_cameraMatrix[3]));
 	pLightingProgram->SetLightViewPoint(lightProjectionView);
 
-	pLightingManager->Update(*transform);
+	pLightingManager->Update(*pMesh->m_transform);
 	pLightingManager->RenderImguiWindow();
 
 	pMesh->Render();
+
+
+	glm::mat4 waterWVP = m_projectionMatrix * viewMatrix * pWaterMesh->m_transform->GetMatrix();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	pWaterProgram->UseProgram();
+	pWaterProgram->SetWorldViewPoint(waterWVP);
+	pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
+	pWaterProgram->SetTime(Utility::getTotalTime());
+	pWaterMesh->Render();
 
 	//Unbind Program
 	glUseProgram(0);

@@ -12,6 +12,7 @@ class LightingManager;
 class DirectionalLight;
 class ShadowProgram;
 class ShadowFBO;
+class WaterProgram;
 
 // Derived application class that wraps up all globals neatly
 class RenderingProject : public Application
@@ -35,6 +36,7 @@ protected:
 
 private:
 	Mesh* pMesh;
+	Mesh* pWaterMesh;
 	
 	//Light used as the shadow source
 	DirectionalLight* m_pShadowSourceLight;
@@ -44,6 +46,8 @@ private:
 
 	ShadowProgram* pShadowProgram;
 	ShadowFBO* pFBO;
+
+	WaterProgram* pWaterProgram;
 	
 };
 

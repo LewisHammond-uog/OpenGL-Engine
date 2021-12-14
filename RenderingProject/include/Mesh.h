@@ -21,19 +21,22 @@ struct aiMesh; //AssImp Mesh
 class aiMaterial; //AssImp Material
 enum aiTextureType; //AssImp Texture Type
 class Texture; //Project Texture (Texture.h)
+class WorldTransform; //Project Transform (WorldTransform.h)
 
 
 class Mesh
 {
 public:
-	Mesh() = default;
-	~Mesh() = default;
+	Mesh();
+	~Mesh();
 
 	bool LoadMesh(const std::string& a_filePath);
 
 	void Render(GLenum a_drawMode = GL_PATCHES);
 
 	Material& GetMaterial();
+
+	WorldTransform* m_transform;
 
 private:
 
@@ -55,6 +58,8 @@ private:
 	void ReserveSpaceInCPUBuffers(const unsigned int a_numVerts, const unsigned int a_numIndices);
 
 	std::string GetDirectoryFromPath(const std::string& a_filePath);
+
+	//Transform of the model;
 
 	unsigned int m_VAO; //Vertex Array Object
 
