@@ -1,174 +1,170 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Header Files\Shader Programs">
-      <UniqueIdentifier>{e2ec58b6-95b5-4451-b92f-5c17f78fddd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Lights">
-      <UniqueIdentifier>{7643863c-1364-4293-96ca-fa469ec8b2f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Shader Programs">
-      <UniqueIdentifier>{5a5c9d8f-fe6c-4c77-8c23-34100b239844}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Lights">
-      <UniqueIdentifier>{ba82260e-aa2a-4964-aff7-30258543cc0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Lighting">
-      <UniqueIdentifier>{35e4b952-0fbf-4e21-b10f-6118e0bd1019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shadows">
-      <UniqueIdentifier>{43f42e22-e861-47b8-b74d-ffbef6f10e26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Water">
-      <UniqueIdentifier>{deab8347-ef08-494b-95ac-0e70a4b94121}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\RenderingProject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Macros.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MeshEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LightingProgram.h">
-      <Filter>Header Files\Shader Programs</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BaseLight.h">
-      <Filter>Header Files\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DirectionalLight.h">
-      <Filter>Header Files\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PointLight.h">
-      <Filter>Header Files\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WorldTransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SpotLight.h">
-      <Filter>Header Files\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LightingManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShadowProgram.h">
-      <Filter>Header Files\Shader Programs</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShadowFBO.h">
-      <Filter>Header Files\Shader Programs</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WaterProgram.h">
-      <Filter>Header Files\Shader Programs</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\RenderingProject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShaderProgram.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\RenderingProject.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="include\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LightingProgram.cpp">
-      <Filter>Source Files\Shader Programs</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DirectionalLight.cpp">
-      <Filter>Source Files\Lights</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Material.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\PointLight.cpp">
-      <Filter>Source Files\Lights</Filter>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\WorldTransform.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpotLight.cpp">
-      <Filter>Source Files\Lights</Filter>
+    <ClCompile Include="src\LightingProgram.cpp">
+      <Filter>Source\Shader Programs</Filter>
     </ClCompile>
-    <ClCompile Include="scr\LightingManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\ShaderProgram.cpp">
+      <Filter>Source\Shader Programs</Filter>
     </ClCompile>
     <ClCompile Include="src\ShadowFBO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShadowProgram.cpp">
-      <Filter>Source Files\Shader Programs</Filter>
+      <Filter>Source\Shader Programs</Filter>
     </ClCompile>
     <ClCompile Include="src\WaterProgram.cpp">
-      <Filter>Source Files\Shader Programs</Filter>
+      <Filter>Source\Shader Programs</Filter>
     </ClCompile>
+    <ClCompile Include="src\DirectionalLight.cpp">
+      <Filter>Source\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="scr\LightingManager.cpp">
+      <Filter>Source\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PointLight.cpp">
+      <Filter>Source\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpotLight.cpp">
+      <Filter>Source\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowProgram.cpp">
+      <Filter>Source\Shader Programs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Macros.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Material.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Mesh.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MeshEntry.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderingProject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShadowFBO.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Texture.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WorldTransform.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShadowProgram.h">
+      <Filter>Headers\Shader Programs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WaterProgram.h">
+      <Filter>Headers\Shader Programs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderProgram.h">
+      <Filter>Headers\Shader Programs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LightingProgram.h">
+      <Filter>Headers\Shader Programs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectionalLight.h">
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BaseLight.h">
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LightingManager.h">
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PointLight.h">
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SpotLight.h">
+      <Filter>Headers\Lighting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\vertex.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\lighting_fragment.glsl">
-      <Filter>Resource Files\Lighting</Filter>
-    </None>
-    <None Include="shaders\lighting_vertex.glsl">
-      <Filter>Resource Files\Lighting</Filter>
-    </None>
-    <None Include="shaders\shadow_fragment.glsl">
-      <Filter>Resource Files\Shadows</Filter>
-    </None>
-    <None Include="shaders\shadow_vertex.glsl">
-      <Filter>Resource Files\Shadows</Filter>
-    </None>
-
     <None Include="shaders\water_geometry.glsl">
-      <Filter>Resource Files\Water</Filter>
-    </None>
-    <None Include="shaders\water_vertex.glsl">
-      <Filter>Resource Files\Water</Filter>
+      <Filter>Shaders\Water</Filter>
     </None>
     <None Include="shaders\water_fragment.glsl">
-      <Filter>Resource Files\Water</Filter>
-
+      <Filter>Shaders\Water</Filter>
+    </None>
+    <None Include="shaders\lighting_fragment.glsl">
+      <Filter>Shaders\Lighting</Filter>
+    </None>
     <None Include="shaders\lighting_tesscontrol.glsl">
-      <Filter>Resource Files\Lighting</Filter>
+      <Filter>Shaders\Lighting</Filter>
     </None>
     <None Include="shaders\lighting_tesseval.glsl">
-      <Filter>Resource Files\Lighting</Filter>
+      <Filter>Shaders\Lighting</Filter>
     </None>
+    <None Include="shaders\lighting_vertex.glsl">
+      <Filter>Shaders\Lighting</Filter>
+    </None>
+    <None Include="shaders\shadow_vertex.glsl">
+      <Filter>Shaders\Shadow</Filter>
+    </None>
+    <None Include="shaders\shadow_fragment.glsl">
+      <Filter>Shaders\Shadow</Filter>
+    </None>
+    <None Include="shaders\water_vertex.glsl">
+      <Filter>Shaders\Water</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{5e223119-6005-48f4-8f7c-d3846ea72279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{77919c8f-1651-421a-bc8d-b313c95278d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{1ba9b869-f6bd-4eef-bd59-9ed293980194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Water">
+      <UniqueIdentifier>{d155c415-31f6-449c-ba9f-b52777398aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Lighting">
+      <UniqueIdentifier>{4956f5cd-2369-446f-b66e-474e44f114a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Shadow">
+      <UniqueIdentifier>{b5a49d77-012b-407f-ab63-9658e1903891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Shader Programs">
+      <UniqueIdentifier>{367ac7ec-f1f1-4159-bb1e-1730445874a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Lighting">
+      <UniqueIdentifier>{06556264-7ee7-47e2-847d-99044e893c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Shader Programs">
+      <UniqueIdentifier>{9eac84db-2392-4cc7-a12d-b3f4c27df41d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Lighting">
+      <UniqueIdentifier>{e137736b-30b2-472c-b38d-1fca6ab611b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

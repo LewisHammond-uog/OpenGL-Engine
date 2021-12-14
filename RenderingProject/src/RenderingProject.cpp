@@ -84,7 +84,6 @@ bool RenderingProject::onCreate()
 	pFBO = new ShadowFBO();
 	pFBO->Init(1920, 1080);
 
-
 	pWaterProgram = new WaterProgram();
 	pWaterProgram->Initialise();
 
