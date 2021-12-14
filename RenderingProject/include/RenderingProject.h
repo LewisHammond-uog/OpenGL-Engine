@@ -29,14 +29,19 @@ protected:
 	virtual void Draw();
 	virtual void Destroy();
 
+	void WaterPass(); //Pass to Render Water
+	void ShadowPass(glm::mat4 a_lightProjectionView); //Pass to Render Shadows
+	void RenderPass(glm::mat4 a_lightProjectionView); //Pass to Render Standard Geometry
+
 	glm::mat4	m_cameraMatrix;
 	glm::mat4	m_projectionMatrix;
+	glm::mat4	m_viewMatrix;
 
 	unsigned int m_programID;
 
 private:
-	Mesh* pMesh;
-	Mesh* pWaterMesh;
+	Mesh* m_pSceneMesh;
+	Mesh* m_pWaterMesh;
 	
 	//Light used as the shadow source
 	DirectionalLight* m_pShadowSourceLight;

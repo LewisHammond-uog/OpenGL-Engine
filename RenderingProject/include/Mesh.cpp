@@ -83,7 +83,7 @@ void Mesh::Render(const GLenum a_drawMode /*= GL_PATCHES */)
 
 	for(unsigned int i = 0; i < m_meshes.size(); i++)
 	{
-		const unsigned int matIndex = m_meshes[i].MaterialIndex;
+		const unsigned int matIndex = m_meshes[i].m_uiMaterialIndex;
 
 		//Bind texture if we have one
 		if (m_materials[matIndex].m_pDiffuseTexture)
@@ -106,10 +106,10 @@ void Mesh::Render(const GLenum a_drawMode /*= GL_PATCHES */)
 
 		//Do the draw!
 		glDrawElementsBaseVertex(a_drawMode,
-			m_meshes[i].NumIndices, //Number of indicies to draw
+			m_meshes[i].m_uiNumIndices, //Number of indicies to draw
 			GL_UNSIGNED_INT, //Index data type
-			(void*)(sizeof(unsigned int) * m_meshes[i].BaseIndex), //Offset to the 1st index of the current mesh
-			m_meshes[i].BaseVertex); //Base vertex from the current draw call
+			(void*)(sizeof(unsigned int) * m_meshes[i].m_uiVBaseIndex), //Offset to the 1st index of the current mesh
+			m_meshes[i].m_uiBaseVertex); //Base vertex from the current draw call
 	}
 
 	//Unbind VAO
@@ -326,14 +326,14 @@ void Mesh::CountVertsAndIndices(const aiScene* pScene, unsigned& a_numVerts, uns
 	{
 		const aiMesh* currentMeshInScene = pScene->mMeshes[i];
 
-		m_meshes[i].MaterialIndex = currentMeshInScene->mMaterialIndex; //Set the material index of this mesh
-		m_meshes[i].NumIndices = currentMeshInScene->mNumFaces * 3; //Number of indicies is faces *3 because we know everything is a triangle
-		m_meshes[i].BaseVertex = a_numVerts; //Index of the first vertex of the current mesh
-		m_meshes[i].BaseIndex = a_numIndices; //Index of the first index of the current mesh
+		m_meshes[i].m_uiMaterialIndex = currentMeshInScene->mMaterialIndex; //Set the material index of this mesh
+		m_meshes[i].m_uiNumIndices = currentMeshInScene->mNumFaces * 3; //Number of indicies is faces *3 because we know everything is a triangle
+		m_meshes[i].m_uiBaseVertex = a_numVerts; //Index of the first vertex of the current mesh
+		m_meshes[i].m_uiVBaseIndex = a_numIndices; //Index of the first index of the current mesh
 
 		//Increase the number of verts and indicies ready for the next mesh to process
 		a_numVerts += currentMeshInScene->mNumVertices;
-		a_numIndices += m_meshes[i].NumIndices;
+		a_numIndices += m_meshes[i].m_uiNumIndices;
 	}
 }
 

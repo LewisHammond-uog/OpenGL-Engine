@@ -47,45 +47,45 @@ bool RenderingProject::onCreate()
 	glEnable(GL_CULL_FACE);
 
 	//Load mesh
-	pMesh = new Mesh();
-	if(!pMesh->LoadMesh("../models/ruinedtank/tank.fbx"))
+	m_pSceneMesh = new Mesh();
+	if(!m_pSceneMesh->LoadMesh("../models/ruinedtank/tank.fbx"))
 	{
 		return false;
 	}
-	pMesh->m_transform->SetPosition(0, 0, 0);
+	m_pSceneMesh->m_transform->SetPosition(0, 0, 0);
 
 	//Load Plane for water
-	pWaterMesh = new Mesh();
-	if (!pWaterMesh->LoadMesh("../models/plane/Plane.fbx"))
+	m_pWaterMesh = new Mesh();
+	if (!m_pWaterMesh->LoadMesh("../models/plane/Plane.fbx"))
 	{
 		return false;
 	}
-	pWaterMesh->m_transform->SetPosition(0, 0, 0);
-	pWaterMesh->m_transform->SetScale(30);
+	m_pWaterMesh->m_transform->SetPosition(0, 0, 0);
+	m_pWaterMesh->m_transform->SetScale(30);
 
 
-	pLightingProgram = new LightingProgram();
-	pLightingProgram->Initialise();
-	pLightingProgram->UseProgram();
-	pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
-	pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
-	pLightingProgram->SetNormalTextureUnit(NORMAL_TEXTURE_INDEX);
-	pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
+	m_pLightingProgram = new LightingProgram();
+	m_pLightingProgram->Initialise();
+	m_pLightingProgram->UseProgram();
+	m_pLightingProgram->SetDiffuseTextureUnit(COLOUR_TEXTURE_INDEX);
+	m_pLightingProgram->SetSpecularPowerTextureUnit(SPECULAR_POWER_TEXTURE_INDEX);
+	m_pLightingProgram->SetNormalTextureUnit(NORMAL_TEXTURE_INDEX);
+	m_pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
 
-	pLightingManager = new LightingManager(pLightingProgram);
-	m_pShadowSourceLight = pLightingManager->CreateDirectionalLight();
-	pLightingManager->CreatePointLight();
-	pLightingManager->CreatePointLight();
-	pLightingManager->CreateSpotLight();
+	m_pLightingManager = new LightingManager(m_pLightingProgram);
+	m_pShadowSourceLight = m_pLightingManager->CreateDirectionalLight();
+	m_pLightingManager->CreatePointLight();
+	m_pLightingManager->CreatePointLight();
+	m_pLightingManager->CreateSpotLight();
 
-	pShadowProgram = new ShadowProgram();
-	pShadowProgram->Initialise();
+	m_pShadowProgram = new ShadowProgram();
+	m_pShadowProgram->Initialise();
 
-	pFBO = new ShadowFBO();
-	pFBO->Init(1920, 1080);
+	m_pFBO = new ShadowFBO();
+	m_pFBO->Init(1920, 1080);
 
-	pWaterProgram = new WaterProgram();
-	pWaterProgram->Initialise();
+	m_pWaterProgram = new WaterProgram();
+	m_pWaterProgram->Initialise();
 
 	//Set the max verts of patches
 	GLint MaxPatchVertices = 0;
@@ -122,7 +122,7 @@ void RenderingProject::Update(float a_deltaTime)
 	ImGui::Begin("Depth Buffer");
 	ImGui::BeginTabBar("FBO");
 	if (ImGui::BeginTabItem("Depth Buffer")) {
-		ImTextureID texID = (void*)(intptr_t)pFBO->m_depthTexture;
+		ImTextureID texID = (void*)(intptr_t)m_pFBO->m_depthTexture;
 		ImGui::Image(texID, ImVec2(m_windowWidth * 0.25, m_windowHeight * 0.25), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
@@ -151,8 +151,9 @@ void RenderingProject::Draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// get the view matrix from the world-space camera matrix
-	glm::mat4 viewMatrix = glm::inverse( m_cameraMatrix );
+	m_viewMatrix = glm::inverse( m_cameraMatrix );
 
+	//Calculate the light position
 	glm::vec3 lightPos = glm::vec3(0, 0, 0);
 	if (m_pShadowSourceLight != nullptr) 
 	{
@@ -163,57 +164,14 @@ void RenderingProject::Draw()
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
 	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjectionView = orthgonalProjection * lightView * pMesh->m_transform->GetMatrix();
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * m_pSceneMesh->m_transform->GetMatrix();
+
+	ShadowPass(lightProjectionView);
+	RenderPass(lightProjectionView);
+	WaterPass();
 
 	// draw the gizmos from this frame
-	Gizmos::draw(viewMatrix, m_projectionMatrix);
-
-	//-----------------------------------------------------
-	//SHADOW
-	//-----------------------------------------------------
-	const int shadowMapWidth = 1920;
-	const int shadowMapHeight = 1080;
-
-	pShadowProgram->UseProgram();
-	pShadowProgram->SetLightViewPoint(lightProjectionView);
-	pFBO->BindForWriting();
-	glClear(GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
-
-	pMesh->Render(GL_TRIANGLES);
-	//Unbund FBO
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-	//-----------------------------------------------------
-	//NORMAL
-	//-----------------------------------------------------
-
-	pLightingProgram->UseProgram();
-	pFBO->BindForReading();
-
-	//Set positions/materials for rendering
-	glDisable(GL_BLEND);
-	glm::mat4 modelWVP = m_projectionMatrix * viewMatrix * pMesh->m_transform->GetMatrix();
-	pLightingProgram->SetWorldViewPoint(modelWVP);
-	pLightingProgram->SetMaterial(pMesh->GetMaterial());
-	pLightingProgram->SetCameraLocalPos(pMesh->m_transform->WorldDirToLocalDir(m_cameraMatrix[3]));
-	pLightingProgram->SetLightViewPoint(lightProjectionView);
-
-	pLightingManager->Update(*pMesh->m_transform);
-	pLightingManager->RenderImguiWindow();
-
-	pMesh->Render();
-
-
-	glm::mat4 waterWVP = m_projectionMatrix * viewMatrix * pWaterMesh->m_transform->GetMatrix();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	pWaterProgram->UseProgram();
-	pWaterProgram->SetWorldViewPoint(waterWVP);
-	pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
-	pWaterProgram->SetTime(Utility::getTotalTime());
-	pWaterMesh->Render(GL_TRIANGLES);
+	Gizmos::draw(m_viewMatrix, m_projectionMatrix);
 
 	//Unbind Program
 	glUseProgram(0);
@@ -221,9 +179,56 @@ void RenderingProject::Draw()
 
 void RenderingProject::Destroy()
 {
-	delete pLightingProgram;
-	delete pMesh;
-	delete pLightingManager;
+	delete m_pLightingProgram;
+	delete m_pSceneMesh;
+	delete m_pLightingManager;
 	Gizmos::destroy();
+}
+
+void RenderingProject::WaterPass()
+{
+	glm::mat4 waterWVP = m_projectionMatrix * m_viewMatrix * m_pWaterMesh->m_transform->GetMatrix();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	m_pWaterProgram->UseProgram();
+	m_pWaterProgram->SetWorldViewPoint(waterWVP);
+	m_pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
+	m_pWaterProgram->SetTime(Utility::getTotalTime());
+	m_pWaterMesh->Render(GL_TRIANGLES);
+}
+
+void RenderingProject::ShadowPass(const glm::mat4 a_lightProjectionView)
+{
+	const int shadowMapWidth = 1920;
+	const int shadowMapHeight = 1080;
+
+	m_pShadowProgram->UseProgram();
+	m_pShadowProgram->SetLightViewPoint(a_lightProjectionView);
+	m_pFBO->BindForWriting();
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+
+	m_pSceneMesh->Render(GL_TRIANGLES);
+	//Unbund FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderingProject::RenderPass(const glm::mat4 a_lightProjectionView)
+{
+	m_pLightingProgram->UseProgram();
+	m_pFBO->BindForReading();
+
+	//Set positions/materials for rendering
+	glDisable(GL_BLEND);
+	glm::mat4 modelWVP = m_projectionMatrix * m_viewMatrix * m_pSceneMesh->m_transform->GetMatrix();
+	m_pLightingProgram->SetWorldViewPoint(modelWVP);
+	m_pLightingProgram->SetMaterial(m_pSceneMesh->GetMaterial());
+	m_pLightingProgram->SetCameraLocalPos(m_pSceneMesh->m_transform->WorldDirToLocalDir(m_cameraMatrix[3]));
+	m_pLightingProgram->SetLightViewPoint(a_lightProjectionView);
+
+	m_pLightingManager->Update(*m_pSceneMesh->m_transform);
+	m_pLightingManager->RenderImguiWindow();
+
+	m_pSceneMesh->Render();
 }
 
