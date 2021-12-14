@@ -101,41 +101,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragment.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="shaders\vertex.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="shaders\water_geometry.glsl">
-      <Filter>Shaders\Water</Filter>
-    </None>
-    <None Include="shaders\water_fragment.glsl">
-      <Filter>Shaders\Water</Filter>
-    </None>
-    <None Include="shaders\lighting_fragment.glsl">
-      <Filter>Shaders\Lighting</Filter>
-    </None>
-    <None Include="shaders\lighting_tesscontrol.glsl">
-      <Filter>Shaders\Lighting</Filter>
-    </None>
-    <None Include="shaders\lighting_tesseval.glsl">
-      <Filter>Shaders\Lighting</Filter>
-    </None>
-    <None Include="shaders\lighting_vertex.glsl">
-      <Filter>Shaders\Lighting</Filter>
-    </None>
-    <None Include="shaders\shadow_vertex.glsl">
-      <Filter>Shaders\Shadow</Filter>
-    </None>
-    <None Include="shaders\shadow_fragment.glsl">
-      <Filter>Shaders\Shadow</Filter>
-    </None>
-    <None Include="shaders\water_vertex.glsl">
-      <Filter>Shaders\Water</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Headers">
       <UniqueIdentifier>{5e223119-6005-48f4-8f7c-d3846ea72279}</UniqueIdentifier>
     </Filter>
@@ -144,15 +109,6 @@
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{1ba9b869-f6bd-4eef-bd59-9ed293980194}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Water">
-      <UniqueIdentifier>{d155c415-31f6-449c-ba9f-b52777398aba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Lighting">
-      <UniqueIdentifier>{4956f5cd-2369-446f-b66e-474e44f114a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Shadow">
-      <UniqueIdentifier>{b5a49d77-012b-407f-ab63-9658e1903891}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headers\Shader Programs">
       <UniqueIdentifier>{367ac7ec-f1f1-4159-bb1e-1730445874a0}</UniqueIdentifier>
@@ -166,5 +122,43 @@
     <Filter Include="Source\Lighting">
       <UniqueIdentifier>{e137736b-30b2-472c-b38d-1fca6ab611b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Lighting">
+      <UniqueIdentifier>{94dfe22c-e9d3-416d-809c-61b21e863ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Shadows">
+      <UniqueIdentifier>{ac1029cd-c86d-4083-9121-9b8ce5e752b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Water">
+      <UniqueIdentifier>{fa43fa76-c864-47de-a50b-190a4128ab86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\shaders\lighting_fragment.glsl">
+      <Filter>Shaders\Lighting</Filter>
+    </None>
+    <None Include="bin\shaders\lighting_tesscontrol.glsl">
+      <Filter>Shaders\Lighting</Filter>
+    </None>
+    <None Include="bin\shaders\lighting_tesseval.glsl">
+      <Filter>Shaders\Lighting</Filter>
+    </None>
+    <None Include="bin\shaders\lighting_vertex.glsl">
+      <Filter>Shaders\Lighting</Filter>
+    </None>
+    <None Include="bin\shaders\shadow_fragment.glsl">
+      <Filter>Shaders\Shadows</Filter>
+    </None>
+    <None Include="bin\shaders\shadow_vertex.glsl">
+      <Filter>Shaders\Shadows</Filter>
+    </None>
+    <None Include="bin\shaders\water_fragment.glsl">
+      <Filter>Shaders\Water</Filter>
+    </None>
+    <None Include="bin\shaders\water_vertex.glsl">
+      <Filter>Shaders\Water</Filter>
+    </None>
+    <None Include="bin\shaders\water_geometry.glsl">
+      <Filter>Shaders\Water</Filter>
+    </None>
   </ItemGroup>
 </Project>
