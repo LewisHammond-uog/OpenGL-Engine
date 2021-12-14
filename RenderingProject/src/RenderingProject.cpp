@@ -143,7 +143,6 @@ void RenderingProject::Draw()
 
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
-	transform->SetScale(5);
 
 	glm::vec3 lightPos = glm::vec3(0, 0, 0);
 	if (m_pShadowSourceLight != nullptr) 
@@ -195,7 +194,7 @@ void RenderingProject::Draw()
 	pLightingManager->Update(*transform);
 	pLightingManager->RenderImguiWindow();
 
-	//pMesh->Render();
+	pMesh->Render();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	pWaterProgram->UseProgram();
