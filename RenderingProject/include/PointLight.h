@@ -3,8 +3,6 @@
 
 #include "BaseLight.h"
 
-#include "glm/vec3.hpp"
-
 //Forward Declares
 class WorldTransform;
 

@@ -6,8 +6,8 @@
 
 //Construct Frame Buffer 
 ShadowFBO::ShadowFBO() :
-	m_fbo(0),
-	m_depthTexture(0)
+	m_depthTexture(0),
+	m_fbo(0)
 {
 }
 

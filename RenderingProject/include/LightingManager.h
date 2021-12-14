@@ -3,7 +3,6 @@
 
 #include "LightingProgram.h"
 #include "DirectionalLight.h"
-#include "SpotLight.h"
 #include "PointLight.h"
 
 //Forward Declarations

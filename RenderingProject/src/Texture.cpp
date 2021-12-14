@@ -8,7 +8,7 @@
 
 Texture::Texture(const GLenum a_textureTarget, const std::string& a_fileName) :
 	m_fileName(a_fileName),
-	m_textureType(a_textureTarget)
+	m_textureType(a_textureTarget), m_textureHandle(0)
 {
 }
 

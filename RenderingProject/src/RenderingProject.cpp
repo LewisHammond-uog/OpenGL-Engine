@@ -20,9 +20,13 @@
 #include "WaterProgram.h"
 
 
-RenderingProject::RenderingProject()
+RenderingProject::RenderingProject(): m_programID(0), m_pSceneMesh(nullptr), m_pWaterMesh(nullptr),
+                                      m_pDirecitonalSourceLight(nullptr),
+                                      m_pLightingProgram(nullptr),
+                                      m_pLightingManager(nullptr),
+                                      m_pShadowProgram(nullptr), m_pFBO(nullptr),
+                                      m_pWaterProgram(nullptr)
 {
-
 }
 
 RenderingProject::~RenderingProject()

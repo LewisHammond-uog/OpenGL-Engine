@@ -3,8 +3,6 @@
 
 #include "PointLight.h"
 
-#include "glm/vec3.hpp"
-
 //Forward Declerations
 class WorldTransform;
 

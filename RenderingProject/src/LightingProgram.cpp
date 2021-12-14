@@ -208,7 +208,7 @@ void LightingProgram::SetShadowTextureUnit(const unsigned a_textureUnit) const
 	glUniform1i(m_shadowSamplerLocation, a_textureUnit);
 }
 
-void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight)
+void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight) const
 {
 	glUniform3f(dirLightLocation.colour, a_pLight->m_v3LightColour.r, a_pLight->m_v3LightColour.g, a_pLight->m_v3LightColour.b);
 	glUniform1f(dirLightLocation.ambientIntensity, a_pLight->m_fAmbientIntensity);
@@ -222,7 +222,7 @@ void LightingProgram::SetDirectionalLight(const DirectionalLight* a_pLight)
 /// </summary>
 /// <param name="a_numLights"></param>
 /// <param name="a_pLights">Array of Point Light Pointers</param>
-void LightingProgram::SetPointLights(unsigned a_numLights, PointLight* a_pLights[])
+void LightingProgram::SetPointLights(unsigned a_numLights, PointLight* a_pLights[]) const
 {
 	//Set number of lights
 	glUniform1i(m_numPointLightsLocation, a_numLights);
@@ -244,7 +244,7 @@ void LightingProgram::SetPointLights(unsigned a_numLights, PointLight* a_pLights
 	}
 }
 
-void LightingProgram::SetSpotLights(unsigned a_numLights, SpotLight* a_pLights[]) 
+void LightingProgram::SetSpotLights(unsigned a_numLights, SpotLight* a_pLights[]) const
 {
 	//Set number of lights
 	glUniform1i(m_numSpotLightsLocation, a_numLights);
