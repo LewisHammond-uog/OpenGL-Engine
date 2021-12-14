@@ -49,8 +49,16 @@ bool RenderingProject::onCreate()
 	pMesh = new Mesh();
 	if(!pMesh->LoadMesh("../models/ruinedtank/tank.fbx"))
 	{
-		
+		return false;
 	}
+
+	//Load Plane for water
+	pWaterMesh = new Mesh();
+	if (!pWaterMesh->LoadMesh("../models/plane/fuckyou.fbx"))
+	{
+		return false;
+	}
+
 
 	pLightingProgram = new LightingProgram();
 	pLightingProgram->Initialise();
@@ -131,6 +139,7 @@ void RenderingProject::Draw()
 
 	WorldTransform* transform = new WorldTransform();
 	transform->SetPosition(glm::vec3(0, 0, 0));
+	transform->SetScale(5);
 
 	glm::vec3 lightPos = glm::vec3(0, 0, 0);
 	if (m_pShadowSourceLight != nullptr) 
@@ -144,18 +153,12 @@ void RenderingProject::Draw()
 	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjectionView = orthgonalProjection * lightView * transform->GetMatrix();
 
-	Gizmos::addBox(lightPos, glm::vec3(0.5f), true);
-	
 	// draw the gizmos from this frame
 	Gizmos::draw(viewMatrix, m_projectionMatrix);
-
 
 	//-----------------------------------------------------
 	//SHADOW
 	//-----------------------------------------------------
-
-
-
 	const int shadowMapWidth = 1920;
 	const int shadowMapHeight = 1080;
 
@@ -187,7 +190,8 @@ void RenderingProject::Draw()
 	pLightingManager->Update(*transform);
 	pLightingManager->RenderImguiWindow();
 
-	pMesh->Render();
+	//pMesh->Render();
+	pWaterMesh->Render();
 
 	//Unbind Program
 	glUseProgram(0);

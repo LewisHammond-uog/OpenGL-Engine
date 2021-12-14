@@ -138,7 +138,7 @@ bool Mesh::InitFromScene(const aiScene* a_pScene, const std::string& a_filePath)
 
 	if(InitMaterials(a_pScene, a_filePath) == false)
 	{
-		return false;
+	//	return false;
 	}
 
 	PopulateOpenGLBuffers();

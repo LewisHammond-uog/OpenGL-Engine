@@ -191,5 +191,5 @@ void main(){
 	}
 
 	//Final Colour is the colour of the texture multiplied by the light colours
-	fragColour = texture2D(uDiffuseSampler, vTexCoord.xy) * totalLight;
+	fragColour = vec4(1,1,1,1); //texture2D(uDiffuseSampler, vTexCoord.xy) * totalLight;
 }

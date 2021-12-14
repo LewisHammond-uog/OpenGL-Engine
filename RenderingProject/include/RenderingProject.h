@@ -35,6 +35,7 @@ protected:
 
 private:
 	Mesh* pMesh;
+	Mesh* pWaterMesh;
 	
 	//Light used as the shadow source
 	DirectionalLight* m_pShadowSourceLight;

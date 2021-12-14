@@ -26,6 +26,7 @@
     <ClInclude Include="include\MeshEntry.h" />
     <ClInclude Include="include\RenderingProject.h" />
     <ClInclude Include="include\ShaderProgram.h" />
+    <ClInclude Include="include\WaterProgram.h" />
     <ClInclude Include="include\WorldTransform.h" />
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +43,7 @@
     <ClCompile Include="src\ShadowProgram.cpp" />
     <ClCompile Include="src\SpotLight.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\WaterProgram.cpp" />
     <ClCompile Include="src\WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>

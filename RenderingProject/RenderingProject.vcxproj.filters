@@ -81,6 +81,9 @@
     <ClInclude Include="include\ShadowFBO.h">
       <Filter>Header Files\Shader Programs</Filter>
     </ClInclude>
+    <ClInclude Include="include\WaterProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RenderingProject.cpp">
@@ -124,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="src\ShadowProgram.cpp">
       <Filter>Source Files\Shader Programs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WaterProgram.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
