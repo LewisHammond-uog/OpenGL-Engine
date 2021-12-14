@@ -1,5 +1,6 @@
 #version 330
 
+//Inputs from TE Shader OR Vertex Shader (if no tessellation)
 in vec2 vTexCoord;
 in vec3 vNormal;
 in vec3 vLocalPos;
