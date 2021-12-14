@@ -16,10 +16,13 @@ public:
 
 	void Update(WorldTransform& a_rWorldTransform);
 
-	DirectionalLight* CreateDirectionalLight();
+	DirectionalLight* CreateDirectionalLight(glm::vec3 a_v3WorldDirection = glm::vec3(0.f, -1.0f, 0.0f), //down 
+												glm::vec3 a_v3Colour = glm::vec3(1.f, 1.f, 1.f),
+												float a_fAmbientIntensity = 0.2f, 
+												float a_fDiffuseIntensity = 1.0f); //white
 
 	PointLight* CreatePointLight(glm::vec3 a_v3WorldPosition = glm::vec3(0.f), 
-	                             glm::vec3 a_v3Colour = glm::vec3(1.f, 1.f, 1.f),
+	                             glm::vec3 a_v3Colour = glm::vec3(1.f, 1.f, 1.f),//white
 	                             float a_fAmbientIntensity = 1.0f,
 	                             float a_fDiffuseIntensity = 1.0f,
 	                             float a_fLinearAttenuation = 0.1f,
@@ -28,12 +31,14 @@ public:
 	SpotLight* CreateSpotLight(glm::vec3 a_v3WorldPosition = glm::vec3(0.f),
 								glm::vec3 a_v3WorldDirection = glm::vec3(0.f, -1.0f, 0.0f), //down
 								glm::vec3 a_v3Colour = glm::vec3(1.f, 1.f, 1.f),
+								float a_fAmbientIntensity = 1.0f,
 								float a_fDiffuseIntensity = 1.0f,
 								float a_fLinearAttenuation = 0.1f,
 								float a_fExponentialAttenuation = 0.1f,
 								float a_fCutOffAngle = 20.f);
 
 	void RenderImguiWindow();
+	void DrawLightingGizmos();
 
 
 private:
@@ -55,6 +60,9 @@ private:
 	//All spot lights
 	SpotLight* m_apSpotLights[MAX_SPOT_LIGHTS]{};
 	unsigned int m_uiCreatedSpotLightCount = 0;
+
+	//Draw Lighting Gizmos
+	bool m_bDrawLightGizmos;
 
 };
 

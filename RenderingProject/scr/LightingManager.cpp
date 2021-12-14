@@ -11,6 +11,7 @@
 #include "SpotLight.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "Gizmos.h"
 #include "WorldTransform.h"
 
 //Construct Lighting Manager with Lighting Program
@@ -75,12 +76,16 @@ void LightingManager::Update(WorldTransform& a_rWorldTransform)
 /// Create the single directonal light in the scene
 /// </summary>
 /// <returns></returns>
-DirectionalLight* LightingManager::CreateDirectionalLight()
+DirectionalLight* LightingManager::CreateDirectionalLight(glm::vec3 a_v3WorldDirection, glm::vec3 a_v3Colour, float a_fAmbientIntensity, float a_fDiffuseIntensity)
 {
 	//If a directonal light has not been allocated create one
 	if(m_pDirectionalLight == nullptr)
 	{
 		m_pDirectionalLight = new DirectionalLight();
+		m_pDirectionalLight->m_v3WorldDirection = a_v3WorldDirection;
+		m_pDirectionalLight->m_v3LightColour = a_v3Colour;
+		m_pDirectionalLight->m_fAmbientIntensity = a_fAmbientIntensity;
+		m_pDirectionalLight->m_fDiffuseIntensity = a_fDiffuseIntensity;
 	}
 
 	return m_pDirectionalLight;
@@ -125,7 +130,7 @@ PointLight* LightingManager::CreatePointLight(glm::vec3 a_v3WorldPosition, glm::
 }
 
 SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_v3WorldPosition, glm::vec3 a_v3WorldDirection, glm::vec3 a_v3Colour,
-	float a_fDiffuseIntensity, float a_fLinearAttenuation, float a_fExponentialAttenuation, float a_fCutOffAngle)
+	float a_fAmbientIntensity, float a_fDiffuseIntensity, float a_fLinearAttenuation, float a_fExponentialAttenuation, float a_fCutOffAngle)
 {
 	if (m_uiCreatedSpotLightCount >= MAX_SPOT_LIGHTS)
 	{
@@ -144,6 +149,7 @@ SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_v3WorldPosition, glm::ve
 	m_apSpotLights[m_uiCreatedSpotLightCount]->m_v3WorldPosition = a_v3WorldPosition;
 	m_apSpotLights[m_uiCreatedSpotLightCount]->m_v3WorldDirection = a_v3WorldDirection;
 	m_apSpotLights[m_uiCreatedSpotLightCount]->m_v3LightColour = a_v3Colour;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_fAmbientIntensity = a_fAmbientIntensity;
 	m_apSpotLights[m_uiCreatedSpotLightCount]->m_fDiffuseIntensity = a_fDiffuseIntensity;
 	m_apSpotLights[m_uiCreatedSpotLightCount]->m_attenuation.m_fLinear = a_fLinearAttenuation;
 	m_apSpotLights[m_uiCreatedSpotLightCount]->m_attenuation.m_fExponential = a_fExponentialAttenuation;
@@ -161,6 +167,9 @@ void LightingManager::RenderImguiWindow()
 {
 	ImGui::Begin("Lighting Settings");
 	if (ImGui::CollapsingHeader("Lighting Settings")) {
+
+		ImGui::Checkbox("Draw Light Gizmos", &m_bDrawLightGizmos);
+		ImGui::Spacing();
 
 		//Draw Directional Light
 		if (ImGui::CollapsingHeader("Directional Light"))
@@ -215,6 +224,42 @@ void LightingManager::RenderImguiWindow()
 
 	}
 	ImGui::End();
+}
+
+void LightingManager::DrawLightingGizmos()
+{
+
+	//Early out if we shouldn't draw gizmos
+	if(!m_bDrawLightGizmos)
+	{
+		return;
+	}
+
+	constexpr float fGizmosRadius = 0.5f;
+	constexpr int iPointLightSpherePrecision = 25;
+
+	//Loop Point Lights
+	for (PointLight* pPointLight : m_apPointLights)
+	{
+		if(pPointLight == nullptr)
+		{
+			continue;
+		}
+
+		Gizmos::addSphere(pPointLight->m_v3WorldPosition, iPointLightSpherePrecision, iPointLightSpherePrecision,fGizmosRadius, glm::vec4(pPointLight->m_v3LightColour, 1));
+	}
+
+	//Loop Spot Lights
+	for (SpotLight* pSpotLight : m_apSpotLights)
+	{
+		if(pSpotLight == nullptr)
+		{
+			continue;;
+		}
+
+		Gizmos::addBox(pSpotLight->m_v3WorldPosition, glm::vec3(fGizmosRadius), true, glm::vec4(pSpotLight->m_v3LightColour, 1));
+	}
+
 }
 
 /// <summary>

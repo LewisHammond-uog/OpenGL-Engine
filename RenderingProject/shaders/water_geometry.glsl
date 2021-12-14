@@ -11,7 +11,7 @@ uniform vec3 ulightDirection;
 uniform vec3 ulightColour;
 
 const vec3 waterColour = vec3(0.1, 0.2, 0.25);
-const float reflectivity = 0.2f;
+const float reflectivity = 0.002f;
 const float shineDamper = 1.0;
 const float ambientLighting = 0.0;
 

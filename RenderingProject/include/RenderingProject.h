@@ -40,6 +40,15 @@ protected:
 	unsigned int m_programID;
 
 private:
+
+	void DrawDepthBufferWindow();
+	void DrawSceneSettingsWindow();
+	//If the scene should be drawn in wire frame mode
+	bool m_bDrawWireFrame{};
+	//If we should use vsync
+	bool m_bVsyncEnabled{};
+
+	//Meshes used for scene rendering
 	Mesh* m_pSceneMesh;
 	Mesh* m_pWaterMesh;
 	
@@ -50,6 +59,8 @@ private:
 	LightingManager* m_pLightingManager;
 
 	ShadowProgram* m_pShadowProgram;
+	int m_iShadowMapWidth{};
+	int m_iShadowMapHeight{};
 	ShadowFBO* m_pFBO;
 
 	WaterProgram* m_pWaterProgram;
