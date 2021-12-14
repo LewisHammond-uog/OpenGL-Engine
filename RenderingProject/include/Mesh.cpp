@@ -233,18 +233,18 @@ bool Mesh::InitMaterials(const aiScene* a_pScene, const std::string& a_filePath)
 		aiColor3D ambientColour = aiColor3D(0.0f, 0.0f, 0.0f);
 		if(pMaterial->Get(AI_MATKEY_COLOR_AMBIENT, ambientColour) == AI_SUCCESS)
 		{
-			m_materials[i].m_ambientColour.r = ambientColour.r;
-			m_materials[i].m_ambientColour.g = ambientColour.g;
-			m_materials[i].m_ambientColour.b = ambientColour.b;
+			m_materials[i].m_v3AmbientColour.r = ambientColour.r;
+			m_materials[i].m_v3AmbientColour.g = ambientColour.g;
+			m_materials[i].m_v3AmbientColour.b = ambientColour.b;
 		}
 
 		//Get if the Material has a diffuse colour attribute
 		aiColor3D diffuseColour = aiColor3D(0.0f, 0.0f, 0.0f);
 		if (pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColour) == AI_SUCCESS)
 		{
-			m_materials[i].m_diffuseColour.r = diffuseColour.r;
-			m_materials[i].m_diffuseColour.g = diffuseColour.g;
-			m_materials[i].m_diffuseColour.b = diffuseColour.b;
+			m_materials[i].m_v3DiffuseColour.r = diffuseColour.r;
+			m_materials[i].m_v3DiffuseColour.g = diffuseColour.g;
+			m_materials[i].m_v3DiffuseColour.b = diffuseColour.b;
 		}
 	}
 
@@ -288,27 +288,27 @@ void Mesh::LoadColours(const aiMaterial* a_pMaterial, const int a_index)
 	aiColor3D ambientColour = aiColor3D(0.0f, 0.0f, 0.0f);
 	if (a_pMaterial->Get(AI_MATKEY_COLOR_AMBIENT, ambientColour) == AI_SUCCESS)
 	{
-		m_materials[a_index].m_ambientColour.r = ambientColour.r;
-		m_materials[a_index].m_ambientColour.g = ambientColour.g;
-		m_materials[a_index].m_ambientColour.b = ambientColour.b;
+		m_materials[a_index].m_v3AmbientColour.r = ambientColour.r;
+		m_materials[a_index].m_v3AmbientColour.g = ambientColour.g;
+		m_materials[a_index].m_v3AmbientColour.b = ambientColour.b;
 	}
 
 	//Get if the Material has a diffuse colour attribute
 	aiColor3D diffuseColour = aiColor3D(0.0f, 0.0f, 0.0f);
 	if (a_pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColour) == AI_SUCCESS)
 	{
-		m_materials[a_index].m_diffuseColour.r = diffuseColour.r;
-		m_materials[a_index].m_diffuseColour.g = diffuseColour.g;
-		m_materials[a_index].m_diffuseColour.b = diffuseColour.b;
+		m_materials[a_index].m_v3DiffuseColour.r = diffuseColour.r;
+		m_materials[a_index].m_v3DiffuseColour.g = diffuseColour.g;
+		m_materials[a_index].m_v3DiffuseColour.b = diffuseColour.b;
 	}
 
 	//Get if the Material has a specular colour attribute
 	aiColor3D specularColour = aiColor3D(0.0f, 0.0f, 0.0f);
 	if (a_pMaterial->Get(AI_MATKEY_COLOR_SPECULAR, specularColour) == AI_SUCCESS)
 	{
-		m_materials[a_index].m_specularColour.r = specularColour.r;
-		m_materials[a_index].m_specularColour.g = specularColour.g;
-		m_materials[a_index].m_specularColour.b = specularColour.b;
+		m_materials[a_index].m_v3SpecularColour.r = specularColour.r;
+		m_materials[a_index].m_v3SpecularColour.g = specularColour.g;
+		m_materials[a_index].m_v3SpecularColour.b = specularColour.b;
 	}
 
 }

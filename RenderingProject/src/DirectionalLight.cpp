@@ -5,10 +5,10 @@
 /// <summary>
 /// Calculate the direction of this light in local space given a matrix
 /// </summary>
-/// <param name="a_world"></param>
-void DirectionalLight::CalculateLocalDirection(WorldTransform& a_world)
+/// <param name="a_rWorld"></param>
+void DirectionalLight::CalculateLocalDirection(WorldTransform& a_rWorld)
 {
-	m_localDirection = a_world.WorldDirToLocalDir(m_worldDirection);
+	m_v3LocalDirection = a_rWorld.WorldDirToLocalDir(m_v3WorldDirection);
 }
 
 /// <summary>
@@ -17,5 +17,5 @@ void DirectionalLight::CalculateLocalDirection(WorldTransform& a_world)
 /// <returns></returns>
 glm::vec3 DirectionalLight::GetLocalDirection() const
 {
-	return m_localDirection;
+	return m_v3LocalDirection;
 }

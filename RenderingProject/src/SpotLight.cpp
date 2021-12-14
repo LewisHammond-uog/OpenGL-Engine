@@ -10,5 +10,5 @@
 void SpotLight::CalculateLocalDirectionAndPosition(WorldTransform& a_pWorldTransform)
 {
 	CalculateLocalPosition(a_pWorldTransform);
-	m_localDirection = a_pWorldTransform.WorldDirToLocalDir(m_worldDirection);
+	m_v3LocalDirection = a_pWorldTransform.WorldDirToLocalDir(m_v3WorldDirection);
 }

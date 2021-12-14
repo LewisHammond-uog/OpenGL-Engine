@@ -14,8 +14,8 @@
 #include "WorldTransform.h"
 
 //Construct Lighting Manager with Lighting Program
-LightingManager::LightingManager(LightingProgram* a_program) :
-	m_pLightingProgram(a_program),
+LightingManager::LightingManager(LightingProgram* a_pProgram) :
+	m_pLightingProgram(a_pProgram),
 	m_pDirectionalLight(nullptr)
 {
 }
@@ -23,11 +23,11 @@ LightingManager::LightingManager(LightingProgram* a_program) :
 LightingManager::~LightingManager()
 {
 	//Delete all of the created lights
-	for (PointLight*& pointLight : m_pointLights)
+	for (PointLight*& pointLight : m_apPointLights)
 	{
 		delete pointLight;
 	}
-	for (SpotLight*& spotLight : m_spotLights)
+	for (SpotLight*& spotLight : m_apSpotLights)
 	{
 		delete spotLight;
 	}
@@ -35,7 +35,7 @@ LightingManager::~LightingManager()
 	delete m_pDirectionalLight;
 }
 
-void LightingManager::Update(WorldTransform& a_pWorldTransform)
+void LightingManager::Update(WorldTransform& a_rWorldTransform)
 {
 	if(m_pLightingProgram == nullptr)
 	{
@@ -48,25 +48,25 @@ void LightingManager::Update(WorldTransform& a_pWorldTransform)
 	}
 
 	//Calculate Point Light Local Positions
-	for(int i = 0; i < m_createdPointLightsCount; ++i)
+	for(int i = 0; i < m_uiCreatedPointLightsCount; ++i)
 	{
-		m_pointLights[i]->CalculateLocalPosition(a_pWorldTransform);
+		m_apPointLights[i]->CalculateLocalPosition(a_rWorldTransform);
 	}
 	//Set lights
-	m_pLightingProgram->SetPointLights(m_createdPointLightsCount, m_pointLights);
+	m_pLightingProgram->SetPointLights(m_uiCreatedPointLightsCount, m_apPointLights);
 
 	//Calculate Spot Light Local Positions and Directions
-	for (int i = 0; i < m_createdSpotLightCount; ++i)
+	for (int i = 0; i < m_uiCreatedSpotLightCount; ++i)
 	{
-		m_spotLights[i]->CalculateLocalDirectionAndPosition(a_pWorldTransform);
+		m_apSpotLights[i]->CalculateLocalDirectionAndPosition(a_rWorldTransform);
 	}
 	//Set Lights
-	m_pLightingProgram->SetSpotLights(m_createdSpotLightCount, m_spotLights);
+	m_pLightingProgram->SetSpotLights(m_uiCreatedSpotLightCount, m_apSpotLights);
 
 	//Set Directional Light
 	if(m_pDirectionalLight)
 	{
-		m_pDirectionalLight->CalculateLocalDirection(a_pWorldTransform);
+		m_pDirectionalLight->CalculateLocalDirection(a_rWorldTransform);
 		m_pLightingProgram->SetDirectionalLight(m_pDirectionalLight);
 	}
 }
@@ -89,17 +89,17 @@ DirectionalLight* LightingManager::CreateDirectionalLight()
 /// <summary>
 /// Create a Point Light and add to the Lighting Manager
 /// </summary>
-/// <param name="a_worldPosition">World Position of the Light</param>
-/// <param name="a_colour">Colour of the Light</param>
-/// <param name="a_ambientIntensity">Ambient Intensity of the Light</param>
-/// <param name="a_diffuseIntensity">Diffuse Intensity of the Light</param>
-/// <param name="a_linearAttenuation">Linear Attenuation of the Light</param>
-/// <param name="a_exponentialAttenuation">Exponential Attenuation of the Light</param>
+/// <param name="a_v3WorldPosition">World Position of the Light</param>
+/// <param name="a_v3Colour">Colour of the Light</param>
+/// <param name="a_fAmbientIntensity">Ambient Intensity of the Light</param>
+/// <param name="a_fDiffuseIntensity">Diffuse Intensity of the Light</param>
+/// <param name="a_fLinearAttenuation">Linear Attenuation of the Light</param>
+/// <param name="a_fExponentialAttenuation">Exponential Attenuation of the Light</param>
 /// <returns>The Created Light</returns>
-PointLight* LightingManager::CreatePointLight(glm::vec3 a_worldPosition, glm::vec3 a_colour, float a_ambientIntensity,
-                                              float a_diffuseIntensity, float a_linearAttenuation, float a_exponentialAttenuation)
+PointLight* LightingManager::CreatePointLight(glm::vec3 a_v3WorldPosition, glm::vec3 a_v3Colour, float a_fAmbientIntensity,
+                                              float a_fDiffuseIntensity, float a_fLinearAttenuation, float a_fExponentialAttenuation)
 {
-	if (m_createdPointLightsCount >= MAX_POINT_LIGHTS)
+	if (m_uiCreatedPointLightsCount >= MAX_POINT_LIGHTS)
 	{
 		//Log warning that we are tyring to create too many lights
 		Application_Log* log = Application_Log::Get();
@@ -112,22 +112,22 @@ PointLight* LightingManager::CreatePointLight(glm::vec3 a_worldPosition, glm::ve
 	}
 
 	//Create light and set properties
-	m_pointLights[m_createdPointLightsCount] = new PointLight();
-	m_pointLights[m_createdPointLightsCount]->m_worldPosition = a_worldPosition;
-	m_pointLights[m_createdPointLightsCount]->m_lightColour = a_colour;
-	m_pointLights[m_createdPointLightsCount]->m_ambientIntensity = a_ambientIntensity;
-	m_pointLights[m_createdPointLightsCount]->m_diffuseIntensity = a_diffuseIntensity;
-	m_pointLights[m_createdPointLightsCount]->m_attenuation.m_linear = a_linearAttenuation;
-	m_pointLights[m_createdPointLightsCount]->m_attenuation.m_exponential = a_exponentialAttenuation;
+	m_apPointLights[m_uiCreatedPointLightsCount] = new PointLight();
+	m_apPointLights[m_uiCreatedPointLightsCount]->m_v3WorldPosition = a_v3WorldPosition;
+	m_apPointLights[m_uiCreatedPointLightsCount]->m_v3LightColour = a_v3Colour;
+	m_apPointLights[m_uiCreatedPointLightsCount]->m_fAmbientIntensity = a_fAmbientIntensity;
+	m_apPointLights[m_uiCreatedPointLightsCount]->m_fDiffuseIntensity = a_fDiffuseIntensity;
+	m_apPointLights[m_uiCreatedPointLightsCount]->m_attenuation.m_fLinear = a_fLinearAttenuation;
+	m_apPointLights[m_uiCreatedPointLightsCount]->m_attenuation.m_fExponential = a_fExponentialAttenuation;
 
-	m_createdPointLightsCount++;
-	return m_pointLights[m_createdPointLightsCount - 1];
+	m_uiCreatedPointLightsCount++;
+	return m_apPointLights[m_uiCreatedPointLightsCount - 1];
 }
 
-SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_worldPosition, glm::vec3 a_worldDirection, glm::vec3 a_colour,
-	float a_diffuseIntensity, float a_linearAttenuation, float a_exponentialAttenuation, float a_cutOffAngle)
+SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_v3WorldPosition, glm::vec3 a_v3WorldDirection, glm::vec3 a_v3Colour,
+	float a_fDiffuseIntensity, float a_fLinearAttenuation, float a_fExponentialAttenuation, float a_fCutOffAngle)
 {
-	if (m_createdSpotLightCount >= MAX_SPOT_LIGHTS)
+	if (m_uiCreatedSpotLightCount >= MAX_SPOT_LIGHTS)
 	{
 		//Log warning that we are tyring to create too many lights
 		Application_Log* log = Application_Log::Get();
@@ -140,17 +140,17 @@ SpotLight* LightingManager::CreateSpotLight(glm::vec3 a_worldPosition, glm::vec3
 	}
 
 	//Create light and set properties
-	m_spotLights[m_createdSpotLightCount] = new SpotLight();
-	m_spotLights[m_createdSpotLightCount]->m_worldPosition = a_worldPosition;
-	m_spotLights[m_createdSpotLightCount]->m_worldDirection = a_worldDirection;
-	m_spotLights[m_createdSpotLightCount]->m_lightColour = a_colour;
-	m_spotLights[m_createdSpotLightCount]->m_diffuseIntensity = a_diffuseIntensity;
-	m_spotLights[m_createdSpotLightCount]->m_attenuation.m_linear = a_linearAttenuation;
-	m_spotLights[m_createdSpotLightCount]->m_attenuation.m_exponential = a_exponentialAttenuation;
-	m_spotLights[m_createdSpotLightCount]->m_cutoff = a_cutOffAngle;
+	m_apSpotLights[m_uiCreatedSpotLightCount] = new SpotLight();
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_v3WorldPosition = a_v3WorldPosition;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_v3WorldDirection = a_v3WorldDirection;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_v3LightColour = a_v3Colour;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_fDiffuseIntensity = a_fDiffuseIntensity;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_attenuation.m_fLinear = a_fLinearAttenuation;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_attenuation.m_fExponential = a_fExponentialAttenuation;
+	m_apSpotLights[m_uiCreatedSpotLightCount]->m_fCutoff = a_fCutOffAngle;
 
-	m_createdSpotLightCount++;
-	return m_spotLights[m_createdSpotLightCount - 1];
+	m_uiCreatedSpotLightCount++;
+	return m_apSpotLights[m_uiCreatedSpotLightCount - 1];
 }
 
 /// <summary>
@@ -174,10 +174,10 @@ void LightingManager::RenderImguiWindow()
 		//Draw Point Lights
 		if(ImGui::CollapsingHeader("Point Lights"))
 		{
-			for(int i = 0; i < std::size(m_pointLights); ++i)
+			for(int i = 0; i < std::size(m_apPointLights); ++i)
 			{
 				//Do not draw if light is null
-				if(m_pointLights[i] == nullptr)
+				if(m_apPointLights[i] == nullptr)
 				{
 					continue;
 				}
@@ -187,7 +187,7 @@ void LightingManager::RenderImguiWindow()
 				headerSS << "Light #" << i << std::endl;
 				
 				if (ImGui::CollapsingHeader(headerSS.str().c_str())) {
-					DrawImguiPointLightSetting(m_pointLights[i]);
+					DrawImguiPointLightSetting(m_apPointLights[i]);
 				}
 			}
 		}
@@ -195,10 +195,10 @@ void LightingManager::RenderImguiWindow()
 		//Draw Spot Lights
 		if (ImGui::CollapsingHeader("Spot Lights"))
 		{
-			for (int i = 0; i < std::size(m_spotLights); ++i)
+			for (int i = 0; i < std::size(m_apSpotLights); ++i)
 			{
 				//Do not draw if light is null
-				if (m_spotLights[i] == nullptr)
+				if (m_apSpotLights[i] == nullptr)
 				{
 					continue;
 				}
@@ -208,7 +208,7 @@ void LightingManager::RenderImguiWindow()
 				headerSS << "Light #" << i << std::endl;
 
 				if (ImGui::CollapsingHeader(headerSS.str().c_str())) {
-					DrawImguiSpotLightSetting(m_spotLights[i]);
+					DrawImguiSpotLightSetting(m_apSpotLights[i]);
 				}
 			}
 		}
@@ -228,16 +228,16 @@ void LightingManager::DrawImguiDirectionalLightSetting(DirectionalLight* a_pLigh
 
 	//Direction
 	constexpr float dirDragInterval = 0.01f;
-	ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&a_pLight->m_worldDirection), dirDragInterval);
+	ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&a_pLight->m_v3WorldDirection), dirDragInterval);
 	ImGui::Spacing();
 
 	//Intensity
 	constexpr float intensityDragInterval = 0.01f;
-	ImGui::DragFloat("Ambient Intensity", &a_pLight->m_ambientIntensity, intensityDragInterval);
-	ImGui::DragFloat("Diffuse Intensity", &a_pLight->m_diffuseIntensity, intensityDragInterval);
+	ImGui::DragFloat("Ambient Intensity", &a_pLight->m_fAmbientIntensity, intensityDragInterval);
+	ImGui::DragFloat("Diffuse Intensity", &a_pLight->m_fDiffuseIntensity, intensityDragInterval);
 
 	//Colour
-	ImGui::ColorEdit3("Light Colour", reinterpret_cast<float*>(&a_pLight->m_lightColour));
+	ImGui::ColorEdit3("Light Colour", reinterpret_cast<float*>(&a_pLight->m_v3LightColour));
 	ImGui::Spacing();
 
 	ImGui::PopID();
@@ -253,27 +253,27 @@ void LightingManager::DrawImguiPointLightSetting(PointLight* a_pLight) const
 
 	//Position
 	constexpr float posDragInterval = 0.1f; //Interval for the dragging the position sliders
-	ImGui::DragFloat3("Position", reinterpret_cast<float*>(&a_pLight->m_worldPosition), posDragInterval);
+	ImGui::DragFloat3("Position", reinterpret_cast<float*>(&a_pLight->m_v3WorldPosition), posDragInterval);
 
 	ImGui::Spacing();
 
 	//Intensity
 	constexpr float intensityDragInterval = 0.01f;
-	ImGui::DragFloat("Ambient Intensity", &a_pLight->m_ambientIntensity, intensityDragInterval);
-	ImGui::DragFloat("Diffuse Intensity", &a_pLight->m_diffuseIntensity, intensityDragInterval);
+	ImGui::DragFloat("Ambient Intensity", &a_pLight->m_fAmbientIntensity, intensityDragInterval);
+	ImGui::DragFloat("Diffuse Intensity", &a_pLight->m_fDiffuseIntensity, intensityDragInterval);
 
 	ImGui::Spacing();
 
 	//Colour
-	ImGui::ColorEdit3("Light Colour", reinterpret_cast<float*>(&a_pLight->m_lightColour));
+	ImGui::ColorEdit3("Light Colour", reinterpret_cast<float*>(&a_pLight->m_v3LightColour));
 
 	ImGui::Spacing();
 
 	//Falloff
 	constexpr float lightFalloffInterval = 0.001f;
-	ImGui::DragFloat("Constant Falloff", &a_pLight->m_attenuation.m_constant, lightFalloffInterval);
-	ImGui::DragFloat("Linear Falloff", &a_pLight->m_attenuation.m_linear, lightFalloffInterval);
-	ImGui::DragFloat("Exp Falloff", &a_pLight->m_attenuation.m_exponential, lightFalloffInterval);
+	ImGui::DragFloat("Constant Falloff", &a_pLight->m_attenuation.m_fConstant, lightFalloffInterval);
+	ImGui::DragFloat("Linear Falloff", &a_pLight->m_attenuation.m_fLinear, lightFalloffInterval);
+	ImGui::DragFloat("Exp Falloff", &a_pLight->m_attenuation.m_fExponential, lightFalloffInterval);
 
 	ImGui::Spacing();
 	ImGui::PopID();
@@ -293,11 +293,11 @@ void LightingManager::DrawImguiSpotLightSetting(SpotLight* a_pLight) const
 
 	//Direction
 	constexpr float dirDragInterval = 0.01f;
-	ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&a_pLight->m_worldDirection), dirDragInterval);
+	ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&a_pLight->m_v3WorldDirection), dirDragInterval);
 
 	//Angle
 	constexpr float cutoffDragInterval = 0.1f;
-	ImGui::DragFloat("Cutoff Angle", &a_pLight->m_cutoff, cutoffDragInterval);
+	ImGui::DragFloat("Cutoff Angle", &a_pLight->m_fCutoff, cutoffDragInterval);
 
 	ImGui::PopID();
 }

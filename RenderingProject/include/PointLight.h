@@ -11,7 +11,7 @@ class WorldTransform;
 class PointLight : public BaseLight
 {
 public:
-	glm::vec3 m_worldPosition = glm::vec3(0, 0, 0);
+	glm::vec3 m_v3WorldPosition = glm::vec3(0, 0, 0);
 	LightAttenuation m_attenuation;
 
 	void CalculateLocalPosition(WorldTransform& a_worldTransform);
@@ -19,7 +19,7 @@ public:
 	const glm::vec3& GetLocalPosition() const;
 
 private:
-	glm::vec3 m_localPosition;
+	glm::vec3 m_v3LocalPosition;
 
 };
 

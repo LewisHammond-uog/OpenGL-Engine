@@ -12,15 +12,15 @@ class SpotLight : public PointLight
  {
 public:
 
-	glm::vec3 m_worldDirection = glm::vec3(0.0f, 0.f, 0.f);
-	float m_cutoff = 0.f;
+	glm::vec3 m_v3WorldDirection = glm::vec3(0.0f, 0.f, 0.f);
+	float m_fCutoff = 0.f;
 
 	void CalculateLocalDirectionAndPosition(WorldTransform& a_pWorldTransform);
 
-	const glm::vec3 GetLocalDirection() const { return m_localDirection; }
+	glm::vec3 GetLocalDirection() const { return m_v3LocalDirection; }
 
  private:
-	 glm::vec3 m_localDirection = glm::vec3(0.0f, 0.f, 0.f);
+	 glm::vec3 m_v3LocalDirection = glm::vec3(0.0f, 0.f, 0.f);
 
 };
 

@@ -41,13 +41,13 @@ private:
 	//Light used as the shadow source
 	DirectionalLight* m_pShadowSourceLight;
 
-	LightingProgram* pLightingProgram;
-	LightingManager* pLightingManager;
+	LightingProgram* m_pLightingProgram;
+	LightingManager* m_pLightingManager;
 
-	ShadowProgram* pShadowProgram;
-	ShadowFBO* pFBO;
+	ShadowProgram* m_pShadowProgram;
+	ShadowFBO* m_pFBO;
 
-	WaterProgram* pWaterProgram;
+	WaterProgram* m_pWaterProgram;
 	
 };
 

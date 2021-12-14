@@ -23,9 +23,9 @@ public:
     glm::mat4 GetReversedTranslationMatrix();
     glm::mat4 GetReversedRotationMatrix();
 
-    float GetScale() const { return m_scale; }
-    glm::vec3 GetPos() const { return m_pos; }
-    glm::vec3 GetRotation() const { return m_rotation; }
+    float GetScale() const { return m_fScale; }
+    glm::vec3 GetPos() const { return m_v3Pos; }
+    glm::vec3 GetRotation() const { return m_v3Rotation; }
 
     static float ToRadians(float a_degrees);
 
@@ -39,9 +39,9 @@ private:
     glm::mat4 InitRotationY(float y);
     glm::mat4 InitRotationZ(float z);
 
-    float    m_scale = 1.0f;
-    glm::vec3 m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 m_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+    float    m_fScale = 1.0f;
+    glm::vec3 m_v3Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 m_v3Pos = glm::vec3(0.0f, 0.0f, 0.0f);
 };
 
 

@@ -2,45 +2,45 @@
 
 void WorldTransform::SetScale(float scale)
 {
-    m_scale = scale;
+    m_fScale = scale;
 }
 
 
 void WorldTransform::SetRotation(float x, float y, float z)
 {
-    m_rotation.x = x;
-    m_rotation.y = y;
-    m_rotation.z = z;
+    m_v3Rotation.x = x;
+    m_v3Rotation.y = y;
+    m_v3Rotation.z = z;
 }
 
 
 void WorldTransform::SetPosition(float x, float y, float z)
 {
-    m_pos.x = x;
-    m_pos.y = y;
-    m_pos.z = z;
+    m_v3Pos.x = x;
+    m_v3Pos.y = y;
+    m_v3Pos.z = z;
 }
 
 
 void WorldTransform::SetPosition(const glm::vec3 &WorldPos)
 {
-    m_pos = WorldPos;
+    m_v3Pos = WorldPos;
 }
 
 
 void WorldTransform::Rotate(float x, float y, float z)
 {
-    m_rotation.x += x;
-    m_rotation.y += y;
-    m_rotation.z += z;
+    m_v3Rotation.x += x;
+    m_v3Rotation.y += y;
+    m_v3Rotation.z += z;
 }
 
 
 glm::mat4 WorldTransform::GetMatrix()
 {
-    glm::mat4 Scale = CreateScaleTransform(m_scale, m_scale, m_scale);
-    glm::mat4 Rotation = CreateRotationTransform(m_rotation.x, m_rotation.y, m_rotation.z);
-    glm::mat4 Translation = CreateTranslationTransform(m_pos.x, m_pos.y, m_pos.z);
+    glm::mat4 Scale = CreateScaleTransform(m_fScale, m_fScale, m_fScale);
+    glm::mat4 Rotation = CreateRotationTransform(m_v3Rotation.x, m_v3Rotation.y, m_v3Rotation.z);
+    glm::mat4 Translation = CreateTranslationTransform(m_v3Pos.x, m_v3Pos.y, m_v3Pos.z);
     glm::mat4 WorldTransformformation = Translation * Rotation * Scale;
     return WorldTransformformation;
 }
@@ -49,7 +49,7 @@ glm::mat4 WorldTransform::GetMatrix()
 glm::mat4 WorldTransform::GetReversedTranslationMatrix()
 {
     glm::mat4 ReversedTranslation;
-    glm::vec3 negatedPos = glm::vec3(-m_pos.x, -m_pos.y, -m_pos.z);
+    glm::vec3 negatedPos = glm::vec3(-m_v3Pos.x, -m_v3Pos.y, -m_v3Pos.z);
     ReversedTranslation = CreateTranslationTransform(negatedPos.x, negatedPos.y, negatedPos.z);
     return ReversedTranslation;
 }
@@ -57,7 +57,7 @@ glm::mat4 WorldTransform::GetReversedTranslationMatrix()
 
 glm::mat4 WorldTransform::GetReversedRotationMatrix()
 {
-    glm::mat4 ReversedRotation = CreateRotationTransform(-m_rotation.z, -m_rotation.y, -m_rotation.x);
+    glm::mat4 ReversedRotation = CreateRotationTransform(-m_v3Rotation.z, -m_v3Rotation.y, -m_v3Rotation.x);
     return ReversedRotation;
 }
 

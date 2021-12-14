@@ -5,16 +5,16 @@
 struct MeshEntry {
     MeshEntry()
     {
-        NumIndices = 0;
-        BaseVertex = 0;
-        BaseIndex = 0;
-        MaterialIndex = -1;
+        m_uiNumIndices = 0;
+        m_uiBaseVertex = 0;
+        m_uiVBaseIndex = 0;
+        m_uiMaterialIndex = -1;
     }
 
-    unsigned int NumIndices;
-    unsigned int BaseVertex;
-    unsigned int BaseIndex;
-    unsigned int MaterialIndex;
+    unsigned int m_uiNumIndices;
+    unsigned int m_uiBaseVertex;
+    unsigned int m_uiVBaseIndex;
+    unsigned int m_uiMaterialIndex;
 };
 
 

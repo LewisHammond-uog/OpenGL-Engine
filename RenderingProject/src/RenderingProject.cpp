@@ -157,7 +157,7 @@ void RenderingProject::Draw()
 	if (m_pShadowSourceLight != nullptr) 
 	{
 		constexpr float lightProjectionDistance = 20.f;
-		lightPos = -m_pShadowSourceLight->m_worldDirection * lightProjectionDistance;
+		lightPos = -m_pShadowSourceLight->m_v3WorldDirection * lightProjectionDistance;
 	}
 
 	// Matrices needed for the light's perspective

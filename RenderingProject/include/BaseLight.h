@@ -7,9 +7,9 @@
 struct LightAttenuation
 {
 public:
-	float m_constant = 1.0f;
-	float m_linear = 0.0f;
-	float m_exponential = 0.0f;
+	float m_fConstant = 1.0f;
+	float m_fLinear = 0.0f;
+	float m_fExponential = 0.0f;
 };
 
 class BaseLight
@@ -18,13 +18,13 @@ class BaseLight
 public:
 	BaseLight()
 	{
-		m_lightColour = glm::vec3(1.0f, 1.0f, 1.0f);
-		m_ambientIntensity = 0.f;
+		m_v3LightColour = glm::vec3(1.0f, 1.0f, 1.0f);
+		m_fAmbientIntensity = 0.f;
 	}
 
-	glm::vec3 m_lightColour;
-	float m_ambientIntensity;
-	float m_diffuseIntensity = 0.0f;
+	glm::vec3 m_v3LightColour;
+	float m_fAmbientIntensity;
+	float m_fDiffuseIntensity = 0.0f;
 };
 
 #endif // __BASELIGHT_H__
