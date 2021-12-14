@@ -1,5 +1,9 @@
 #include "WaterProgram.h"
 
+//Imgui Includes
+#include "imgui.h"
+
+//GLM Includes
 #include <glm/gtc/type_ptr.hpp>
 
 bool WaterProgram::Initialise()
@@ -33,9 +37,10 @@ bool WaterProgram::Initialise()
 
 	//Get Uniform Locations
 	m_worldViewPointLocation = GetUniformLocation("uWorldViewPoint");
-	m_worldProjectionMatrixLocation = GetUniformLocation("projectionViewMatrix");
 	m_worldCamPosLocation = GetUniformLocation("cameraPosition");
 	m_timeLocation = GetUniformLocation("uTime");
+	m_lightDirectionLocation = GetUniformLocation("ulightDirection");
+	m_lightColourLocation = GetUniformLocation("ulightColour");
 
 	return true;
 }
@@ -50,14 +55,6 @@ void WaterProgram::SetWorldViewPoint(const glm::mat4 a_worldViewPoint) const
 	glUniformMatrix4fv(m_worldViewPointLocation, 1, GL_FALSE, glm::value_ptr(a_worldViewPoint));
 }
 
-/// <summary>
-/// Set the projection matrix
-/// </summary>
-/// <param name="a_projectionMatrix"></param>
-void WaterProgram::SetProjectionMatrix(const glm::mat4 a_projectionMatrix) const
-{
-	glUniformMatrix4fv(m_worldProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(a_projectionMatrix));
-}
 
 /// <summary>
 /// Set the world camera position
@@ -75,4 +72,22 @@ void WaterProgram::SetWorldCameraPos(const glm::vec3 a_camPos) const
 void WaterProgram::SetTime(const float a_time)
 {
 	glUniform1f(m_timeLocation, a_time);
+}
+
+/// <summary>
+/// Set the direction for the light for the water
+/// </summary>
+/// <param name="a_lightDirection"></param>
+void WaterProgram::SetLightDirection(const glm::vec3 a_lightDirection) const
+{
+	glUniform3fv(m_lightDirectionLocation, 1, glm::value_ptr(a_lightDirection));
+}
+
+/// <summary>
+/// Set the colour of the light
+/// </summary>
+/// <param name="a_lightColour"></param>
+void WaterProgram::SetLightColour(const glm::vec3 a_lightColour) const
+{
+	glUniform3fv(m_lightColourLocation, 1, glm::value_ptr(a_lightColour));
 }

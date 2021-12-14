@@ -73,7 +73,7 @@ bool RenderingProject::onCreate()
 	m_pLightingProgram->SetShadowTextureUnit(SHADOW_TEXTURE_INDEX);
 
 	m_pLightingManager = new LightingManager(m_pLightingProgram);
-	m_pShadowSourceLight = m_pLightingManager->CreateDirectionalLight();
+	m_pDirecitonalSourceLight = m_pLightingManager->CreateDirectionalLight();
 	m_pLightingManager->CreatePointLight();
 	m_pLightingManager->CreatePointLight();
 	m_pLightingManager->CreateSpotLight();
@@ -128,7 +128,7 @@ void RenderingProject::Update(float a_deltaTime)
 	}
 	ImGui::EndTabBar();
 	ImGui::End();
-	
+
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
 	Application_Log* log = Application_Log::Get();
@@ -155,10 +155,10 @@ void RenderingProject::Draw()
 
 	//Calculate the light position
 	glm::vec3 lightPos = glm::vec3(0, 0, 0);
-	if (m_pShadowSourceLight != nullptr) 
+	if (m_pDirecitonalSourceLight != nullptr) 
 	{
 		constexpr float lightProjectionDistance = 20.f;
-		lightPos = -m_pShadowSourceLight->m_v3WorldDirection * lightProjectionDistance;
+		lightPos = -m_pDirecitonalSourceLight->m_v3WorldDirection * lightProjectionDistance;
 	}
 
 	// Matrices needed for the light's perspective
@@ -170,23 +170,20 @@ void RenderingProject::Draw()
 	RenderPass(lightProjectionView);
 	WaterPass();
 
-	// draw the gizmos from this frame
-	Gizmos::draw(m_viewMatrix, m_projectionMatrix);
+
 
 	//Unbind Program
 	glUseProgram(0);
 }
 
-void RenderingProject::Destroy()
-{
-	delete m_pLightingProgram;
-	delete m_pSceneMesh;
-	delete m_pLightingManager;
-	Gizmos::destroy();
-}
 
 void RenderingProject::WaterPass()
 {
+	if(!m_pWaterProgram)
+	{
+		return;
+	}
+
 	glm::mat4 waterWVP = m_projectionMatrix * m_viewMatrix * m_pWaterMesh->m_transform->GetMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -194,6 +191,8 @@ void RenderingProject::WaterPass()
 	m_pWaterProgram->SetWorldViewPoint(waterWVP);
 	m_pWaterProgram->SetWorldCameraPos(m_cameraMatrix[3]);
 	m_pWaterProgram->SetTime(Utility::getTotalTime());
+	m_pWaterProgram->SetLightDirection(m_pDirecitonalSourceLight->m_v3WorldDirection);
+	m_pWaterProgram->SetLightColour(m_pDirecitonalSourceLight->m_v3LightColour);
 	m_pWaterMesh->Render(GL_TRIANGLES);
 }
 
@@ -201,6 +200,11 @@ void RenderingProject::ShadowPass(const glm::mat4 a_lightProjectionView)
 {
 	const int shadowMapWidth = 1920;
 	const int shadowMapHeight = 1080;
+
+	if (!m_pShadowProgram || !m_pFBO)
+	{
+		return;
+	}
 
 	m_pShadowProgram->UseProgram();
 	m_pShadowProgram->SetLightViewPoint(a_lightProjectionView);
@@ -215,6 +219,11 @@ void RenderingProject::ShadowPass(const glm::mat4 a_lightProjectionView)
 
 void RenderingProject::RenderPass(const glm::mat4 a_lightProjectionView)
 {
+	if (!m_pShadowProgram || !m_pFBO)
+	{
+		return;
+	}
+
 	m_pLightingProgram->UseProgram();
 	m_pFBO->BindForReading();
 
@@ -231,4 +240,13 @@ void RenderingProject::RenderPass(const glm::mat4 a_lightProjectionView)
 
 	m_pSceneMesh->Render();
 }
+
+void RenderingProject::Destroy()
+{
+	delete m_pLightingProgram;
+	delete m_pSceneMesh;
+	delete m_pLightingManager;
+	Gizmos::destroy();
+}
+
 

@@ -44,7 +44,7 @@ private:
 	Mesh* m_pWaterMesh;
 	
 	//Light used as the shadow source
-	DirectionalLight* m_pShadowSourceLight;
+	DirectionalLight* m_pDirecitonalSourceLight;
 
 	LightingProgram* m_pLightingProgram;
 	LightingManager* m_pLightingManager;
