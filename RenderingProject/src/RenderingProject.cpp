@@ -76,7 +76,7 @@ bool RenderingProject::onCreate()
 	glGetIntegerv(GL_MAX_PATCH_VERTICES, &MaxPatchVertices);
 	glPatchParameteri(GL_PATCH_VERTICES, 3);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	return true;
 }
