@@ -11,11 +11,11 @@ bool ShadowProgram::Initialise()
 	}
 
 	//Add Shaders to program
-	if(!AddShader(GL_VERTEX_SHADER, "../shaders/shadow_vertex.glsl"))
+	if(!AddShader(GL_VERTEX_SHADER, "./shaders/shadow_vertex.glsl"))
 	{
 		return false;
 	}
-	if(!AddShader(GL_FRAGMENT_SHADER, "../shaders/shadow_fragment.glsl"))
+	if(!AddShader(GL_FRAGMENT_SHADER, "./shaders/shadow_fragment.glsl"))
 	{
 		return false;
 	}

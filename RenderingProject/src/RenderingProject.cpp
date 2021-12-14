@@ -58,7 +58,7 @@ bool RenderingProject::onCreate()
 
 	//Load mesh
 	m_pSceneMesh = new Mesh();
-	if(!m_pSceneMesh->LoadMesh("../models/ruinedtank/tank.fbx"))
+	if(!m_pSceneMesh->LoadMesh("./models/ruinedtank/tank.fbx"))
 	{
 		return false;
 	}
@@ -66,7 +66,7 @@ bool RenderingProject::onCreate()
 
 	//Load Plane for water
 	m_pWaterMesh = new Mesh();
-	if (!m_pWaterMesh->LoadMesh("../models/plane/Plane.fbx"))
+	if (!m_pWaterMesh->LoadMesh("./models/plane/Plane.fbx"))
 	{
 		return false;
 	}

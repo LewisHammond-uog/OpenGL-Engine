@@ -15,15 +15,15 @@ bool WaterProgram::Initialise()
 	}
 
 	//Add shaders to program
-	if (!AddShader(GL_VERTEX_SHADER, "../shaders/water_vertex.glsl"))
+	if (!AddShader(GL_VERTEX_SHADER, "./shaders/water_vertex.glsl"))
 	{
 		return false;
 	}
-	if (!AddShader(GL_GEOMETRY_SHADER, "../shaders/water_geometry.glsl"))
+	if (!AddShader(GL_GEOMETRY_SHADER, "./shaders/water_geometry.glsl"))
 	{
 		return false;
 	}
-	if (!AddShader(GL_FRAGMENT_SHADER, "../shaders/water_fragment.glsl"))
+	if (!AddShader(GL_FRAGMENT_SHADER, "./shaders/water_fragment.glsl"))
 	{
 		return false;
 	}
