@@ -17,6 +17,7 @@
 #include "LightingManager.h"
 #include "ShadowProgram.h"
 #include "ShadowFBO.h"
+#include "WaterProgram.h"
 
 
 RenderingProject::RenderingProject()
@@ -54,7 +55,7 @@ bool RenderingProject::onCreate()
 
 	//Load Plane for water
 	pWaterMesh = new Mesh();
-	if (!pWaterMesh->LoadMesh("../models/plane/fuckyou.fbx"))
+	if (!pWaterMesh->LoadMesh("../models/plane/Plane.fbx"))
 	{
 		return false;
 	}
@@ -79,6 +80,9 @@ bool RenderingProject::onCreate()
 
 	pFBO = new ShadowFBO();
 	pFBO->Init(1920, 1080);
+
+	pWaterProgram = new WaterProgram();
+	pWaterProgram->Initialise();
 
 	return true;
 }
@@ -191,6 +195,9 @@ void RenderingProject::Draw()
 	pLightingManager->RenderImguiWindow();
 
 	//pMesh->Render();
+
+	pWaterProgram->UseProgram();
+	pWaterProgram->SetWorldViewPoint(worldViewProjection);
 	pWaterMesh->Render();
 
 	//Unbind Program
