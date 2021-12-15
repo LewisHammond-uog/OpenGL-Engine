@@ -20,13 +20,12 @@ out vec4 tcShadowCoord[];
 
 uniform vec3 uCameraLocalPos;
 
-float GetTessLevel(float Distance0, float Distance1)
+//Calculate the amount of tesselation based on distance to the camera
+float GetTessLevel(float Distance)
 {
-    float AvgDistance = (Distance0 + Distance1) / 2.0;
-
-    if (AvgDistance <= 20.0) {
+    if (Distance <= 20.0) {
         return 5.0;
-    }else if(AvgDistance <= 10.0){
+    }else if(Distance <= 10.0){
         return 2.0;
     }
     else {
@@ -49,13 +48,12 @@ void main(){
 	gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
 
-	  // Calculate the distance from the camera to the three control points
-    float EyeToVertexDistance0 = distance(uCameraLocalPos, gl_in[gl_InvocationID].gl_Position.xyz);
-    float EyeToVertexDistance1 = distance(uCameraLocalPos, gl_in[gl_InvocationID].gl_Position.xyz);
-    float EyeToVertexDistance2 = distance(uCameraLocalPos, gl_in[gl_InvocationID].gl_Position.xyz);
+	 // Calculate the distance from the camera to the  control points
+    float EyeToVertexDistance = distance(uCameraLocalPos, gl_in[gl_InvocationID].gl_Position.xyz);
+    float TessLevel = GetTessLevel(EyeToVertexDistance);
 
-    gl_TessLevelOuter[0] = GetTessLevel(EyeToVertexDistance1, EyeToVertexDistance2);
-    gl_TessLevelOuter[1] = GetTessLevel(EyeToVertexDistance2, EyeToVertexDistance0);
-    gl_TessLevelOuter[2] = GetTessLevel(EyeToVertexDistance0, EyeToVertexDistance1);
+    gl_TessLevelOuter[0] = TessLevel;
+    gl_TessLevelOuter[1] = TessLevel;
+    gl_TessLevelOuter[2] = TessLevel;
     gl_TessLevelInner[0] = gl_TessLevelOuter[2];
 }

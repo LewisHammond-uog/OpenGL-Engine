@@ -40,7 +40,7 @@ bool RenderingProject::onCreate()
 {
 	// initialise the Gizmos helper class
 	Gizmos::create();
-	
+
 	// create a world-space matrix for a camera
 	m_cameraMatrix = glm::inverse( glm::lookAt(glm::vec3(10,10,10),glm::vec3(0,0,0), glm::vec3(0,1,0)));
 	
@@ -52,7 +52,7 @@ bool RenderingProject::onCreate()
 	m_iShadowMapWidth = m_windowWidth;
 
 	// set the clear colour and enable depth testing and backface culling
-	glClearColor(0.25f,0.25f,0.25f,1.f);
+	glClearColor(0.025f,0.025f,0.025f,1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 

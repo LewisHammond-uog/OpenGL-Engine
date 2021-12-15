@@ -74,6 +74,7 @@ const vec2 poissonDisk[4] = vec2[](
   vec2( 0.34495938, 0.29387760 )
 );
 
+//Calculate the amount of shaddow to apply to this fixed 
 float CalculateShadow(){
 	float shadowFactor = 0;
 	for(int i = 0; i < 4; ++i){
@@ -85,6 +86,7 @@ float CalculateShadow(){
 	return shadowFactor;
 }
 
+//Calculate the amount of light for this pixel based on the light values, direction and normals
 vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, float shadowFactor){
 
 	//Calculate ambient lighting based from properties of diretional light
@@ -124,12 +126,14 @@ vec4 CalculateLightInternal(BaseLight light, vec3 lightDirection, vec3 normal, f
 	return (ambientColour + shadowFactor * (diffuseColour + specularColour));
 }
 
+//Calculate the amount of light for a directional light
 vec4 CalculateDirectionalLight(vec3 normal)
 {
 	float shadowFactor = 1 - CalculateShadow();
 	return CalculateLightInternal(uDirectionalLight.base, uDirectionalLight.Direction, normal, shadowFactor);
 }
 
+//Calculate the amount of light for a point light
 vec4 CalculatePointLight(PointLight light, vec3 normal)
 {
 	vec3 LightDirection = light.localPos - vLocalPos;
@@ -144,6 +148,7 @@ vec4 CalculatePointLight(PointLight light, vec3 normal)
 	return Color / Attenuation;
 }
 
+//Calculate the amount of light for a spot light
 vec4 CalculateSpotLight(SpotLight light, vec3 normal) 
 {
 	//Get the vector from the spot light to the pixel
@@ -165,6 +170,7 @@ vec4 CalculateSpotLight(SpotLight light, vec3 normal)
 	}
 }
 
+//Calculate a normal based on the normal map
 vec3 CalcuateBumpedNormal()
 {
 	//Normalize the tanget and normal

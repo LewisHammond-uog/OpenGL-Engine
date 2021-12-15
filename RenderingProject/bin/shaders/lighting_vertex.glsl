@@ -25,11 +25,17 @@ const mat4 SHADOW_BIAS_MATRIX = mat4(
 
 
 void main(){
+	
+	//Transfer of Data
 	iTexCoord = TexCoord;
 	iNormal = Normal;
 	iLocalPos = Position.xyz;
 	iTangent = Tangent;
+
+	//Calculate the position of this fragment in light space
 	iFragPosLight = uLightViewPoint * vec4(iLocalPos, 0);
+	//Get the coordinate of the shadow map in light space
 	iShadowCoord = SHADOW_BIAS_MATRIX * uLightViewPoint * Position;
+	//Move the fragment to camera space
 	gl_Position = uWorldViewPoint * vec4(Position.xyz, 1.0);
 }
