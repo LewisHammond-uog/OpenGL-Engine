@@ -217,6 +217,15 @@ void RenderingProject::Draw()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+	//Seting to use MSAA or not
+	if(m_bAAEnabled)
+	{
+		glEnable(GL_MULTISAMPLE);
+	}else
+	{
+		glDisable(GL_MULTISAMPLE);
+	}
+
 	ShadowPass(lightProjectionView);
 	RenderPass(lightProjectionView);
 	WaterPass();
@@ -346,6 +355,7 @@ void RenderingProject::DrawSceneSettingsWindow()
 	ImGui::Begin("Scene Settings");
 	ImGui::Checkbox("Draw Wireframe", &m_bDrawWireFrame);
 	ImGui::Checkbox("Vsync", &m_bVsyncEnabled);
+	ImGui::Checkbox("MSAA (Multisample anti-aliasing)", &m_bAAEnabled);
 	ImGui::End();
 
 

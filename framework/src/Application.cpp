@@ -80,6 +80,11 @@ bool Application::create(const char* a_name, int a_width, int a_height, bool a_b
 	}
 	m_windowWidth = a_width;
 	m_windowHeight = a_height;
+
+	//Setup for MSAA multisampling
+	constexpr int iMSAASampleLevel = 4;
+	glfwWindowHint(GLFW_SAMPLES, iMSAASampleLevel);
+
 	// create a windowed mode window and its OpenGL context
 	m_window = glfwCreateWindow(m_windowWidth, m_windowHeight, a_name, ( a_bFullscreen ? glfwGetPrimaryMonitor() : nullptr), nullptr);
 	if (m_window == nullptr)

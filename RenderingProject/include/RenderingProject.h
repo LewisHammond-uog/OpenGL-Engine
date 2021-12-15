@@ -43,10 +43,13 @@ private:
 
 	void DrawDepthBufferWindow();
 	void DrawSceneSettingsWindow();
+
 	//If the scene should be drawn in wire frame mode
 	bool m_bDrawWireFrame{};
 	//If we should use vsync
 	bool m_bVsyncEnabled{};
+	//If we should use MSAA
+	bool m_bAAEnabled;
 
 	//Meshes used for scene rendering
 	Mesh* m_pSceneMesh;
@@ -67,8 +70,6 @@ private:
 
 	//Water
 	WaterProgram* m_pWaterProgram;
-
-	//Bool for if it is safe to render -- disabled if we failed to load models 
 	
 };
 
