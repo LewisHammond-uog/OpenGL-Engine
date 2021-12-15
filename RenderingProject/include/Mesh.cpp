@@ -98,7 +98,6 @@ void Mesh::Render(const GLenum a_drawMode /*= GL_PATCHES */)
 		}
 
 		//Bind Normal texture if we have one
-		//todo set in the texture that we have no normal map and just to use surface normals
 		if(m_materials[matIndex].m_pNormalTexture)
 		{
 			m_materials[matIndex].m_pNormalTexture->Bind(NORMAL_TEXTURE_UNIT);
