@@ -60,18 +60,28 @@ bool RenderingProject::onCreate()
 	m_pSceneMesh = new Mesh();
 	if(!m_pSceneMesh->LoadMesh("./models/ruinedtank/tank.fbx"))
 	{
-		return false;
+		delete m_pSceneMesh;
+		m_pSceneMesh = nullptr;
+		//Logging is handled by the mesh class
 	}
-	m_pSceneMesh->m_transform->SetPosition(0, 0, 0);
+	else 
+	{
+		m_pSceneMesh->m_transform->SetPosition(0, 0, 0);
+	}
 
 	//Load Plane for water
 	m_pWaterMesh = new Mesh();
 	if (!m_pWaterMesh->LoadMesh("./models/plane/Plane.fbx"))
 	{
-		return false;
+		delete m_pWaterMesh;
+		m_pWaterMesh = nullptr;
+		//Logging is handled by the mesh class
 	}
-	m_pWaterMesh->m_transform->SetPosition(0, 0, 0);
-	m_pWaterMesh->m_transform->SetScale(30);
+	else 
+	{
+		m_pWaterMesh->m_transform->SetPosition(0, 0, 0);
+		m_pWaterMesh->m_transform->SetScale(30);
+	}
 
 
 	m_pLightingProgram = new LightingProgram();
@@ -184,9 +194,16 @@ void RenderingProject::Draw()
 	}
 
 	// Matrices needed for the light's perspective
+	
 	glm::mat4 orthgonalProjection = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -100.f, 100.f);
 	glm::mat4 lightView = glm::lookAt(glm::vec3(lightPos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjectionView = orthgonalProjection * lightView * m_pSceneMesh->m_transform->GetMatrix();
+
+	glm::mat4 m4LightMatrix = glm::mat4();
+	if(m_pSceneMesh != nullptr)
+	{
+		m_pSceneMesh->m_transform->GetMatrix();
+	}
+	glm::mat4 lightProjectionView = orthgonalProjection * lightView * m4LightMatrix;
 
 	//Set drawing mode to wireframe or not
 	if(m_bDrawWireFrame)
@@ -219,6 +236,13 @@ void RenderingProject::WaterPass()
 		return;
 	}
 
+	//Abort if no mesh to render
+	if (!m_pWaterMesh)
+	{
+		return;
+	}
+
+
 	const glm::mat4 waterWVP = m_projectionMatrix * m_viewMatrix * m_pWaterMesh->m_transform->GetMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -228,7 +252,9 @@ void RenderingProject::WaterPass()
 	m_pWaterProgram->SetTime(Utility::getTotalTime());
 	m_pWaterProgram->SetLightDirection(m_pDirecitonalSourceLight->m_v3WorldDirection);
 	m_pWaterProgram->SetLightColour(m_pDirecitonalSourceLight->m_v3LightColour);
+
 	m_pWaterMesh->Render(GL_TRIANGLES);
+	
 	glUseProgram(0);
 }
 
@@ -240,13 +266,21 @@ void RenderingProject::ShadowPass(const glm::mat4 a_lightProjectionView)
 		return;
 	}
 
+	if (!m_pSceneMesh)
+	{
+		return;
+	}
+
+
 	m_pShadowProgram->UseProgram();
 	m_pShadowProgram->SetLightViewPoint(a_lightProjectionView);
 	m_pFBO->BindForWriting();
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_iShadowMapWidth, m_iShadowMapHeight);
 
+
 	m_pSceneMesh->Render(GL_TRIANGLES);
+
 	//Unbund FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -258,6 +292,11 @@ void RenderingProject::ShadowPass(const glm::mat4 a_lightProjectionView)
 void RenderingProject::RenderPass(const glm::mat4 a_lightProjectionView)
 {
 	if (!m_pShadowProgram || !m_pFBO)
+	{
+		return;
+	}
+
+	if(!m_pSceneMesh)
 	{
 		return;
 	}
@@ -276,7 +315,9 @@ void RenderingProject::RenderPass(const glm::mat4 a_lightProjectionView)
 	m_pLightingManager->Update(*m_pSceneMesh->m_transform);
 	m_pLightingManager->RenderImguiWindow();
 
-	m_pSceneMesh->Render();
+	if (m_pSceneMesh) {
+		m_pSceneMesh->Render();
+	}
 
 	glUseProgram(0);
 }

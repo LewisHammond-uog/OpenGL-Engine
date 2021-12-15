@@ -55,15 +55,20 @@ private:
 	//Light used as the shadow source
 	DirectionalLight* m_pDirecitonalSourceLight;
 
+	//Lighting Management
 	LightingProgram* m_pLightingProgram;
 	LightingManager* m_pLightingManager;
 
+	//Shadows
 	ShadowProgram* m_pShadowProgram;
 	int m_iShadowMapWidth{};
 	int m_iShadowMapHeight{};
 	ShadowFBO* m_pFBO;
 
+	//Water
 	WaterProgram* m_pWaterProgram;
+
+	//Bool for if it is safe to render -- disabled if we failed to load models 
 	
 };
 
