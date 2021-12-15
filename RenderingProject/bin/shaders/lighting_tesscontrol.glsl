@@ -24,7 +24,7 @@ uniform vec3 uCameraLocalPos;
 float GetTessLevel(float Distance)
 {
     if (Distance <= 20.0) {
-        return 5.0;
+        return 3.0;
     }else if(Distance <= 10.0){
         return 2.0;
     }
